@@ -1,0 +1,222 @@
+:root {
+  /* Brand: taken from the logo (red with black) */
+  --red: #d24b36;
+  --red-strong: #b0382a; /* white text on this passes WCAG AA */
+  --ink: #1f1a17; /* the logo's own background, so it blends in */
+  --ink-2: #2c2622;
+  --on-ink: #f5f1ee;
+  --on-ink-muted: #b8afab;
+
+  /* Content areas */
+  --paper: #f6f3f0;
+  --surface: #ffffff;
+  --text: #1d1a1a;
+  --muted: #5f5856;
+  --line: #e3ddd8;
+  --highlight: #fbe9e5;
+  --link: #a63426;
+
+  /* One colour per group in the schedule */
+  --group-0: #d24b36;
+  --group-1: #d99a21;
+  --group-2: #2f8f83;
+  --group-3: #3b6fb6;
+  --group-4: #8a55b0;
+  --group-5: #5b8c3a;
+
+  --radius: 10px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
+  --font-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121010;
+    --surface: #1d1a1a;
+    --text: #efe9e6;
+    --muted: #aaa19d;
+    --line: #34302f;
+    --highlight: #3a201b;
+    --link: #f08a78;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+/* Keep the footer at the bottom on short pages. */
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 3.25rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--link);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Only vertical padding: .page is combined with .container, which owns the side gutter. */
+.page {
+  padding-top: 40px;
+  padding-bottom: 64px;
+}
+
+.page-intro {
+  color: var(--muted);
+  max-width: 60ch;
+  margin-bottom: 28px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-primary {
+  background: var(--red-strong);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #952e22;
+}
+
+.btn-outline {
+  border-color: currentColor;
+  color: inherit;
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.notice {
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  background: var(--highlight);
+  border: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
