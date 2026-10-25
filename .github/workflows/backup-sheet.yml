@@ -1,0 +1,31 @@
+name: Back up Google Sheet
+
+# Weekly snapshot of the published sheet, stored as a workflow artifact for 90 days.
+# Deliberately not committed: coach contact details must be removable (GDPR), and Git history is forever.
+# A failed run (e.g. the sheet was unpublished) sends GitHub's usual failure email.
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # Mondays 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: date
+        run: echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+      - run: node scripts/backup-sheet.mjs sheet-backup
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sheet-backup-${{ steps.date.outputs.today }}
+          path: sheet-backup/
+          retention-days: 90
+          if-no-files-found: error

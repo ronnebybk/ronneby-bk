@@ -71,7 +71,7 @@ in the Git history. Treat it as leaked and rotate it.
 
 - [ ] Sharing on the sheet is still *Anyone with the link → Editor* and nothing broader.
 - [ ] No unexpected tabs or private data in the sheet.
-- [ ] Back up the sheet: *File → Download → .xlsx*.
+- [ ] Back up the sheet: *File → Download → .xlsx*. Check that the weekly *Back up Google Sheet* runs are green (Actions tab).
 - [ ] Review the org's members under *github.com/ronnebybk → People*. At least two owners, all with 2FA.
 - [ ] The board still has working login and recovery details for the club Google account.
 - [ ] Rotate the admin link if editors have changed.

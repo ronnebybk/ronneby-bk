@@ -107,10 +107,30 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 4. Update `publishedId` and `gids` in `src/config.js`, then push.
 5. Send the new admin link to the remaining editors. Delete or archive the old sheet.
 
-### Back up the sheet
+### Backups and restore
 
-Every month or so, and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with
-the board. Version history also exists inside Google, but not if the account itself is lost.
+| What | How it's backed up | Restore |
+| --- | --- | --- |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves all four tabs as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
+| Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
+| The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
+
+**Restore from a weekly snapshot:**
+1. Repo → **Actions → Back up Google Sheet** → pick a run → download the `sheet-backup-<date>` artifact (zip).
+2. In the sheet, open the tab with the same name as the file (e.g. `Schema.csv` → *Schema*),
+   then **File → Import → Upload** → choose the file → **Replace current sheet**.
+3. Repeat for each tab you need. Dropdowns and header protection are not in the CSV: check them afterwards
+   ([4.1](#41-create-the-sheet) steps 3–5).
+
+Run a backup right now: **Actions → Back up Google Sheet → Run workflow**.
+Locally: `node scripts/backup-sheet.mjs <folder>`.
+
+> GitHub pauses scheduled workflows in a public repo after **60 days without any commits**, and sends an
+> email first. If that happens, re-enable it under **Actions → Back up Google Sheet**.
+
+Snapshots are deliberately **not committed** to the repo: coach contact details must be removable
+(GDPR), and Git history is permanent.
 
 ### Custom domain (optional)
 
