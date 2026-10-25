@@ -6,7 +6,7 @@ import DataNotice from '../components/DataNotice.vue'
 import { state, hasData, todayInfo, findGroup } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.svg'
 
 const { t, localized } = useI18n()
 
@@ -38,7 +38,7 @@ const explore = [
           <RouterLink to="/kontakt" class="btn btn-outline">{{ t('home.ctaTry') }}</RouterLink>
         </div>
       </div>
-      <img class="hero-logo" :src="logo" alt="" width="800" height="527" />
+      <img class="hero-logo" :src="logo" alt="" width="697" height="545" />
     </div>
   </section>
 
@@ -77,7 +77,7 @@ const explore = [
 <style scoped>
 .hero {
   background:
-    radial-gradient(circle at 80% 40%, rgb(210 75 54 / 0.25), transparent 55%),
+    radial-gradient(circle at 80% 40%, rgb(237 45 48 / 0.22), transparent 55%),
     var(--ink);
   color: var(--on-ink);
 }
@@ -109,8 +109,6 @@ const explore = [
   max-width: 460px;
   height: auto;
   justify-self: center;
-  /* The logo's dark background disappears into the hero gradient. */
-  mix-blend-mode: lighten;
 }
 
 @media (max-width: 760px) {

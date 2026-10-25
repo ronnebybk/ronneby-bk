@@ -28,4 +28,4 @@ npm run dev
 | `src/views/` | Pages |
 | `sheet-template/` | Google Sheet template to import |
 | `public/coaches/` | Coach photos |
-| `design/` | Original logo |
+| `design/` | Logo as vector (SVG, with and without background) and high-res PNG |

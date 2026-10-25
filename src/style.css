@@ -1,9 +1,10 @@
 :root {
-  /* Brand: taken from the logo (red with black) */
-  --red: #d24b36;
-  --red-strong: #b0382a; /* white text on this passes WCAG AA */
-  --ink: #1f1a17; /* the logo's own background, so it blends in */
-  --ink-2: #2c2622;
+  /* Brand: exact colours from the vector logo (design/logo.svg) */
+  --red: #ed2d30; /* accents and borders; too light for white text */
+  --red-strong: #c8181e; /* buttons: white text 5.8:1 */
+  --red-on-ink: #ff6b64; /* red text on the dark header: ~6:1 */
+  --ink: #1e1d1c; /* the logo's background */
+  --ink-2: #2b2928;
   --on-ink: #f5f1ee;
   --on-ink-muted: #b8afab;
 
@@ -13,11 +14,11 @@
   --text: #1d1a1a;
   --muted: #5f5856;
   --line: #e3ddd8;
-  --highlight: #fbe9e5;
-  --link: #a63426;
+  --highlight: #fde8e8;
+  --link: #b5161c;
 
   /* One colour per group in the schedule */
-  --group-0: #d24b36;
+  --group-0: #ed2d30;
   --group-1: #d99a21;
   --group-2: #2f8f83;
   --group-3: #3b6fb6;
@@ -39,8 +40,8 @@
     --text: #efe9e6;
     --muted: #aaa19d;
     --line: #34302f;
-    --highlight: #3a201b;
-    --link: #f08a78;
+    --highlight: #3b1c1c;
+    --link: #ff7a72;
     color-scheme: dark;
   }
 }
@@ -176,7 +177,7 @@ button {
 }
 
 .btn-primary:hover {
-  background: #952e22;
+  background: #a8141a;
 }
 
 .btn-outline {

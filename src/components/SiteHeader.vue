@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import LangToggle from './LangToggle.vue'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.svg'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -25,7 +25,7 @@ const links = [
   <header class="header">
     <div class="container bar">
       <RouterLink to="/" class="brand">
-        <img :src="logo" :alt="config.clubName" width="800" height="527" />
+        <img :src="logo" :alt="config.clubName" width="697" height="545" />
       </RouterLink>
 
       <nav :class="{ open }" :aria-label="t('nav.menu')">
@@ -92,7 +92,7 @@ nav a:hover {
 }
 
 nav a.router-link-exact-active {
-  color: var(--red);
+  color: var(--red-on-ink);
 }
 
 .actions {

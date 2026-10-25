@@ -77,7 +77,7 @@ Follow progress under the repo's **Actions** tab.
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
-| Logo and icons | `src/assets/logo.webp`, `public/*.png` (original in `design/`) |
+| Logo and icons | `src/assets/logo.svg` (site), `public/*.png` (icons). Sources in `design/`: `logo.svg` (with background), `logo-transparent.svg`, `logo-2400.png` (print/sharing) |
 
 ### Add a coach photo
 
