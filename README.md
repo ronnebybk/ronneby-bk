@@ -8,7 +8,12 @@ Website for Ronneby Boxing Team: schedule, classes and prices, coaches, contact,
   Editors change it through the hidden admin page, with no account needed.
 - **Languages:** Swedish (default) and English, switched with the flags in the header.
 
-See **[SETUP.md](SETUP.md)** for connecting the Google Sheet, admin links and editor instructions.
+| Document | Contents |
+| --- | --- |
+| **[HOWTO.md](HOWTO.md)** | Editor instructions (Swedish), maintainer tasks, troubleshooting, initial setup |
+| **[SECURITY.md](SECURITY.md)** | What's public and what's secret, sheet rules, incidents, GDPR overview |
+| **[LIMITATIONS.md](LIMITATIONS.md)** | Known shortcomings and trade-offs |
+| [Issues](https://github.com/ronnebybk/ronneby-bk/issues) | Backlog |
 
 ```sh
 npm install
