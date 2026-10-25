@@ -27,9 +27,11 @@ function apply(raw) {
   state.coaches = parseCoaches(raw.coaches)
 }
 
+// Accepts the bare ID or a whole pasted "Publish to web" link.
+const publishedId = config.sheet.publishedId.match(/2PACX-[\w-]+/)?.[0] ?? config.sheet.publishedId
+
 function csvUrl(tab) {
-  const { publishedId, gids } = config.sheet
-  return `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?gid=${gids[tab]}&single=true&output=csv`
+  return `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?gid=${config.sheet.gids[tab]}&single=true&output=csv`
 }
 
 async function fetchTab(tab) {

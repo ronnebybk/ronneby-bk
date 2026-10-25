@@ -22,13 +22,13 @@ export default {
   // Leave publishedId empty to run the site on the built-in example data.
   sheet: {
     // From File → Share → Publish to web: the part after /d/e/ in the published link.
-    publishedId: '',
+    publishedId: '2PACX-1vSv3fk09GQNw3f3sSabP-17IRBIK5D_siGON8tu4oViVSzFlMYuS9whgvJjDWQPjQvRWuo9ckxnv-Ry',
     // The gid of each tab (the number after #gid= in the address bar when the tab is open).
     gids: {
-      seasons: '',
-      groups: '',
-      schedule: '',
-      coaches: '',
+      seasons: '956987468',
+      groups: '1580659590',
+      schedule: '1346523284',
+      coaches: '1513447874',
     },
   },
 }
