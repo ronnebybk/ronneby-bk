@@ -20,8 +20,14 @@ const profileUrl = computed(() =>
     : instagramHandle && `https://www.instagram.com/${instagramHandle}/`,
 )
 
-// Facebook always has an embeddable feed; Instagram only via a Behold widget.
-const embeddable = computed(() => (props.service === 'facebook' ? Boolean(facebookUrl) : Boolean(beholdFeedId)))
+// Facebook can only embed Pages, not groups (the plugin renders an empty frame for a group),
+// so a group gets a plain "join" link instead.
+const isFacebookGroup = computed(() => props.service === 'facebook' && /facebook\.com\/groups\//.test(facebookUrl))
+
+// Facebook Pages have an embeddable feed; Instagram only via a Behold widget.
+const embeddable = computed(() =>
+  props.service === 'facebook' ? Boolean(facebookUrl) && !isFacebookGroup.value : Boolean(beholdFeedId),
+)
 
 const facebookSrc = computed(() => {
   const params = new URLSearchParams({
@@ -60,6 +66,11 @@ watch(
 
     <p v-if="!profileUrl" class="muted">{{ t('common.comingSoon') }}</p>
 
+    <div v-else-if="isFacebookGroup" class="group">
+      <p>{{ t('social.groupText') }}</p>
+      <a :href="profileUrl" target="_blank" rel="noopener" class="btn btn-primary">{{ t('social.groupButton') }} ↗</a>
+    </div>
+
     <template v-else-if="embeddable && consent[service]">
       <iframe
         v-if="service === 'facebook'"
@@ -81,7 +92,7 @@ watch(
       <RouterLink to="/integritet" class="small">{{ t('social.privacy') }}</RouterLink>
     </div>
 
-    <p v-if="profileUrl">
+    <p v-if="profileUrl && !isFacebookGroup">
       <a :href="profileUrl" target="_blank" rel="noopener">{{ t('social.openOn', { service: name }) }} ↗</a>
     </p>
   </div>
@@ -104,6 +115,13 @@ iframe {
   border: 0;
   border-radius: 8px;
   background: var(--paper);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .consent {

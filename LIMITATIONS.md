@@ -42,6 +42,9 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 - **Search engines** mainly index the start page. The schedule is loaded by JavaScript and the pages
   use `#/` addresses, so their content is unlikely to appear in search results.
 - **No link previews yet.** Sharing the link on Facebook or Messenger shows no image or description.
+- **Facebook groups can't be embedded.** Facebook only offers a feed embed for Pages. The club currently
+  has a group, so the site shows a "join the group" link instead of a feed. Setting `facebookUrl` to a
+  Page brings the feed back.
 - **Facebook and Instagram embeds** are often blocked by ad blockers and tracking protection. The profile
   links still work.
 

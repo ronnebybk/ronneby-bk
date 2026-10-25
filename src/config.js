@@ -13,7 +13,8 @@ export default {
   },
 
   social: {
-    facebookUrl: '', // e.g. 'https://www.facebook.com/ronnebyboxingteam'
+    // A Page shows its feed (after consent); a group can't be embedded and shows a "join" link.
+    facebookUrl: 'https://www.facebook.com/groups/251477413001',
     instagramHandle: '', // without @
     beholdFeedId: '', // optional: Instagram feed widget from behold.so
   },

@@ -93,6 +93,8 @@ export default {
       'The feed is loaded from {service}. When you show it, {service} may set cookies and see that you visited this page.',
     consentButton: 'Show the {service} feed',
     openOn: 'Open on {service}',
+    groupText: 'News, photos and chat with other members are in our Facebook group.',
+    groupButton: 'Join the Facebook group',
     privacy: 'Read more in the privacy policy',
   },
   privacy: {

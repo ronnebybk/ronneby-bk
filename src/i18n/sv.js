@@ -93,6 +93,8 @@ export default {
       'Flödet laddas från {service}. När du visar det kan {service} spara cookies och se att du besökt sidan.',
     consentButton: 'Visa {service}-flödet',
     openOn: 'Öppna på {service}',
+    groupText: 'Nyheter, bilder och snack med andra medlemmar finns i vår Facebookgrupp.',
+    groupButton: 'Gå med i Facebookgruppen',
     privacy: 'Läs mer i integritetspolicyn',
   },
   privacy: {
