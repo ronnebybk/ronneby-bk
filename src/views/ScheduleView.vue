@@ -38,7 +38,7 @@ const days = computed(() =>
 </script>
 
 <template>
-  <div class="container page">
+  <div class="container page wide">
     <h1>{{ t('schedule.title') }}</h1>
     <DataNotice />
 
@@ -100,6 +100,11 @@ const days = computed(() =>
 </template>
 
 <style scoped>
+/* Seven day columns need more room than the other pages. */
+.wide {
+  max-width: 1360px;
+}
+
 .season-bar {
   margin-bottom: 20px;
 }
@@ -171,8 +176,12 @@ const days = computed(() =>
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 10px;
+  padding: 8px;
   min-width: 0;
+}
+
+.day :deep(.group) {
+  font-size: 0.95rem;
 }
 
 .day h3 {
@@ -210,10 +219,11 @@ const days = computed(() =>
   color: var(--muted);
 }
 
-/* Narrow screens: a vertical list of days; empty days collapse to one line. */
-@media (max-width: 900px) {
+/* Below full width: day cards in one or two columns; empty days collapse to one line. */
+@media (max-width: 1199px) {
   .week {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    align-items: start;
   }
 
   .day.empty {

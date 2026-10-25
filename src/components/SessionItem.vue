@@ -32,9 +32,8 @@ const groupName = computed(() => localized(props.session.group, group.value?.nam
   border-radius: 0 8px 8px 0;
   padding: 8px 12px;
   min-width: 0;
-  /* Long Swedish group names (Motionsboxning) must fit narrow schedule columns. */
-  hyphens: auto;
-  overflow-wrap: anywhere;
+  /* Safety net only: long names should never overflow their column. */
+  overflow-wrap: break-word;
 }
 
 .time {
