@@ -42,9 +42,26 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 - **Search engines** mainly index the start page. The schedule is loaded by JavaScript and the pages
   use `#/` addresses, so their content is unlikely to appear in search results.
 - **No link previews yet.** Sharing the link on Facebook or Messenger shows no image or description.
-- **Facebook groups can't be embedded.** Facebook only offers a feed embed for Pages. The club currently
-  has a group, so the site shows a "join the group" link instead of a feed. Setting `facebookUrl` to a
-  Page brings the feed back.
+- **Facebook groups can't be embedded.** Facebook only offers a feed embed for **Pages**. The club
+  currently has a group, so the site shows a "Gå med i Facebookgruppen" button instead of a feed.
+  This was tested: the embed renders an empty frame for a group, even a public one.
+
+  > **Question for the board:** do you want a live Facebook feed on the website?
+  > If yes, the club needs a **Facebook Page** in addition to the group, **and someone has to post on it
+  > regularly**. The feed only shows the Page's own posts, never the group's. An empty or outdated
+  > feed looks worse than the current button.
+  >
+  > What it takes:
+  > 1. A board member creates the Page from their own Facebook account (*Menu → Pages → Create new Page*),
+  >    named *Ronneby Boxing Team*, with the logo from `design/` as profile picture.
+  > 2. No age or country restrictions on the Page, or the embed stays empty.
+  > 3. At least two admins (*Settings → Page access*), so it doesn't depend on one person.
+  > 4. Optionally, link the group to the Page (*group Settings → Linked Pages*).
+  > 5. Post public news there: results, cancellations, events. Member chat can stay in the group.
+  > 6. Give the Page's address to the web admin. It goes in `social.facebookUrl`, and the group button
+  >    can stay next to the feed.
+  >
+  > Tracked in issue #7.
 - **Facebook and Instagram embeds** are often blocked by ad blockers and tracking protection. The profile
   links still work.
 
