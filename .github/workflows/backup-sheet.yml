@@ -24,6 +24,7 @@ jobs:
         run: echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
       - run: node scripts/backup-sheet.mjs sheet-backup
       - uses: actions/upload-artifact@v4
+        if: always() # keep the required tabs even if an optional tab failed
         with:
           name: sheet-backup-${{ steps.date.outputs.today }}
           path: sheet-backup/
