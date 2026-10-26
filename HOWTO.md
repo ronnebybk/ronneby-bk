@@ -55,7 +55,7 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
   *Rubrik* används bara för nyheter.
 - **Klubbinfo:** en rad per uppgift. Lämnar du *Värde* tomt visas "Uppgifter kommer snart" (för *Bli medlem*
   visas en standardtext). En Facebook-adress som inte börjar med `https://www.facebook.com/` eller en e-post
-  utan `@` visas inte alls.
+  utan `@` visas inte alls. Kolumnen *Fält* är låst, så bara *Värde* och *Värde (EN)* går att ändra.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
@@ -201,10 +201,16 @@ Use the club's Google account, not a personal one. The board keeps the login det
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
    In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,
-   `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`.
+   `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`. Every one of those nine
+   needs its own row, since editors can't add rows once column A is protected (step 5).
+   Also check that *Klubbinfo* columns B:C are **Format → Number → Plain text**. Otherwise Sheets turns a phone
+   number like `+46 70…` into a number and drops the `+` and leading zeros.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
    Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`.
+   Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
+   Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since
+   the owner's account is never blocked.
 6. **Share → General access → Anyone with the link → Editor**.
 
 Do not rename tabs or column headings. Column *order* doesn't matter, names do.
