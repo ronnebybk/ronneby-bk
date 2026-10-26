@@ -27,9 +27,7 @@ const embeddable = computed(() =>
   props.service === 'facebook' ? Boolean(facebookUrl.value) && !isFacebookGroup.value : Boolean(beholdFeedId.value),
 )
 
-// The plugin is drawn at its largest size (500 px) and the frame shows a square as wide as the card,
-// matching Behold's square grid so the two cards end at the same height. Anything below the
-// square is cut off but still reachable by scrolling the timeline.
+// Drawn at Facebook's largest size; the feed window shows the top of it and the timeline scrolls.
 const facebookSrc = computed(() => {
   const params = new URLSearchParams({
     href: facebookUrl.value,
@@ -72,18 +70,18 @@ watch(
       <a :href="profileUrl" target="_blank" rel="noopener" class="btn btn-primary">{{ t('social.groupButton') }} ↗</a>
     </div>
 
-    <template v-else-if="embeddable && consent[service]">
+    <!-- Both feeds share one square window, sized by the card rather than by Facebook or by the
+         layout chosen in Behold, so the two cards always match. A taller feed scrolls inside it. -->
+    <div v-else-if="embeddable && consent[service]" class="feed">
       <iframe
         v-if="service === 'facebook'"
         :src="facebookSrc"
         :title="name"
-        width="500"
-        height="500"
         loading="lazy"
         allow="encrypted-media"
       ></iframe>
       <behold-widget v-else :feed-id="beholdFeedId"></behold-widget>
-    </template>
+    </div>
 
     <div v-else-if="embeddable" class="consent">
       <p class="muted">{{ t('social.consentText', { service: name }) }}</p>
@@ -110,15 +108,20 @@ watch(
   margin: 0;
 }
 
+.feed {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1;
+  overflow-y: auto;
+  border-radius: 8px;
+  background: var(--paper);
+}
+
 iframe {
   display: block;
   width: 100%;
-  max-width: 500px;
-  height: auto;
-  aspect-ratio: 1;
+  height: 100%;
   border: 0;
-  border-radius: 8px;
-  background: var(--paper);
 }
 
 .group {
