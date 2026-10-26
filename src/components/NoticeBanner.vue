@@ -1,11 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { activeNotices } from '../data/store.js'
+import { computed, ref, watch } from 'vue'
+import { activeNotices, state } from '../data/store.js'
 import { linkParts } from '../data/parse.js'
 import { useI18n } from '../i18n/index.js'
 
-// Dismissals are remembered per message text in this browser. Storage can be blocked, so the
-// in-memory list still hides them until the page is reloaded.
+// Dismissals are remembered per message text and date window in this browser. Storage can be
+// blocked, so the in-memory list still hides them until the page is reloaded.
 const STORAGE_KEY = 'rbt-dismissed-notices'
 
 const { t, localized } = useI18n()
@@ -13,32 +13,56 @@ const { t, localized } = useI18n()
 function readDismissed() {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY))
-    return Array.isArray(stored) ? stored.filter((text) => typeof text === 'string') : []
+    return Array.isArray(stored) ? stored.filter((key) => typeof key === 'string') : []
   } catch {
     return []
   }
 }
 
+// A changed message or date window is a new notice, so it is shown again.
+function noticeKey(notice) {
+  return JSON.stringify([notice.message, notice.from ?? '', notice.to ?? ''])
+}
+
 const dismissed = ref(readDismissed())
 
 const visible = computed(() =>
-  activeNotices.value.filter((notice) => !dismissed.value.includes(notice.message)),
+  activeNotices.value.filter((notice) => !dismissed.value.includes(noticeKey(notice))),
 )
 
-function dismissAll() {
-  // Remember every active message, not just the visible ones, so the rest doesn't reappear.
-  dismissed.value = [...new Set(activeNotices.value.map((notice) => notice.message))]
+function persist() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissed.value))
   } catch {}
 }
+
+function dismissAll() {
+  // Remember every active notice, not just the visible ones, so the rest doesn't reappear.
+  dismissed.value = [...new Set(activeNotices.value.map(noticeKey))]
+  persist()
+}
+
+// After a successful sheet load, forget notices that are no longer active. Otherwise a deleted
+// or expired notice would stay hidden forever if its text is used again later.
+watch(
+  () => state.status,
+  (status) => {
+    if (status !== 'live') return
+    const active = new Set(activeNotices.value.map(noticeKey))
+    const kept = [...new Set(dismissed.value.filter((key) => active.has(key)))]
+    if (kept.length === dismissed.value.length) return
+    dismissed.value = kept
+    persist()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <section v-if="visible.length" class="notices" :aria-label="t('notices.label')">
     <div class="container row">
       <ul class="list">
-        <li v-for="(notice, noticeIndex) in visible" :key="`${notice.message}-${noticeIndex}`" class="notice-banner">
+        <li v-for="(notice, noticeIndex) in visible" :key="`${noticeKey(notice)}-${noticeIndex}`" class="notice-banner">
           <p>
             <template v-for="(part, index) in linkParts(localized(notice.message, notice.messageEn))" :key="index">
               <a v-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>

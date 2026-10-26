@@ -44,6 +44,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
   annars försvinner passen från hemsidan.
 - **Ett anslag** syns bara på startsidan, och bara under perioden *Visa från*–*Visa till* (båda dagarna
   räknas med). Ett datum som inte går att läsa, t.ex. `nästa vecka`, gör att raden hoppas över.
+- Fyll i **Visa till** för tillfälliga meddelanden (t.ex. inställd träning). Då försvinner anslaget av
+  sig självt, och samma text kan användas igen senare.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
