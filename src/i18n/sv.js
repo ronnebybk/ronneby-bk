@@ -119,6 +119,7 @@ export default {
       coaches: 'Tränare',
       seasons: 'Säsonger',
       notices: 'Anslag',
+      club: 'Klubbinfo',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

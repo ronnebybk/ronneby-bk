@@ -12,7 +12,7 @@ if (!publishedId) {
 }
 
 // File names match the tab names in the sheet, so restoring is "import file into tab of the same name".
-const tabs = { seasons: 'Säsonger', groups: 'Grupper', schedule: 'Schema', coaches: 'Tränare', notices: 'Anslag' }
+const tabs = { seasons: 'Säsonger', groups: 'Grupper', schedule: 'Schema', coaches: 'Tränare', notices: 'Anslag', club: 'Klubbinfo' }
 
 await mkdir(outDir, { recursive: true })
 let failed = false

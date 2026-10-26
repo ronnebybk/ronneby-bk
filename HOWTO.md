@@ -12,7 +12,8 @@ Visitors → website on GitHub Pages → reads the published Google Sheet (CSV) 
 Editors  → /#/admin on the website → the same Google Sheet, embedded
 ```
 
-Schedule, classes, prices, coaches, seasons, notices and news live in the Google Sheet. Changing them never
+Schedule, classes, prices, coaches, seasons, notices, news, contact details and social links live in the
+Google Sheet. Changing them never
 needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITATIONS.md](LIMITATIONS.md).
 
 ---
@@ -23,7 +24,7 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 **ronnebybk.github.io/ronneby-bk/#/admin**. Tips: lägg till sidan på hemskärmen i mobilen.
 Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
-**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag.
+**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo.
 
 | Vill du… | Gör så här |
 | --- | --- |
@@ -36,6 +37,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Lägga till en tränare | Ny rad i **Tränare**. Bild läggs in av webbansvarig. |
 | Lägga upp ett anslag | Ny rad i **Anslag**: skriv meddelandet (och gärna en engelsk text), fyll i *Visa från* och *Visa till* som `ÅÅÅÅ-MM-DD` eller lämna dem tomma. Anslaget syns högst upp på startsidan inom ca 5 minuter. Ta bort raden när det inte längre gäller. |
 | Lägga upp en nyhet | Ny rad i **Anslag** med *Typ* = **Nyhet**: skriv en *Rubrik* och/eller ett meddelande (och gärna engelska texter). *Visa från* blir nyhetens datum. Fyll i *Visa till* så försvinner nyheten av sig själv. Nyheter syns under "Nyheter" på startsidan, nyaste först. |
+| Ändra adress, e-post, telefon eller "Bli medlem" | Fliken **Klubbinfo**: skriv i kolumnen *Värde* på rätt rad (*Lokal*, *Gatuadress*, *Ort*, *E-post*, *Telefon*, *Bli medlem*). *Värde (EN)* är valfri engelsk text, t.ex. för *Bli medlem*. En länk i *Bli medlem* blir klickbar. |
+| Ändra Facebook eller Instagram | Fliken **Klubbinfo**: *Facebook* = hela adressen (`https://www.facebook.com/…`), *Instagram* = kontonamnet eller länken till profilen. |
 
 **Viktigt**
 
@@ -50,6 +53,9 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - **Anslag eller nyhet?** Brådskande saker (inställd träning) är *Anslag* och syns som röd banderoll.
   Mindre brådskande saker (ny grupp, tävlingsresultat) är *Nyhet*. Tom *Typ* räknas som *Anslag*.
   *Rubrik* används bara för nyheter.
+- **Klubbinfo:** en rad per uppgift. Lämnar du *Värde* tomt visas "Uppgifter kommer snart" (för *Bli medlem*
+  visas en standardtext). En Facebook-adress som inte börjar med `https://www.facebook.com/` eller en e-post
+  utan `@` visas inte alls.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
@@ -95,8 +101,7 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 | Change | Where |
 | --- | --- |
 | Schedule, classes, prices, coaches, seasons, notices, news | The Google Sheet (no code) |
-| Club address, email, phone | `contact` in `src/config.js` |
-| Facebook / Instagram | `social` in `src/config.js` |
+| Club address, email, phone, "how to join" text, Facebook / Instagram | The *Klubbinfo* tab in the sheet (no code) |
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
@@ -113,7 +118,7 @@ Without a photo, the card shows the coach's initials.
 ### Instagram feed
 
 Connect the club's Instagram at [behold.so](https://behold.so) (free plan, needs a Business/Creator account)
-and put the feed ID in `social.beholdFeedId`. Without it the site only links to the profile.
+and put the feed ID in the *Behold* row of the *Klubbinfo* tab. Without it the site only links to the profile.
 
 ### Give someone editor access
 
@@ -134,7 +139,7 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 
 | What | How it's backed up | Restore |
 | --- | --- | --- |
-| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag* when it is configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag* and *Klubbinfo* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
 | Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
 | Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
 | The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
@@ -172,6 +177,7 @@ create the DNS records GitHub shows. No code changes are needed. Afterwards, sen
 | Change not visible | Google republishes about every 5 minutes. Wait, then reload. |
 | A notice or news item doesn't show | *Visa från* is in the future, *Visa till* has passed, a date is written so it can't be read (use `ÅÅÅÅ-MM-DD`), or *Typ* is something other than empty, *Anslag* or *Nyhet*. |
 | A news item shows as a red banner | Its *Typ* is empty or *Anslag*. Set it to *Nyhet*. |
+| Contact details or a social link don't show | The *Klubbinfo* row's *Fält* is misspelt, *Värde* is empty, or the value didn't pass the check (Facebook must be a `https://www.facebook.com/…` address, e-mail needs an `@`, phone needs a digit). Or `gids.club` in `src/config.js` is empty. |
 | Banner "Kunde inte hämta senaste schemat…" | Google couldn't be reached. The visitor sees their last saved copy. Check that the sheet is still published (*File → Share → Publish to web*). |
 | Banner "Exempeldata visas…" | `publishedId` in `src/config.js` is empty. |
 | Admin page blank | Browser blocks the embedded sheet (common on iPhone/Safari). Use **Öppna i Google Sheets**. |
@@ -194,9 +200,11 @@ Use the club's Google account, not a personal one. The board keeps the login det
    missing: select the column → **Data → Data validation → Dropdown (from a range)**, e.g. `Grupper!A2:A50`.
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
+   In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,
+   `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
-   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`.
+   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`.
 6. **Share → General access → Anyone with the link → Editor**.
 
 Do not rename tabs or column headings. Column *order* doesn't matter, names do.

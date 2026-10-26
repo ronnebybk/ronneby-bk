@@ -119,6 +119,7 @@ export default {
       coaches: 'Coaches',
       seasons: 'Seasons',
       notices: 'Notices',
+      club: 'Club info',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',

@@ -1,9 +1,9 @@
 <script setup>
 import { useI18n } from '../i18n/index.js'
+import { state } from '../data/store.js'
 import config from '../config.js'
 
 const { t } = useI18n()
-const { facebookUrl, instagramHandle } = config.social
 const year = new Date().getFullYear()
 </script>
 
@@ -12,8 +12,13 @@ const year = new Date().getFullYear()
     <div class="container row">
       <p>© {{ year }} {{ config.clubName }}</p>
       <nav>
-        <a v-if="facebookUrl" :href="facebookUrl" target="_blank" rel="noopener">Facebook</a>
-        <a v-if="instagramHandle" :href="`https://www.instagram.com/${instagramHandle}/`" target="_blank" rel="noopener">
+        <a v-if="state.club.facebookUrl" :href="state.club.facebookUrl" target="_blank" rel="noopener">Facebook</a>
+        <a
+          v-if="state.club.instagramHandle"
+          :href="`https://www.instagram.com/${state.club.instagramHandle}/`"
+          target="_blank"
+          rel="noopener"
+        >
           Instagram
         </a>
         <RouterLink to="/integritet">{{ t('footer.privacy') }}</RouterLink>

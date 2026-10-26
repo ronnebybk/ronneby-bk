@@ -2,7 +2,7 @@ import { reactive, computed } from 'vue'
 import Papa from 'papaparse'
 import config from '../config.js'
 import * as demo from './demo.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -15,6 +15,8 @@ export const state = reactive({
   sessions: [],
   coaches: [],
   notices: [],
+  // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
+  club: {},
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',
 })
@@ -28,8 +30,9 @@ function apply(raw) {
   state.groups = parseGroups(raw.groups)
   state.sessions = parseSessions(raw.schedule)
   state.coaches = parseCoaches(raw.coaches)
-  // A cache written before notices existed has no such field.
+  // A cache written before these optional tabs existed has no such fields.
   state.notices = parseNotices(raw.notices ?? [])
+  state.club = parseClub(raw.club ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -71,15 +74,16 @@ function writeCache(raw) {
   } catch {}
 }
 
-// The notices tab is optional: if it is missing, unpublished or broken, the rest of the site must
-// still load. Fall back to the cached notices so "cancelled tonight" survives a Google hiccup.
-async function fetchNotices(cached) {
-  if (!config.sheet.gids.notices) return []
+// The notices and Klubbinfo tabs are optional: if one is missing, unpublished or broken, the rest
+// of the site must still load. Fall back to the cached copy so "cancelled tonight" survives a
+// Google hiccup.
+async function fetchOptional(tab, cached) {
+  if (!config.sheet.gids[tab]) return []
   try {
-    return await fetchTab('notices')
+    return await fetchTab(tab)
   } catch (error) {
-    console.error('Could not load notices', error)
-    return cached?.notices ?? []
+    console.error(`Could not load ${tab}`, error)
+    return cached?.[tab] ?? []
   }
 }
 
@@ -99,9 +103,9 @@ export function loadData() {
   const cached = readCache()
   if (cached) apply(cached)
 
-  loading = Promise.all([...TABS.map(fetchTab), fetchNotices(cached)])
-    .then(([seasons, groups, schedule, coaches, notices]) => {
-      const raw = { seasons, groups, schedule, coaches, notices }
+  loading = Promise.all([...TABS.map(fetchTab), fetchOptional('notices', cached), fetchOptional('club', cached)])
+    .then(([seasons, groups, schedule, coaches, notices, club]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club }
       apply(raw)
       writeCache(raw)
       state.status = 'live'
