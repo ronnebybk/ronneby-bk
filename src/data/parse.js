@@ -185,14 +185,22 @@ const CLUB_FIELDS = {
 // Only these are shown as text a visitor reads; the rest are addresses, numbers and links.
 const CLUB_TRANSLATED = ['venue', 'join']
 
+const INSTAGRAM_RESERVED = ['explore', 'p', 'reel', 'reels', 'stories', 'tv', 'accounts', 'direct']
+
 const CLUB_CHECKS = {
   email: (value) => (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value) ? value : ''),
   phone: (value) => (/\d/.test(value) ? value : ''),
   facebookUrl: (value) => (/^https:\/\/(www\.|m\.)?facebook\.com\/[^\s<>"]+$/.test(value) ? value : ''),
   // Accepts the handle with or without @, or a pasted profile link.
+  // Only a profile counts: a location, post or Explore link has more path, or a reserved first part.
   instagramUrl: (value) => {
-    const handle = value.replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/^@/, '').replace(/[/?].*$/, '')
-    return /^[\w.]+$/.test(handle) ? `https://www.instagram.com/${handle}/` : ''
+    const handle = value
+      .replace(/^https?:\/\/(www\.)?instagram\.com\//, '')
+      .replace(/^@/, '')
+      .replace(/[?#].*$/, '')
+      .replace(/\/$/, '')
+    const valid = /^[\w.]+$/.test(handle) && !INSTAGRAM_RESERVED.includes(handle.toLowerCase())
+    return valid ? `https://www.instagram.com/${handle}/` : ''
   },
   beholdFeedId: (value) => (/^[\w-]+$/.test(value) ? value : ''),
 }
