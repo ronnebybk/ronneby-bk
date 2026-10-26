@@ -12,7 +12,7 @@ export default {
     // The gid of each tab (the number after #gid= in the address bar when the tab is open).
     gids: {
       notices: '1455255462', // empty hides the banner until the Anslag tab exists
-      club: '', // Klubbinfo; empty shows "coming soon" for contact details and social links
+      club: '678595018', // Klubbinfo; empty shows "coming soon" for contact details and social links
       seasons: '956987468',
       groups: '1580659590',
       schedule: '1346523284',
