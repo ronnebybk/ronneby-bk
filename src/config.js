@@ -26,7 +26,7 @@ export default {
     publishedId: '2PACX-1vSv3fk09GQNw3f3sSabP-17IRBIK5D_siGON8tu4oViVSzFlMYuS9whgvJjDWQPjQvRWuo9ckxnv-Ry',
     // The gid of each tab (the number after #gid= in the address bar when the tab is open).
     gids: {
-      notices: '', // empty hides the banner until the Anslag tab exists
+      notices: '1455255462', // empty hides the banner until the Anslag tab exists
       seasons: '956987468',
       groups: '1580659590',
       schedule: '1346523284',
