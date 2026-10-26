@@ -5,6 +5,8 @@ import * as demo from './demo.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
+// A stalled request must not keep the whole site — or an optional tab — loading forever.
+const FETCH_TIMEOUT_MS = 10000
 const TABS = ['seasons', 'groups', 'schedule', 'coaches']
 
 export const state = reactive({
@@ -38,12 +40,21 @@ function csvUrl(tab) {
 }
 
 async function fetchTab(tab) {
-  const response = await fetch(csvUrl(tab), { cache: 'no-store' })
-  if (!response.ok) throw new Error(`${tab}: HTTP ${response.status}`)
-  const text = await response.text()
-  // A sheet that isn't published returns an HTML login page instead of CSV.
-  if (text.trimStart().startsWith('<')) throw new Error(`${tab}: not published as CSV`)
-  return Papa.parse(text, { header: true, skipEmptyLines: 'greedy' }).data
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetch(csvUrl(tab), { cache: 'no-store', signal: controller.signal })
+    if (!response.ok) throw new Error(`${tab}: HTTP ${response.status}`)
+    const text = await response.text()
+    // A sheet that isn't published returns an HTML login page instead of CSV.
+    if (text.trimStart().startsWith('<')) throw new Error(`${tab}: not published as CSV`)
+    return Papa.parse(text, { header: true, skipEmptyLines: 'greedy' }).data
+  } catch (error) {
+    if (error?.name === 'AbortError') throw new Error(`${tab}: timed out after ${FETCH_TIMEOUT_MS / 1000}s`)
+    throw error
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 function readCache() {
