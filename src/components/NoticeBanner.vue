@@ -5,7 +5,7 @@ import { linkParts } from '../data/parse.js'
 import { useI18n } from '../i18n/index.js'
 
 // Dismissals are remembered per message text in this browser. Storage can be blocked, so the
-// in-memory list still hides the notice until the page is reloaded.
+// in-memory list still hides them until the page is reloaded.
 const STORAGE_KEY = 'rbt-dismissed-notices'
 
 const { t, localized } = useI18n()
@@ -25,11 +25,9 @@ const visible = computed(() =>
   activeNotices.value.filter((notice) => !dismissed.value.includes(notice.message)),
 )
 
-function dismiss(notice) {
-  // Keep only active messages, so the list doesn't grow with old notices.
-  const active = activeNotices.value.map((item) => item.message)
-  dismissed.value = dismissed.value.filter((text) => active.includes(text))
-  if (!dismissed.value.includes(notice.message)) dismissed.value.push(notice.message)
+function dismissAll() {
+  // Remember every active message, not just the visible ones, so the rest doesn't reappear.
+  dismissed.value = [...new Set(activeNotices.value.map((notice) => notice.message))]
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissed.value))
   } catch {}
@@ -38,18 +36,18 @@ function dismiss(notice) {
 
 <template>
   <section v-if="visible.length" class="notices" :aria-label="t('notices.label')">
-    <div class="container">
+    <div class="container row">
       <ul class="list">
-        <li v-for="notice in visible" :key="notice.message" class="notice-banner">
+        <li v-for="(notice, noticeIndex) in visible" :key="`${notice.message}-${noticeIndex}`" class="notice-banner">
           <p>
             <template v-for="(part, index) in linkParts(localized(notice.message, notice.messageEn))" :key="index">
               <a v-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
               <template v-else>{{ part.text }}</template>
             </template>
           </p>
-          <button type="button" class="close" :aria-label="t('notices.close')" @click="dismiss(notice)">✕</button>
         </li>
       </ul>
+      <button type="button" class="close" :aria-label="t('notices.closeAll')" @click="dismissAll">✕</button>
     </div>
   </section>
 </template>
@@ -61,18 +59,19 @@ function dismiss(notice) {
   padding: 12px 0;
 }
 
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
 .list {
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   gap: 10px;
-}
-
-.notice-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
 }
 
 .notice-banner p {
@@ -97,7 +96,7 @@ function dismiss(notice) {
   justify-content: center;
   width: 32px;
   height: 32px;
-  margin: -4px -6px -4px 0;
+  margin-top: -4px;
   border: 0;
   border-radius: 50%;
   background: transparent;

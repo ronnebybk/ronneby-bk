@@ -34,7 +34,7 @@ export default {
   },
   notices: {
     label: 'Meddelanden',
-    close: 'Stäng meddelandet',
+    closeAll: 'Stäng alla meddelanden',
   },
   home: {
     tagline: 'Boxning i Ronneby – för nybörjare, motionärer och tävlingsboxare.',
