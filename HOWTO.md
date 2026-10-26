@@ -61,6 +61,43 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
 - Blev något fel? Säg till webbansvarig. Alla tidigare versioner finns sparade (*Arkiv → Versionshistorik*).
 
+### Visa Facebook och Instagram på hemsidan
+
+Kortet för Facebook och Instagram finns på startsidan och på sidan Kontakt. Allt ställs in i fliken
+**Klubbinfo**. Ett flöde laddas först när besökaren klickar på *Visa* (för integritetens skull).
+
+**Facebook**
+
+| Klubben har… | Skriv i *Facebook* | Hemsidan visar |
+| --- | --- | --- |
+| En **grupp** | Gruppens adress, t.ex. `https://www.facebook.com/groups/251477413001` | En knapp "Gå med i Facebookgruppen". Facebook låter inte grupper visas som flöde. |
+| En **sida** (Page) | Sidans adress, t.ex. `https://www.facebook.com/klubbensida` | Sidans senaste inlägg som ett flöde |
+
+För ett flöde behöver klubben alltså en Facebook-*sida*, och någon som lägger upp inlägg där. Sidan får inte ha
+ålders- eller landsbegränsningar, annars blir flödet tomt. Se även [LIMITATIONS.md](LIMITATIONS.md).
+
+**Instagram**
+
+Skriv klubbens **kontonamn** i *Instagram*, t.ex. `ronnebyboxing`, `@ronnebyboxing` eller länken till profilen.
+Då visas en länk "Öppna på Instagram". En länk till en **plats** (`…/explore/locations/…`), ett inlägg eller en
+reel fungerar inte. Det måste vara ett konto.
+
+För att också visa **bilderna** som ett flöde behövs ett gratis konto hos Behold:
+
+1. Gör klubbens Instagram till ett **professionellt konto** (företag eller kreatör). I Instagram-appen:
+   *Inställningar → Kontotyp och verktyg → Byt till professionellt konto* (namnen kan skilja sig lite
+   mellan versioner). Det är gratis.
+2. Skapa ett konto på [behold.so](https://behold.so) (gratisnivån räcker) och koppla klubbens Instagram.
+3. Skapa ett flöde (*feed*). Välj en **kvadratisk** layout, t.ex. 2×2 eller 3×3, så att den passar bredvid
+   Facebook-kortet. Ett högre flöde går att scrolla i.
+4. Öppna flödet → **Embed code** i sidomenyn. Där står t.ex. `feed-id="L7mnQCHvZeMZLbNXmJll"`.
+   Kopiera bara delen inom citattecknen.
+5. Skriv den i *Behold* i Klubbinfo. *Instagram* måste också vara ifyllt, annars visas "Kommer snart".
+
+**Kontrollera:** vänta ca 5 minuter, öppna sidan Kontakt och klicka på *Visa*. Syns inget i en webbläsare med
+annonsblockerare (t.ex. Firefox eller Brave med skydd påslaget) är det blockeraren, inte hemsidan. Prova en
+annan webbläsare. Länkarna under flödet fungerar alltid.
+
 ---
 
 ## 2. Maintainers: common tasks
@@ -115,10 +152,13 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 
 Without a photo, the card shows the coach's initials.
 
-### Instagram feed
+### Instagram feed and Facebook Page
 
-Connect the club's Instagram at [behold.so](https://behold.so) (free plan, needs a Business/Creator account)
-and put the feed ID in the *Behold* row of the *Klubbinfo* tab. Without it the site only links to the profile.
+Editors can set these up themselves; see
+[Visa Facebook och Instagram på hemsidan](#visa-facebook-och-instagram-på-hemsidan) (Swedish). In short: a
+Facebook *Page* shows a feed, a group only a join button; Instagram needs the account name, plus a
+[Behold](https://behold.so) feed ID (free, needs a Business/Creator account) for the picture feed. Both feeds
+sit in the same square window, so pick a square Behold layout.
 
 ### Give someone editor access
 
