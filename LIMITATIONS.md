@@ -61,8 +61,8 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
   > 3. At least two admins (*Settings → Page access*), so it doesn't depend on one person.
   > 4. Optionally, link the group to the Page (*group Settings → Linked Pages*).
   > 5. Post public news there: results, cancellations, events. Member chat can stay in the group.
-  > 6. Give the Page's address to the web admin. It goes in the *Facebook* row of the *Klubbinfo*
-  >    tab, and the group button can stay next to the feed.
+  > 6. Put the Page's address in the *Facebook* row of the *Klubbinfo* tab (see HOWTO.md, section 1).
+  >    The group can still be linked from the Page or mentioned in a news item.
   >
   > Tracked in issue #7.
 - **Facebook and Instagram embeds** are often blocked by ad blockers and tracking protection. The profile
