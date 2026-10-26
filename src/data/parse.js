@@ -110,6 +110,43 @@ export function parseSessions(rows) {
     .sort((a, b) => a.day - b.day || a.start.localeCompare(b.start))
 }
 
+export function parseNotices(rows) {
+  const notices = []
+  for (const row of rows.map(normalizeRow)) {
+    const message = field(row, 'Meddelande')
+    if (!message) continue
+    const fromText = field(row, 'Visa från')
+    const toText = field(row, 'Visa till')
+    const from = parseDate(fromText)
+    const to = parseDate(toText)
+    // A date cell that is filled in but can't be read makes the row unsafe to show.
+    if ((fromText && !from) || (toText && !to)) continue
+    notices.push({ message, messageEn: field(row, 'Meddelande (EN)'), from, to })
+  }
+  return notices
+}
+
+// An empty date limit means no limit; both limits are inclusive.
+export function isNoticeActive(notice, today) {
+  return (!notice.from || notice.from <= today) && (!notice.to || today <= notice.to)
+}
+
+// Splits a message into plain-text and link parts, so the banner can render links without v-html.
+export function linkParts(value) {
+  const text = clean(value)
+  const parts = []
+  let last = 0
+  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+/g)) {
+    // Trailing punctuation usually belongs to the sentence, not the address.
+    const url = match[0].replace(/[.,;:!?)]+$/, '')
+    if (match.index > last) parts.push({ text: text.slice(last, match.index) })
+    parts.push({ text: url, href: url })
+    last = match.index + url.length
+  }
+  if (last < text.length) parts.push({ text: text.slice(last) })
+  return parts
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
