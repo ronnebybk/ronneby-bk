@@ -27,12 +27,15 @@ const embeddable = computed(() =>
   props.service === 'facebook' ? Boolean(facebookUrl.value) && !isFacebookGroup.value : Boolean(beholdFeedId.value),
 )
 
+// The plugin is drawn at its largest size (500 px) and the frame shows a square as wide as the card,
+// matching Behold's square grid so the two cards end at the same height. Anything below the
+// square is cut off but still reachable by scrolling the timeline.
 const facebookSrc = computed(() => {
   const params = new URLSearchParams({
     href: facebookUrl.value,
     tabs: 'timeline',
     width: '500',
-    height: '600',
+    height: '500',
     small_header: 'false',
     adapt_container_width: 'true',
     hide_cover: 'false',
@@ -75,7 +78,7 @@ watch(
         :src="facebookSrc"
         :title="name"
         width="500"
-        height="600"
+        height="500"
         loading="lazy"
         allow="encrypted-media"
       ></iframe>
@@ -108,8 +111,11 @@ watch(
 }
 
 iframe {
+  display: block;
   width: 100%;
   max-width: 500px;
+  height: auto;
+  aspect-ratio: 1;
   border: 0;
   border-radius: 8px;
   background: var(--paper);
