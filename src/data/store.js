@@ -2,7 +2,7 @@ import { reactive, computed } from 'vue'
 import Papa from 'papaparse'
 import config from '../config.js'
 import * as demo from './demo.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 const TABS = ['seasons', 'groups', 'schedule', 'coaches']
@@ -12,6 +12,7 @@ export const state = reactive({
   groups: [],
   sessions: [],
   coaches: [],
+  notices: [],
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',
 })
@@ -25,6 +26,8 @@ function apply(raw) {
   state.groups = parseGroups(raw.groups)
   state.sessions = parseSessions(raw.schedule)
   state.coaches = parseCoaches(raw.coaches)
+  // A cache written before notices existed has no such field.
+  state.notices = parseNotices(raw.notices ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -57,6 +60,18 @@ function writeCache(raw) {
   } catch {}
 }
 
+// The notices tab is optional: if it is missing, unpublished or broken, the rest of the site must
+// still load. Fall back to the cached notices so "cancelled tonight" survives a Google hiccup.
+async function fetchNotices(cached) {
+  if (!config.sheet.gids.notices) return []
+  try {
+    return await fetchTab('notices')
+  } catch (error) {
+    console.error('Could not load notices', error)
+    return cached?.notices ?? []
+  }
+}
+
 let loading = null
 
 // Shows the cached copy immediately (if any), then replaces it with fresh data from the sheet.
@@ -73,9 +88,9 @@ export function loadData() {
   const cached = readCache()
   if (cached) apply(cached)
 
-  loading = Promise.all(TABS.map(fetchTab))
-    .then(([seasons, groups, schedule, coaches]) => {
-      const raw = { seasons, groups, schedule, coaches }
+  loading = Promise.all([...TABS.map(fetchTab), fetchNotices(cached)])
+    .then(([seasons, groups, schedule, coaches, notices]) => {
+      const raw = { seasons, groups, schedule, coaches, notices }
       apply(raw)
       writeCache(raw)
       state.status = 'live'
@@ -100,6 +115,12 @@ export function weekday(date = new Date()) {
 }
 
 // --- Derived data ------------------------------------------------------------
+
+// Notices that should be shown today, in sheet order.
+export const activeNotices = computed(() => {
+  const today = todayIso()
+  return state.notices.filter((notice) => isNoticeActive(notice, today))
+})
 
 // The season covering today; otherwise the next one to start; otherwise the most recent.
 export const currentSeason = computed(() => {

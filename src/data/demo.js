@@ -6,6 +6,7 @@ export const columns = {
   groups: ['Grupp', 'Grupp (EN)', 'Ålder', 'Beskrivning', 'Beskrivning (EN)', 'Pris (kr)', 'Prisperiod'],
   schedule: ['Säsong', 'Dag', 'Start', 'Slut', 'Grupp', 'Tränare', 'Notering', 'Notering (EN)'],
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
+  notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till'],
 }
 
 export const seasons = [
@@ -78,4 +79,29 @@ export const coaches = [
   { 'Namn': 'Erik Exempel', 'Roll': 'Huvudtränare', 'Roll (EN)': 'Head coach', 'Grupper': 'Nybörjare, Tävling', 'Telefon': '', 'E-post': '', 'Bild': '' },
   { 'Namn': 'Anna Exempel', 'Roll': 'Tränare', 'Roll (EN)': 'Coach', 'Grupper': 'Knattar', 'Telefon': '', 'E-post': '', 'Bild': '' },
   { 'Namn': 'Sara Exempel', 'Roll': 'Tränare', 'Roll (EN)': 'Coach', 'Grupper': 'Motionsboxning', 'Telefon': '', 'E-post': '', 'Bild': '' },
+]
+
+// One active with EN and no dates, one active SV-only with a link, plus expired, future and
+// unreadable-date rows that the banner must leave out.
+export const notices = [
+  {
+    'Meddelande': 'Välkommen till höstens träningar! Nya deltagare är välkomna att prova på.',
+    'Meddelande (EN)': 'Welcome to the autumn sessions! New members are welcome to try a class.',
+  },
+  {
+    'Meddelande': 'Schema och grupper hittar du på https://ronnebybk.github.io/ronneby-bk/#/schema',
+  },
+  {
+    'Meddelande': 'Inställd träning på grund av sjukdom.',
+    'Visa till': '2026-10-25',
+  },
+  {
+    'Meddelande': 'Höstlov – ingen träning vecka 45.',
+    'Visa från': '2026-11-02',
+    'Visa till': '2026-11-08',
+  },
+  {
+    'Meddelande': 'Anslag med ett datum som inte går att läsa.',
+    'Visa från': 'nästa vecka',
+  },
 ]
