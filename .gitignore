@@ -1,10 +1,27 @@
 node_modules/
 dist/
-.DS_Store
 *.local
+*.log
+
+# OS and editor files (the maintainer works on Windows and Debian)
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Personal AI agent setup (skills, local settings); the shared rules are in AGENTS.md
+.claude/
+specs/
 
 # Secrets and source material that must never be committed (see AGENTS.md)
 .env*
 *.pdf
+*.doc
 *.docx
+*.odt
+# Sheet exports can contain coach contact details
+*.csv
 sheet-backup/
