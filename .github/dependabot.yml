@@ -1,0 +1,14 @@
+# Keeps the GitHub Actions in .github/workflows/ current, so deprecations are fixed before they break
+# the deploy. npm packages are deliberately left out: those updates need a developer to judge them.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    # One PR for all actions, and only for versions that have been out for a week.
+    groups:
+      actions:
+        patterns: ['*']
+    cooldown:
+      default-days: 7

@@ -16,14 +16,14 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - id: date
         run: echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
       - run: node scripts/backup-sheet.mjs sheet-backup
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always() # keep the required tabs even if an optional tab failed
         with:
           name: sheet-backup-${{ steps.date.outputs.today }}

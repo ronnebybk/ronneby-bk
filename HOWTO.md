@@ -76,6 +76,20 @@ npm run build     # production build in dist/
 Push to `main`. GitHub Actions builds and publishes to https://ronnebybk.github.io/ronneby-bk/ in about a minute.
 Follow progress under the repo's **Actions** tab.
 
+### Dependabot pull requests
+
+Once a month, Dependabot may open one pull request that updates the GitHub Actions in
+`.github/workflows/` (e.g. *Bump the actions group…*). It never touches the site's code or npm packages.
+
+- **Merging deploys the site**, like any push to `main`. Afterwards, check that the *Deploy to GitHub Pages*
+  run is green.
+- If the deploy fails, the live site stays on the previous version and the sheet content still updates.
+  Revert the merge (**Revert** button on the merged pull request) and ask a developer.
+- Ignoring the pull request is safe. Old action versions keep working until GitHub deprecates them,
+  which shows up as warnings in the Actions runs months in advance.
+- After merging, bring the change into any long-lived branch (e.g. `git merge main` on
+  `feature/high-effort-roadmap`).
+
 ### Where things are
 
 | Change | Where |
@@ -162,7 +176,7 @@ create the DNS records GitHub shows. No code changes are needed. Afterwards, sen
 | Banner "Exempeldata visas…" | `publishedId` in `src/config.js` is empty. |
 | Admin page blank | Browser blocks the embedded sheet (common on iPhone/Safari). Use **Öppna i Google Sheets**. |
 | Admin says "Ingen åtkomst" | That browser has never opened the admin link. Open the full link once. |
-| Deploy failed | See the **Actions** tab. Usually a build error, or an outdated action version. |
+| Deploy failed | See the **Actions** tab. Usually a build error, or an outdated action version (Dependabot proposes updates, see [Dependabot pull requests](#dependabot-pull-requests)). |
 
 ---
 

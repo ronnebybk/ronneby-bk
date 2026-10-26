@@ -71,6 +71,8 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 ## Hosting and maintenance
 
 - **Public repository** (free GitHub Pages). Nothing secret can live in the code.
-- **GitHub Actions versions age.** The deploy workflow will eventually need version bumps, or it stops working.
+- **GitHub Actions versions age.** Dependabot proposes updates monthly, but someone has to merge them,
+  or the workflows eventually stop working. npm packages are not updated automatically; GitHub's
+  vulnerability alerts flag known security problems.
 - **Few people know the system.** Without a second maintainer, the club depends on one person.
   Keep [HOWTO.md](HOWTO.md) current.
