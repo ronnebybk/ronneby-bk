@@ -33,7 +33,10 @@ if (VALID_KEY.test(fromLink)) {
 
 const hasAccess = computed(() => VALID_KEY.test(key.value))
 
-const tabs = ['schedule', 'groups', 'coaches', 'seasons']
+// A tab without a gid is not in the sheet yet, so it is left out of the list.
+const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices'].filter(
+  (tab) => config.sheet.gids[tab],
+)
 const activeTab = ref('schedule')
 
 function sheetUrl(minimal) {

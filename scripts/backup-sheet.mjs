@@ -12,13 +12,18 @@ if (!publishedId) {
 }
 
 // File names match the tab names in the sheet, so restoring is "import file into tab of the same name".
-const tabs = { seasons: 'Säsonger', groups: 'Grupper', schedule: 'Schema', coaches: 'Tränare' }
+const tabs = { seasons: 'Säsonger', groups: 'Grupper', schedule: 'Schema', coaches: 'Tränare', notices: 'Anslag' }
 
 await mkdir(outDir, { recursive: true })
 let failed = false
 
 for (const [key, tabName] of Object.entries(tabs)) {
-  const url = `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?gid=${config.sheet.gids[key]}&single=true&output=csv`
+  const gid = config.sheet.gids[key]
+  if (!gid) {
+    console.log(`${tabName}: no gid configured, skipped`)
+    continue
+  }
+  const url = `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?gid=${gid}&single=true&output=csv`
   try {
     const response = await fetch(url)
     const text = await response.text()
