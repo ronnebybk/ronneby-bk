@@ -36,6 +36,9 @@ export default {
     label: 'Meddelanden',
     closeAll: 'Stäng alla meddelanden',
   },
+  news: {
+    title: 'Nyheter',
+  },
   home: {
     tagline: 'Boxning i Ronneby – för nybörjare, motionärer och tävlingsboxare.',
     ctaSchedule: 'Se schemat',

@@ -22,6 +22,8 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 - **No per-session cancellation in the schedule.** You can announce a cancellation or holiday in
   *Anslag*, but the session still appears in the weekly schedule. Marking a specific session as
   cancelled is tracked in issue #20.
+- **No news archive.** A news item disappears after its *Visa till* date or when its row is deleted.
+  Older news can't be browsed on the site.
 
 ## Updates and availability
 

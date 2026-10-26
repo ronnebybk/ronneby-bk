@@ -57,7 +57,7 @@ in the Git history. Treat it as leaked and rotate it.
 - **No cookies or analytics** are set by the site itself.
 - **Local storage in the visitor's browser:**
   - `rbt-locale`: chosen language.
-  - `rbt-data-v1`: cached copy of the published sheet (schedule, groups, coaches, seasons and notices), so the site works if Google can't be reached.
+  - `rbt-data-v1`: cached copy of the published sheet (schedule, groups, coaches, seasons, notices and news), so the site works if Google can't be reached.
   - `rbt-dismissed-notices`: which notices the visitor has closed (message text and date window), so they stay closed in that browser.
   - `rbt-consent`: whether the visitor chose to show Facebook or Instagram.
   - `rbt-admin-key`: editors only. The edit ID.

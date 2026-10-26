@@ -110,18 +110,34 @@ export function parseSessions(rows) {
     .sort((a, b) => a.day - b.day || a.start.localeCompare(b.start))
 }
 
+// An empty Typ means a notice, so rows from before the column existed keep working.
+const NOTICE_TYPES = { '': 'notice', anslag: 'notice', nyhet: 'news' }
+
+// The Anslag tab holds both banner notices and news; each item says which it is.
 export function parseNotices(rows) {
   const notices = []
   for (const row of rows.map(normalizeRow)) {
+    // An unknown type is skipped rather than guessed, so a typo never becomes a red banner.
+    const type = NOTICE_TYPES[field(row, 'Typ').toLowerCase()]
+    if (!type) continue
     const message = field(row, 'Meddelande')
-    if (!message) continue
+    const title = type === 'news' ? field(row, 'Rubrik') : ''
+    if (!message && !title) continue
     const fromText = field(row, 'Visa från')
     const toText = field(row, 'Visa till')
     const from = parseDate(fromText)
     const to = parseDate(toText)
     // A date cell that is filled in but can't be read makes the row unsafe to show.
     if ((fromText && !from) || (toText && !to)) continue
-    notices.push({ message, messageEn: field(row, 'Meddelande (EN)'), from, to })
+    notices.push({
+      type,
+      title,
+      titleEn: type === 'news' ? field(row, 'Rubrik (EN)') : '',
+      message,
+      messageEn: field(row, 'Meddelande (EN)'),
+      from,
+      to,
+    })
   }
   return notices
 }

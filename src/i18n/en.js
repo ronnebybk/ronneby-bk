@@ -36,6 +36,9 @@ export default {
     label: 'Notices',
     closeAll: 'Close all notices',
   },
+  news: {
+    title: 'News',
+  },
   home: {
     tagline: 'Boxing in Ronneby – for beginners, fitness boxers and competitors.',
     ctaSchedule: 'See the schedule',

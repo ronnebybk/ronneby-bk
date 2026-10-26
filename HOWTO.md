@@ -12,7 +12,7 @@ Visitors → website on GitHub Pages → reads the published Google Sheet (CSV) 
 Editors  → /#/admin on the website → the same Google Sheet, embedded
 ```
 
-Schedule, classes, prices, coaches, seasons and notices live in the Google Sheet. Changing them never
+Schedule, classes, prices, coaches, seasons, notices and news live in the Google Sheet. Changing them never
 needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITATIONS.md](LIMITATIONS.md).
 
 ---
@@ -35,6 +35,7 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Lägga in sommarschema | 1) **Säsonger**: ny rad med namn, start- och slutdatum (`ÅÅÅÅ-MM-DD`). 2) **Schema**: lägg in passen med den säsongen. Hemsidan byter själv när datumet kommer. |
 | Lägga till en tränare | Ny rad i **Tränare**. Bild läggs in av webbansvarig. |
 | Lägga upp ett anslag | Ny rad i **Anslag**: skriv meddelandet (och gärna en engelsk text), fyll i *Visa från* och *Visa till* som `ÅÅÅÅ-MM-DD` eller lämna dem tomma. Anslaget syns högst upp på startsidan inom ca 5 minuter. Ta bort raden när det inte längre gäller. |
+| Lägga upp en nyhet | Ny rad i **Anslag** med *Typ* = **Nyhet**: skriv en *Rubrik* och/eller ett meddelande (och gärna engelska texter). *Visa från* blir nyhetens datum. Fyll i *Visa till* så försvinner nyheten av sig själv. Nyheter syns under "Nyheter" på startsidan, nyaste först. |
 
 **Viktigt**
 
@@ -46,6 +47,9 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
   räknas med). Ett datum som inte går att läsa, t.ex. `nästa vecka`, gör att raden hoppas över.
 - Fyll i **Visa till** för tillfälliga meddelanden (t.ex. inställd träning). Då försvinner anslaget av
   sig självt, och samma text kan användas igen senare.
+- **Anslag eller nyhet?** Brådskande saker (inställd träning) är *Anslag* och syns som röd banderoll.
+  Mindre brådskande saker (ny grupp, tävlingsresultat) är *Nyhet*. Tom *Typ* räknas som *Anslag*.
+  *Rubrik* används bara för nyheter.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
@@ -76,7 +80,7 @@ Follow progress under the repo's **Actions** tab.
 
 | Change | Where |
 | --- | --- |
-| Schedule, classes, prices, coaches, seasons, notices | The Google Sheet (no code) |
+| Schedule, classes, prices, coaches, seasons, notices, news | The Google Sheet (no code) |
 | Club address, email, phone | `contact` in `src/config.js` |
 | Facebook / Instagram | `social` in `src/config.js` |
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
@@ -152,7 +156,8 @@ create the DNS records GitHub shows. No code changes are needed. Afterwards, sen
 | A session shows without colour, or isn't listed under its group | Group name in *Schema* doesn't match the name in *Grupper*, usually after a rename. |
 | Old season still showing | No season covers today's date. Add the new season in *Säsonger*. |
 | Change not visible | Google republishes about every 5 minutes. Wait, then reload. |
-| A notice doesn't show | *Visa från* is in the future, *Visa till* has passed, or a date is written so it can't be read (use `ÅÅÅÅ-MM-DD`). |
+| A notice or news item doesn't show | *Visa från* is in the future, *Visa till* has passed, a date is written so it can't be read (use `ÅÅÅÅ-MM-DD`), or *Typ* is something other than empty, *Anslag* or *Nyhet*. |
+| A news item shows as a red banner | Its *Typ* is empty or *Anslag*. Set it to *Nyhet*. |
 | Banner "Kunde inte hämta senaste schemat…" | Google couldn't be reached. The visitor sees their last saved copy. Check that the sheet is still published (*File → Share → Publish to web*). |
 | Banner "Exempeldata visas…" | `publishedId` in `src/config.js` is empty. |
 | Admin page blank | Browser blocks the embedded sheet (common on iPhone/Safari). Use **Öppna i Google Sheets**. |
@@ -173,7 +178,8 @@ Use the club's Google account, not a personal one. The board keeps the login det
 2. Open it → **File → Save as Google Sheets**. Use the new Sheet and delete the `.xlsx`.
 3. Check the dropdowns in *Schema* (Dag, Säsong, Grupp, Tränare) and *Grupper* (Prisperiod). If one is
    missing: select the column → **Data → Data validation → Dropdown (from a range)**, e.g. `Grupper!A2:A50`.
-   Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**.
+   Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
+   and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
    Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`.

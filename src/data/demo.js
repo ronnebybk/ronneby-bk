@@ -6,7 +6,7 @@ export const columns = {
   groups: ['Grupp', 'Grupp (EN)', 'Ålder', 'Beskrivning', 'Beskrivning (EN)', 'Pris (kr)', 'Prisperiod'],
   schedule: ['Säsong', 'Dag', 'Start', 'Slut', 'Grupp', 'Tränare', 'Notering', 'Notering (EN)'],
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
-  notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till'],
+  notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
 }
 
 export const seasons = [
@@ -103,5 +103,42 @@ export const notices = [
   {
     'Meddelande': 'Anslag med ett datum som inte går att läsa.',
     'Visa från': 'nästa vecka',
+  },
+  // News: two dated (shown newest first), one SV-only without a date or headline, plus expired,
+  // future and unknown-type rows that must not show. Dates are far off so the cases don't go stale.
+  {
+    'Typ': 'Nyhet',
+    'Rubrik': 'Ny nybörjargrupp i januari',
+    'Rubrik (EN)': 'New beginner group in January',
+    'Meddelande': 'Vi startar en extra nybörjargrupp på lördagar. Anmäl intresse till en tränare.',
+    'Meddelande (EN)': 'We are starting an extra beginner group on Saturdays. Tell a coach if you are interested.',
+    'Visa från': '2026-10-01',
+  },
+  {
+    'Typ': 'Nyhet',
+    'Rubrik': 'Tre medaljer på DM',
+    'Rubrik (EN)': 'Three medals at the district championship',
+    'Meddelande': 'Grattis till våra tävlingsboxare som tog ett guld och två brons!',
+    'Meddelande (EN)': 'Congratulations to our competitors on one gold and two bronze medals!',
+    'Visa från': '2026-09-14',
+  },
+  {
+    'Typ': 'Nyhet',
+    'Meddelande': 'Bilder från sommarlägret finns i Facebookgruppen: https://www.facebook.com/groups/251477413001',
+  },
+  {
+    'Typ': 'Nyhet',
+    'Rubrik': 'Gammal nyhet som har gått ut',
+    'Visa från': '2000-01-01',
+    'Visa till': '2000-01-31',
+  },
+  {
+    'Typ': 'Nyhet',
+    'Rubrik': 'Nyhet som inte ska synas än',
+    'Visa från': '2099-01-01',
+  },
+  {
+    'Typ': 'Nyheter!',
+    'Meddelande': 'Rad med en okänd typ som hoppas över.',
   },
 ]

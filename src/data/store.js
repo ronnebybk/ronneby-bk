@@ -127,10 +127,18 @@ export function weekday(date = new Date()) {
 
 // --- Derived data ------------------------------------------------------------
 
-// Notices that should be shown today, in sheet order.
+// Banner notices that should be shown today, in sheet order.
 export const activeNotices = computed(() => {
   const today = todayIso()
-  return state.notices.filter((notice) => isNoticeActive(notice, today))
+  return state.notices.filter((notice) => notice.type === 'notice' && isNoticeActive(notice, today))
+})
+
+// News that should be shown today: newest first, undated ones last in sheet order (sort is stable).
+export const activeNews = computed(() => {
+  const today = todayIso()
+  return state.notices
+    .filter((item) => item.type === 'news' && isNoticeActive(item, today))
+    .sort((a, b) => (b.from ?? '').localeCompare(a.from ?? ''))
 })
 
 // The season covering today; otherwise the next one to start; otherwise the most recent.

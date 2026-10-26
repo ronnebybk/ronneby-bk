@@ -4,6 +4,7 @@ import SessionItem from '../components/SessionItem.vue'
 import SocialEmbed from '../components/SocialEmbed.vue'
 import DataNotice from '../components/DataNotice.vue'
 import NoticeBanner from '../components/NoticeBanner.vue'
+import NewsList from '../components/NewsList.vue'
 import { state, hasData, todayInfo, findGroup } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
@@ -63,6 +64,8 @@ const explore = [
       </template>
       <RouterLink to="/schema">{{ t('home.ctaSchedule') }} →</RouterLink>
     </div>
+
+    <NewsList />
 
     <h2 class="section-title">{{ t('home.exploreTitle') }}</h2>
     <div class="grid">
