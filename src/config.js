@@ -1,23 +1,8 @@
-// Everything the club may need to change without touching the code lives here.
-// Schedule, groups, prices and coaches come from the Google Sheet, not this file.
+// Only what the site needs before it can read the Google Sheet. All content, including contact
+// details and social links (the Klubbinfo tab), comes from the sheet, not this file.
 
 export default {
   clubName: 'Ronneby Boxing Team',
-
-  contact: {
-    email: '', // e.g. 'info@ronnebyboxingteam.se'
-    phone: '', // e.g. '070-123 45 67'
-    venue: '', // e.g. 'Brunnsskolans idrottshall'
-    street: '',
-    city: 'Ronneby',
-  },
-
-  social: {
-    // A Page shows its feed (after consent); a group can't be embedded and shows a "join" link.
-    facebookUrl: 'https://www.facebook.com/groups/251477413001',
-    instagramHandle: '', // without @
-    beholdFeedId: '', // optional: Instagram feed widget from behold.so
-  },
 
   // Google Sheet. See HOWTO.md, section 4.
   // Leave publishedId empty to run the site on the built-in example data.
@@ -27,6 +12,7 @@ export default {
     // The gid of each tab (the number after #gid= in the address bar when the tab is open).
     gids: {
       notices: '1455255462', // empty hides the banner until the Anslag tab exists
+      club: '', // Klubbinfo; empty shows "coming soon" for contact details and social links
       seasons: '956987468',
       groups: '1580659590',
       schedule: '1346523284',

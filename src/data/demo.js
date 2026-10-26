@@ -7,6 +7,7 @@ export const columns = {
   schedule: ['Säsong', 'Dag', 'Start', 'Slut', 'Grupp', 'Tränare', 'Notering', 'Notering (EN)'],
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
   notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
+  club: ['Fält', 'Värde', 'Värde (EN)'],
 }
 
 export const seasons = [
@@ -141,4 +142,24 @@ export const notices = [
     'Typ': 'Nyheter!',
     'Meddelande': 'Rad med en okänd typ som hoppas över.',
   },
+]
+
+// Every setting once, plus rows the parser must ignore: an unknown setting, a duplicate and an
+// unsafe link. Instagram is pasted as a link to show that the handle is extracted.
+export const club = [
+  { 'Fält': 'Lokal', 'Värde': 'Exempelhallen' },
+  { 'Fält': 'Gatuadress', 'Värde': 'Exempelgatan 1' },
+  { 'Fält': 'Ort', 'Värde': 'Ronneby' },
+  { 'Fält': 'E-post', 'Värde': 'info@example.com' },
+  { 'Fält': 'Telefon', 'Värde': '070-000 00 00' },
+  {
+    'Fält': 'Bli medlem',
+    'Värde': 'Kom förbi på ett pass och prova på. Anmälan och betalning görs på https://example.com/bli-medlem',
+    'Värde (EN)': 'Drop by and try a session. Sign up and pay at https://example.com/bli-medlem',
+  },
+  { 'Fält': 'Facebook', 'Värde': 'https://www.facebook.com/groups/251477413001' },
+  { 'Fält': 'Instagram', 'Värde': 'https://www.instagram.com/example/' },
+  { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },
+  { 'Fält': 'Fax', 'Värde': 'Okänd inställning som hoppas över.' },
+  { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
 ]

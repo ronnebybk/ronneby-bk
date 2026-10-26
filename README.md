@@ -4,7 +4,8 @@ Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, co
 
 - **Live:** https://ronnebybk.github.io/ronneby-bk/
 - **Stack:** Vue 3 + Vite, hosted on GitHub Pages, deployed by GitHub Actions on every push to `main`
-- **Content:** a Google Sheet (schedule, notices and news, classes, prices, coaches, seasons), read by the site on every visit.
+- **Content:** a Google Sheet (schedule, notices and news, classes, prices, coaches, seasons, contact details and social
+  links), read by the site on every visit.
   Editors change it through the hidden admin page, with no account needed.
 - **Languages:** Swedish (default) and English, switched with the flags in the header.
 
@@ -22,7 +23,7 @@ npm run dev
 
 | Path | What |
 | --- | --- |
-| `src/config.js` | Club details, social links, Google Sheet IDs |
+| `src/config.js` | Club name, Google Sheet IDs |
 | `src/data/` | Loading and parsing the sheet; example data |
 | `src/i18n/` | Swedish and English texts |
 | `src/views/` | Pages |

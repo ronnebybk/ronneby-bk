@@ -2,7 +2,7 @@
 import { computed, nextTick, watch } from 'vue'
 import { consent, giveConsent } from '../data/consent.js'
 import { useI18n } from '../i18n/index.js'
-import config from '../config.js'
+import { state } from '../data/store.js'
 
 // Facebook and Instagram set tracking cookies, so nothing is loaded from them
 // until the visitor clicks "show" (GDPR). The choice is remembered on the device.
@@ -11,27 +11,29 @@ const props = defineProps({
 })
 
 const { t, locale } = useI18n()
-const { facebookUrl, instagramHandle, beholdFeedId } = config.social
+const facebookUrl = computed(() => state.club.facebookUrl ?? '')
+const instagramHandle = computed(() => state.club.instagramHandle ?? '')
+const beholdFeedId = computed(() => state.club.beholdFeedId ?? '')
 const name = computed(() => t(`social.${props.service}`))
 
 const profileUrl = computed(() =>
   props.service === 'facebook'
-    ? facebookUrl
-    : instagramHandle && `https://www.instagram.com/${instagramHandle}/`,
+    ? facebookUrl.value
+    : instagramHandle.value && `https://www.instagram.com/${instagramHandle.value}/`,
 )
 
 // Facebook can only embed Pages, not groups (the plugin renders an empty frame for a group),
 // so a group gets a plain "join" link instead.
-const isFacebookGroup = computed(() => props.service === 'facebook' && /facebook\.com\/groups\//.test(facebookUrl))
+const isFacebookGroup = computed(() => props.service === 'facebook' && /facebook\.com\/groups\//.test(facebookUrl.value))
 
 // Facebook Pages have an embeddable feed; Instagram only via a Behold widget.
 const embeddable = computed(() =>
-  props.service === 'facebook' ? Boolean(facebookUrl) && !isFacebookGroup.value : Boolean(beholdFeedId),
+  props.service === 'facebook' ? Boolean(facebookUrl.value) && !isFacebookGroup.value : Boolean(beholdFeedId.value),
 )
 
 const facebookSrc = computed(() => {
   const params = new URLSearchParams({
-    href: facebookUrl,
+    href: facebookUrl.value,
     tabs: 'timeline',
     width: '500',
     height: '600',
@@ -54,7 +56,7 @@ function loadBehold() {
 }
 
 watch(
-  () => props.service === 'instagram' && beholdFeedId && consent[props.service],
+  () => props.service === 'instagram' && beholdFeedId.value && consent[props.service],
   (load) => load && nextTick(loadBehold),
   { immediate: true },
 )

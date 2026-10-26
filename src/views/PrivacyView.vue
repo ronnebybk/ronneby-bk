@@ -1,11 +1,13 @@
 <script setup>
+import { computed } from 'vue'
 import { consent, revokeConsent } from '../data/consent.js'
 import { useI18n } from '../i18n/index.js'
+import { state } from '../data/store.js'
 import config from '../config.js'
 
 // Draft text – to be reviewed by the board before launch.
 const { t, locale } = useI18n()
-const email = config.contact.email
+const email = computed(() => state.club.email)
 </script>
 
 <template>

@@ -2,16 +2,19 @@
 import { computed } from 'vue'
 import SocialEmbed from '../components/SocialEmbed.vue'
 import { useI18n } from '../i18n/index.js'
-import config from '../config.js'
+import { state } from '../data/store.js'
+import { linkParts } from '../data/parse.js'
 
-const { t } = useI18n()
-const { venue, street, city, email, phone } = config.contact
+const { t, localized } = useI18n()
+const club = computed(() => state.club)
 
-const hasAddress = Boolean(venue || street)
+const hasAddress = computed(() => Boolean(club.value.venue || club.value.street))
 // A plain link instead of an embedded map: no Google cookies unless the visitor clicks.
-const mapUrl = computed(
-  () => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([venue, street, city].filter(Boolean).join(', '))}`,
-)
+const mapUrl = computed(() => {
+  const { venue, street, city } = club.value
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([venue, street, city].filter(Boolean).join(', '))}`
+})
+const joinText = computed(() => localized(club.value.join, club.value.joinEn) || t('contact.joinText'))
 </script>
 
 <template>
@@ -23,9 +26,9 @@ const mapUrl = computed(
         <h2>{{ t('contact.whereTitle') }}</h2>
         <template v-if="hasAddress">
           <address>
-            <strong v-if="venue">{{ venue }}</strong><br v-if="venue" />
-            <template v-if="street">{{ street }}<br /></template>
-            {{ city }}
+            <strong v-if="club.venue">{{ localized(club.venue, club.venueEn) }}</strong><br v-if="club.venue" />
+            <template v-if="club.street">{{ club.street }}<br /></template>
+            {{ club.city }}
           </address>
           <a :href="mapUrl" target="_blank" rel="noopener">{{ t('contact.openMap') }} ↗</a>
         </template>
@@ -34,9 +37,9 @@ const mapUrl = computed(
 
       <section class="card">
         <h2>{{ t('contact.reachTitle') }}</h2>
-        <ul v-if="email || phone" class="reach">
-          <li v-if="email"><a :href="`mailto:${email}`">{{ email }}</a></li>
-          <li v-if="phone"><a :href="`tel:${phone.replace(/[^\d+]/g, '')}`">{{ phone }}</a></li>
+        <ul v-if="club.email || club.phone" class="reach">
+          <li v-if="club.email"><a :href="`mailto:${club.email}`">{{ club.email }}</a></li>
+          <li v-if="club.phone"><a :href="`tel:${club.phone.replace(/[^\d+]/g, '')}`">{{ club.phone }}</a></li>
         </ul>
         <p v-else class="muted">{{ t('contact.missing') }}</p>
         <p>
@@ -46,7 +49,12 @@ const mapUrl = computed(
 
       <section class="card join">
         <h2>{{ t('contact.joinTitle') }}</h2>
-        <p>{{ t('contact.joinText') }}</p>
+        <p class="join-text">
+          <template v-for="(part, index) in linkParts(joinText)" :key="index">
+            <a v-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
+            <template v-else>{{ part.text }}</template>
+          </template>
+        </p>
         <RouterLink to="/grupper" class="btn btn-primary">{{ t('nav.groups') }}</RouterLink>
       </section>
     </div>
@@ -79,6 +87,10 @@ address {
 
 .join {
   border-top: 4px solid var(--red);
+}
+
+.join-text {
+  overflow-wrap: anywhere;
 }
 
 .section-title {

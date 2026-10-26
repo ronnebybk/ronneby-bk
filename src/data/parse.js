@@ -163,6 +163,47 @@ export function linkParts(value) {
   return parts
 }
 
+// Klubbinfo has one row per setting. Values end up in links, so each one that becomes an href is
+// checked; anything that doesn't look right is dropped rather than linked.
+const CLUB_FIELDS = {
+  lokal: 'venue',
+  gatuadress: 'street',
+  ort: 'city',
+  'e-post': 'email',
+  telefon: 'phone',
+  'bli medlem': 'join',
+  facebook: 'facebookUrl',
+  instagram: 'instagramHandle',
+  behold: 'beholdFeedId',
+}
+
+const CLUB_CHECKS = {
+  email: (value) => (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value) ? value : ''),
+  phone: (value) => (/\d/.test(value) ? value : ''),
+  facebookUrl: (value) => (/^https:\/\/(www\.|m\.)?facebook\.com\/[^\s<>"]+$/.test(value) ? value : ''),
+  // Accepts the handle with or without @, or a pasted profile link.
+  instagramHandle: (value) => {
+    const handle = value.replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/^@/, '').replace(/[/?].*$/, '')
+    return /^[\w.]+$/.test(handle) ? handle : ''
+  },
+  beholdFeedId: (value) => (/^[\w-]+$/.test(value) ? value : ''),
+}
+
+export function parseClub(rows) {
+  const club = {}
+  for (const row of rows.map(normalizeRow)) {
+    const key = CLUB_FIELDS[field(row, 'Fält').toLowerCase()]
+    // The first filled-in row for a setting wins, so a stray duplicate further down changes nothing.
+    if (!key || club[key]) continue
+    const check = CLUB_CHECKS[key]
+    const value = check ? check(field(row, 'Värde')) : field(row, 'Värde')
+    if (!value) continue
+    club[key] = value
+    club[`${key}En`] = check ? '' : field(row, 'Värde (EN)')
+  }
+  return club
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
