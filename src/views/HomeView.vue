@@ -1,16 +1,16 @@
 <script setup>
 import { computed } from 'vue'
 import SessionItem from '../components/SessionItem.vue'
-import SocialEmbed from '../components/SocialEmbed.vue'
+import SocialSection from '../components/SocialSection.vue'
 import DataNotice from '../components/DataNotice.vue'
 import NoticeBanner from '../components/NoticeBanner.vue'
 import NewsList from '../components/NewsList.vue'
-import { state, hasData, todayInfo, findGroup } from '../data/store.js'
+import { state, hasData, todayInfo, groupName } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import logo from '../assets/logo.svg'
 
-const { t, localized, formatWeekday } = useI18n()
+const { t, formatWeekday } = useI18n()
 
 const nextText = computed(() => {
   const next = todayInfo.value.next
@@ -21,7 +21,7 @@ const nextText = computed(() => {
   return t('home.nextSession', {
     when,
     time: session.start,
-    group: localized(session.group, findGroup(session.group)?.nameEn),
+    group: groupName(session.group),
   })
 })
 
@@ -75,11 +75,7 @@ const explore = [
       </RouterLink>
     </div>
 
-    <h2 class="section-title">{{ t('home.followTitle') }}</h2>
-    <div class="grid social-grid">
-      <SocialEmbed service="facebook" />
-      <SocialEmbed service="instagram" />
-    </div>
+    <SocialSection :title="t('home.followTitle')" />
   </section>
 </template>
 
@@ -159,10 +155,6 @@ const explore = [
   font-weight: 600;
 }
 
-.section-title {
-  margin-top: 48px;
-}
-
 .explore {
   text-decoration: none;
   color: inherit;
@@ -180,10 +172,5 @@ const explore = [
 
 .explore p {
   margin: 0;
-}
-
-.social-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
-  align-items: start;
 }
 </style>

@@ -29,14 +29,14 @@ function field(row, name) {
   return row[name.toLowerCase()] ?? ''
 }
 
-export function parseDay(value) {
+function parseDay(value) {
   const text = clean(value).toLowerCase()
   if (/^[1-7]$/.test(text)) return Number(text)
   return DAY_NAMES[text] ?? null
 }
 
 // Accepts 17:30, 17.30, 17:30:00 and 1730.
-export function parseTime(value) {
+function parseTime(value) {
   const match = clean(value).match(/^(\d{1,2})[:.]?(\d{2})/)
   if (!match) return null
   const hours = Number(match[1])
@@ -46,7 +46,7 @@ export function parseTime(value) {
 }
 
 // Returns YYYY-MM-DD. Accepts 2026-08-17 (Swedish sheet locale), 17.8.2026 and 8/17/2026 (US locale).
-export function parseDate(value) {
+function parseDate(value) {
   const text = clean(value)
   let match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
   if (match) return toIso(match[1], match[2], match[3])
@@ -147,6 +147,11 @@ export function isNoticeActive(notice, today) {
   return (!notice.from || notice.from <= today) && (!notice.to || today <= notice.to)
 }
 
+// Keeps only what a phone dialer understands, so "070-123 45 67" and "+46 70…" both work.
+export function telHref(phone) {
+  return `tel:${phone.replace(/[^\d+]/g, '')}`
+}
+
 // Splits a message into plain-text and link parts, so the banner can render links without v-html.
 export function linkParts(value) {
   const text = clean(value)
@@ -173,7 +178,7 @@ const CLUB_FIELDS = {
   telefon: 'phone',
   'bli medlem': 'join',
   facebook: 'facebookUrl',
-  instagram: 'instagramHandle',
+  instagram: 'instagramUrl',
   behold: 'beholdFeedId',
 }
 
@@ -185,9 +190,9 @@ const CLUB_CHECKS = {
   phone: (value) => (/\d/.test(value) ? value : ''),
   facebookUrl: (value) => (/^https:\/\/(www\.|m\.)?facebook\.com\/[^\s<>"]+$/.test(value) ? value : ''),
   // Accepts the handle with or without @, or a pasted profile link.
-  instagramHandle: (value) => {
+  instagramUrl: (value) => {
     const handle = value.replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/^@/, '').replace(/[/?].*$/, '')
-    return /^[\w.]+$/.test(handle) ? handle : ''
+    return /^[\w.]+$/.test(handle) ? `https://www.instagram.com/${handle}/` : ''
   },
   beholdFeedId: (value) => (/^[\w-]+$/.test(value) ? value : ''),
 }

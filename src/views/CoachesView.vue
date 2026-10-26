@@ -1,6 +1,7 @@
 <script setup>
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, findGroup } from '../data/store.js'
+import { state, hasData, groupName } from '../data/store.js'
+import { telHref } from '../data/parse.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
@@ -12,10 +13,6 @@ function initials(name) {
     .slice(0, 2)
     .join('')
     .toUpperCase()
-}
-
-function groupName(name) {
-  return localized(name, findGroup(name)?.nameEn)
 }
 
 // Hide the photo and fall back to initials if the image file is missing.
@@ -48,7 +45,7 @@ function onImageError(event) {
             <span v-for="g in coach.groups" :key="g" class="tag">{{ groupName(g) }}</span>
           </p>
           <div v-if="coach.phone || coach.email" class="contact">
-            <a v-if="coach.phone" :href="`tel:${coach.phone.replace(/[^\d+]/g, '')}`" class="btn btn-primary">
+            <a v-if="coach.phone" :href="telHref(coach.phone)" class="btn btn-primary">
               {{ t('coaches.call') }}
             </a>
             <a v-if="coach.email" :href="`mailto:${coach.email}`" class="btn btn-outline">{{ t('coaches.mail') }}</a>

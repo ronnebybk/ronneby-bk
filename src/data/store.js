@@ -2,6 +2,8 @@ import { reactive, computed } from 'vue'
 import Papa from 'papaparse'
 import config from '../config.js'
 import * as demo from './demo.js'
+import { loadJson, saveJson } from './storage.js'
+import { localized } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
@@ -23,7 +25,7 @@ export const state = reactive({
 
 export const hasData = computed(() => state.seasons.length > 0 || state.groups.length > 0)
 
-export const isConfigured = Boolean(config.sheet.publishedId)
+const isConfigured = Boolean(config.sheet.publishedId)
 
 function apply(raw) {
   state.seasons = parseSeasons(raw.seasons)
@@ -60,20 +62,6 @@ async function fetchTab(tab) {
   }
 }
 
-function readCache() {
-  try {
-    return JSON.parse(localStorage.getItem(CACHE_KEY))
-  } catch {
-    return null
-  }
-}
-
-function writeCache(raw) {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(raw))
-  } catch {}
-}
-
 // The notices and Klubbinfo tabs are optional: if one is missing, unpublished or broken, the rest
 // of the site must still load. Fall back to the cached copy so "cancelled tonight" survives a
 // Google hiccup.
@@ -100,14 +88,14 @@ export function loadData() {
   }
 
   // Status stays 'loading' while the cached copy is shown; 'cache' means the refresh failed.
-  const cached = readCache()
+  const cached = loadJson(CACHE_KEY)
   if (cached) apply(cached)
 
   loading = Promise.all([...TABS.map(fetchTab), fetchOptional('notices', cached), fetchOptional('club', cached)])
     .then(([seasons, groups, schedule, coaches, notices, club]) => {
       const raw = { seasons, groups, schedule, coaches, notices, club }
       apply(raw)
-      writeCache(raw)
+      saveJson(CACHE_KEY, raw)
       state.status = 'live'
     })
     .catch((error) => {
@@ -119,7 +107,7 @@ export function loadData() {
 
 // --- Dates -------------------------------------------------------------------
 
-export function todayIso(date = new Date()) {
+function todayIso(date = new Date()) {
   const pad = (n) => String(n).padStart(2, '0')
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
@@ -170,6 +158,15 @@ export function sessionsFor(season) {
 
 export function findGroup(name) {
   return state.groups.find((g) => g.name === name)
+}
+
+// The group's English name when the site is in English and the sheet has one.
+export function groupName(name) {
+  return localized(name, findGroup(name)?.nameEn)
+}
+
+export function timeRange(session) {
+  return session.end ? `${session.start}–${session.end}` : session.start
 }
 
 function seasonOn(iso) {

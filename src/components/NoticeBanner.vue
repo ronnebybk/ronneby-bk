@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { activeNotices, state } from '../data/store.js'
-import { linkParts } from '../data/parse.js'
+import LinkedText from './LinkedText.vue'
+import { loadJson, saveJson } from '../data/storage.js'
 import { useI18n } from '../i18n/index.js'
 
 // Dismissals are remembered per message text and date window in this browser. Storage can be
@@ -11,12 +12,8 @@ const STORAGE_KEY = 'rbt-dismissed-notices'
 const { t, localized } = useI18n()
 
 function readDismissed() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY))
-    return Array.isArray(stored) ? stored.filter((key) => typeof key === 'string') : []
-  } catch {
-    return []
-  }
+  const stored = loadJson(STORAGE_KEY)
+  return Array.isArray(stored) ? stored.filter((key) => typeof key === 'string') : []
 }
 
 // A changed message or date window is a new notice, so it is shown again.
@@ -31,9 +28,7 @@ const visible = computed(() =>
 )
 
 function persist() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissed.value))
-  } catch {}
+  saveJson(STORAGE_KEY, dismissed.value)
 }
 
 function dismissAll() {
@@ -63,12 +58,7 @@ watch(
     <div class="container row">
       <ul class="list">
         <li v-for="(notice, noticeIndex) in visible" :key="`${noticeKey(notice)}-${noticeIndex}`" class="notice-banner">
-          <p>
-            <template v-for="(part, index) in linkParts(localized(notice.message, notice.messageEn))" :key="index">
-              <a v-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
-              <template v-else>{{ part.text }}</template>
-            </template>
-          </p>
+          <p><LinkedText :text="localized(notice.message, notice.messageEn)" /></p>
         </li>
       </ul>
       <button type="button" class="close" :aria-label="t('notices.closeAll')" @click="dismissAll">✕</button>
@@ -103,13 +93,13 @@ watch(
   overflow-wrap: anywhere;
 }
 
-.notice-banner a {
+.notice-banner :deep(a) {
   color: #fff;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.notice-banner a:hover {
+.notice-banner :deep(a:hover) {
   text-decoration-thickness: 2px;
 }
 
@@ -134,7 +124,7 @@ watch(
   background: rgb(255 255 255 / 0.16);
 }
 
-.notices :focus-visible {
+.notices :deep(:focus-visible) {
   outline-color: #fff;
 }
 </style>

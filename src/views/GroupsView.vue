@@ -1,6 +1,6 @@
 <script setup>
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, sessionsFor, groupColorIndex } from '../data/store.js'
+import { state, hasData, currentSeason, sessionsFor, groupColorIndex, timeRange } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
@@ -44,7 +44,7 @@ function priceText(group) {
           <ul v-if="sessionsOf(group).length">
             <li v-for="(s, i) in sessionsOf(group)" :key="i">
               <span>{{ t('days')[s.day - 1] }}</span>
-              <span>{{ s.start }}<template v-if="s.end">–{{ s.end }}</template></span>
+              <span>{{ timeRange(s) }}</span>
             </li>
           </ul>
           <p v-else class="muted">{{ t('groups.noSessions') }}</p>

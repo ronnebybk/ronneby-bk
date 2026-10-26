@@ -14,7 +14,6 @@ export default {
     en: 'English',
   },
   days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-  daysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   periods: {
     termin: 'term',
     år: 'year',
@@ -70,7 +69,6 @@ export default {
     title: 'Classes & prices',
     intro: 'Everyone is welcome to try. Contact a coach or just drop by a session.',
     trains: 'Trains',
-    price: 'Price',
     perPeriod: '{price} SEK / {period}',
     noSessions: 'No sessions this season.',
     empty: 'No classes published right now.',
