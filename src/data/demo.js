@@ -1,5 +1,5 @@
 // Example data in exactly the same shape as the Google Sheet tabs (column header → value).
-// Used until the sheet is connected, and to generate the sheet template (npm run sheet-template).
+// Used until the sheet is connected. sheet-template/ has the same columns.
 
 export const columns = {
   seasons: ['Säsong', 'Säsong (EN)', 'Från', 'Till'],

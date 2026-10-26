@@ -177,6 +177,9 @@ const CLUB_FIELDS = {
   behold: 'beholdFeedId',
 }
 
+// Only these are shown as text a visitor reads; the rest are addresses, numbers and links.
+const CLUB_TRANSLATED = ['venue', 'join']
+
 const CLUB_CHECKS = {
   email: (value) => (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value) ? value : ''),
   phone: (value) => (/\d/.test(value) ? value : ''),
@@ -199,7 +202,7 @@ export function parseClub(rows) {
     const value = check ? check(field(row, 'Värde')) : field(row, 'Värde')
     if (!value) continue
     club[key] = value
-    club[`${key}En`] = check ? '' : field(row, 'Värde (EN)')
+    if (CLUB_TRANSLATED.includes(key)) club[`${key}En`] = field(row, 'Värde (EN)')
   }
   return club
 }
