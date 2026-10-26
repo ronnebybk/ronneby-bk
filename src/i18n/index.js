@@ -55,6 +55,13 @@ export function formatDate(iso) {
   })
 }
 
+// '2026-11-03' → 'tisdag' / 'Tuesday', or with the date: 'tisdag 3 november' / 'Tuesday 3 November'
+export function formatWeekday(iso, withDate = false) {
+  const [year, month, day] = iso.split('-').map(Number)
+  const options = withDate ? { weekday: 'long', day: 'numeric', month: 'long' } : { weekday: 'long' }
+  return new Date(year, month - 1, day).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'sv-SE', options)
+}
+
 export function useI18n() {
-  return { t, locale, setLocale, localized, formatDate }
+  return { t, locale, setLocale, localized, formatDate, formatWeekday }
 }

@@ -160,22 +160,28 @@ export function findGroup(name) {
   return state.groups.find((g) => g.name === name)
 }
 
-// Today's sessions, plus the next session after now when there's nothing left today.
-export const todayInfo = computed(() => {
-  const sessions = sessionsFor(currentSeason.value)
-  const now = new Date()
-  const day = weekday(now)
-  const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+function seasonOn(iso) {
+  return state.seasons.find((s) => s.from <= iso && iso <= s.to) ?? null
+}
 
-  const today = sessions.filter((s) => s.day === day)
-  let next = null
-  if (sessions.length) {
-    for (let offset = 0; offset < 8 && !next; offset++) {
-      const d = ((day - 1 + offset) % 7) + 1
-      next = sessions.find((s) => s.day === d && (offset > 0 || s.start > time)) ?? null
-    }
+// Today's sessions, plus the next session once nothing is left today. Walks real dates rather
+// than weekdays, so breaks between seasons and season changes are respected.
+export const todayInfo = computed(() => {
+  const now = new Date()
+  const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+  const todaySeason = seasonOn(todayIso(now))
+  const today = sessionsFor(todaySeason).filter((s) => s.day === weekday(now))
+  if (today.some((s) => s.start > time)) return { today, next: null }
+
+  const lastDay = state.seasons.reduce((max, s) => (s.to > max ? s.to : max), '')
+  for (let offset = 1; ; offset++) {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset)
+    const iso = todayIso(date)
+    if (iso > lastDay) break
+    const session = sessionsFor(seasonOn(iso)).find((s) => s.day === weekday(date))
+    if (session) return { today, next: { session, date: iso, offset } }
   }
-  return { today, next }
+  return { today, next: null }
 })
 
 // A stable colour per group, in sheet order.

@@ -9,15 +9,18 @@ import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import logo from '../assets/logo.svg'
 
-const { t, localized } = useI18n()
+const { t, localized, formatWeekday } = useI18n()
 
 const nextText = computed(() => {
   const next = todayInfo.value.next
   if (!next) return ''
+  const { session, date, offset } = next
+  // A bare weekday is only unambiguous within the coming week.
+  const when = offset === 1 ? t('home.tomorrow') : formatWeekday(date, offset > 6)
   return t('home.nextSession', {
-    day: t('days')[next.day - 1],
-    time: next.start,
-    group: localized(next.group, findGroup(next.group)?.nameEn),
+    when,
+    time: session.start,
+    group: localized(session.group, findGroup(session.group)?.nameEn),
   })
 })
 
