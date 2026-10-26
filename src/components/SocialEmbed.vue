@@ -12,15 +12,11 @@ const props = defineProps({
 
 const { t, locale } = useI18n()
 const facebookUrl = computed(() => state.club.facebookUrl ?? '')
-const instagramHandle = computed(() => state.club.instagramHandle ?? '')
+const instagramUrl = computed(() => state.club.instagramUrl ?? '')
 const beholdFeedId = computed(() => state.club.beholdFeedId ?? '')
 const name = computed(() => t(`social.${props.service}`))
 
-const profileUrl = computed(() =>
-  props.service === 'facebook'
-    ? facebookUrl.value
-    : instagramHandle.value && `https://www.instagram.com/${instagramHandle.value}/`,
-)
+const profileUrl = computed(() => (props.service === 'facebook' ? facebookUrl.value : instagramUrl.value))
 
 // Facebook can only embed Pages, not groups (the plugin renders an empty frame for a group),
 // so a group gets a plain "join" link instead.

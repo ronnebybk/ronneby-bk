@@ -1,16 +1,14 @@
 import { ref, watchEffect } from 'vue'
 import sv from './sv.js'
 import en from './en.js'
+import { load, save } from '../data/storage.js'
 
 const messages = { sv, en }
 const STORAGE_KEY = 'rbt-locale'
 
 function readStoredLocale() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored in messages) return stored
-  } catch {}
-  return 'sv'
+  const stored = load(STORAGE_KEY)
+  return stored in messages ? stored : 'sv'
 }
 
 export const locale = ref(readStoredLocale())
@@ -22,9 +20,7 @@ watchEffect(() => {
 export function setLocale(value) {
   if (!(value in messages)) return
   locale.value = value
-  try {
-    localStorage.setItem(STORAGE_KEY, value)
-  } catch {}
+  save(STORAGE_KEY, value)
 }
 
 function lookup(dict, key) {

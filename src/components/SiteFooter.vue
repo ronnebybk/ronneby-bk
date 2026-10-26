@@ -13,14 +13,7 @@ const year = new Date().getFullYear()
       <p>© {{ year }} {{ config.clubName }}</p>
       <nav>
         <a v-if="state.club.facebookUrl" :href="state.club.facebookUrl" target="_blank" rel="noopener">Facebook</a>
-        <a
-          v-if="state.club.instagramHandle"
-          :href="`https://www.instagram.com/${state.club.instagramHandle}/`"
-          target="_blank"
-          rel="noopener"
-        >
-          Instagram
-        </a>
+        <a v-if="state.club.instagramUrl" :href="state.club.instagramUrl" target="_blank" rel="noopener">Instagram</a>
         <RouterLink to="/integritet">{{ t('footer.privacy') }}</RouterLink>
       </nav>
     </div>

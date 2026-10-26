@@ -14,7 +14,6 @@ export default {
     en: 'English',
   },
   days: ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'],
-  daysShort: ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'],
   periods: {
     termin: 'termin',
     år: 'år',
@@ -70,7 +69,6 @@ export default {
     title: 'Grupper & priser',
     intro: 'Alla är välkomna att prova på. Hör av dig till en tränare eller kom förbi på ett pass.',
     trains: 'Tränar',
-    price: 'Pris',
     perPeriod: '{price} kr / {period}',
     noSessions: 'Inga pass denna säsong.',
     empty: 'Inga grupper upplagda just nu.',

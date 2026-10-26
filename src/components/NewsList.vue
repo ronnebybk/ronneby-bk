@@ -1,6 +1,6 @@
 <script setup>
 import { activeNews } from '../data/store.js'
-import { linkParts } from '../data/parse.js'
+import LinkedText from './LinkedText.vue'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
@@ -14,12 +14,7 @@ const { t, localized, formatDate } = useI18n()
         <article class="card item">
           <time v-if="item.from" :datetime="item.from" class="date">{{ formatDate(item.from) }}</time>
           <h3 v-if="item.title">{{ localized(item.title, item.titleEn) }}</h3>
-          <p v-if="item.message">
-            <template v-for="(part, partIndex) in linkParts(localized(item.message, item.messageEn))" :key="partIndex">
-              <a v-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
-              <template v-else>{{ part.text }}</template>
-            </template>
-          </p>
+          <p v-if="item.message"><LinkedText :text="localized(item.message, item.messageEn)" /></p>
         </article>
       </li>
     </ul>
@@ -27,10 +22,6 @@ const { t, localized, formatDate } = useI18n()
 </template>
 
 <style scoped>
-.section-title {
-  margin-top: 48px;
-}
-
 .list {
   list-style: none;
   margin: 0;

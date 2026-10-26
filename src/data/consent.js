@@ -1,22 +1,13 @@
 import { reactive } from 'vue'
+import { loadJson, saveJson } from './storage.js'
 
 const STORAGE_KEY = 'rbt-consent'
 
-function read() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {}
-  } catch {
-    return {}
-  }
-}
-
 // { facebook: true, instagram: true } once the visitor has chosen to show a feed.
-export const consent = reactive({ facebook: false, instagram: false, ...read() })
+export const consent = reactive({ facebook: false, instagram: false, ...loadJson(STORAGE_KEY) })
 
 function save() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(consent))
-  } catch {}
+  saveJson(STORAGE_KEY, consent)
 }
 
 export function giveConsent(service) {

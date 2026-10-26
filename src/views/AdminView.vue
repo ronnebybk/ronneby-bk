@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
+import { load, save, remove } from '../data/storage.js'
 
 // The sheet's edit ID is never in the code (the repo is public). Editors get a link like
 // …/#/admin?k=<sheet-id>; the ID is stored on their device and removed from the address bar.
@@ -13,21 +14,11 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-function readKey() {
-  try {
-    return localStorage.getItem(STORAGE_KEY) ?? ''
-  } catch {
-    return ''
-  }
-}
-
-const key = ref(readKey())
+const key = ref(load(STORAGE_KEY) ?? '')
 const fromLink = String(route.query.k ?? '')
 if (VALID_KEY.test(fromLink)) {
   key.value = fromLink
-  try {
-    localStorage.setItem(STORAGE_KEY, fromLink)
-  } catch {}
+  save(STORAGE_KEY, fromLink)
   router.replace({ name: 'admin' })
 }
 
@@ -50,9 +41,7 @@ const fullUrl = computed(() => sheetUrl(false))
 
 function forget() {
   if (!window.confirm(t('admin.forgetConfirm'))) return
-  try {
-    localStorage.removeItem(STORAGE_KEY)
-  } catch {}
+  remove(STORAGE_KEY)
   key.value = ''
 }
 </script>
