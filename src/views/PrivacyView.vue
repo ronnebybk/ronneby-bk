@@ -18,8 +18,9 @@ const email = config.contact.email
       <h2>Cookies och lagring</h2>
       <p>
         Hemsidan använder inga egna cookies och ingen besöksstatistik. Din webbläsare sparar några få inställningar
-        lokalt: valt språk, en kopia av schemat (så att sidan laddar snabbt) och om du har valt att visa
-        Facebook/Instagram. Inget av detta skickas till oss.
+        lokalt: valt språk, en kopia av innehållet från kalkylarket (så att sidan fungerar även om Google inte kan
+        nås), vilka anslag du har stängt och om du har valt att visa Facebook/Instagram. Inget av detta skickas
+        till oss.
       </p>
 
       <h2>Facebook och Instagram</h2>
@@ -47,8 +48,9 @@ const email = config.contact.email
       <h2>Cookies and storage</h2>
       <p>
         The website sets no cookies of its own and uses no visitor analytics. Your browser stores a few settings
-        locally: your chosen language, a copy of the schedule (so the page loads fast) and whether you chose to show
-        Facebook/Instagram. None of this is sent to us.
+        locally: your chosen language, a copy of the sheet content (so the site works if Google can't be reached),
+        which notices you have closed, and whether you chose to show Facebook/Instagram. None of this is sent
+        to us.
       </p>
 
       <h2>Facebook and Instagram</h2>

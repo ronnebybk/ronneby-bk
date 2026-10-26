@@ -19,8 +19,9 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 - **No automatic season handover.** When no season covers today, the site shows the next upcoming
   season, or failing that, the most recent past one. If nobody adds a new season, an outdated schedule
   keeps showing.
-- **No one-off changes.** There's no way to cancel a single session or mark holidays (e.g. "no
-  training on 24 Dec") other than editing the weekly schedule or adding a note.
+- **No per-session cancellation in the schedule.** You can announce a cancellation or holiday in
+  *Anslag*, but the session still appears in the weekly schedule. Marking a specific session as
+  cancelled is tracked in issue #20.
 
 ## Updates and availability
 
