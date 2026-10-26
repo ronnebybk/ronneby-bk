@@ -32,6 +32,10 @@ export default {
     offline: 'Kunde inte hämta senaste schemat. Visar senast sparade versionen.',
     loadError: 'Schemat kunde inte laddas just nu. Försök igen om en stund.',
   },
+  notices: {
+    label: 'Meddelanden',
+    close: 'Stäng meddelandet',
+  },
   home: {
     tagline: 'Boxning i Ronneby – för nybörjare, motionärer och tävlingsboxare.',
     ctaSchedule: 'Se schemat',
@@ -110,6 +114,7 @@ export default {
       groups: 'Grupper & priser',
       coaches: 'Tränare',
       seasons: 'Säsonger',
+      notices: 'Anslag',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

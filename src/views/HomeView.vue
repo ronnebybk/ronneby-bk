@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import SessionItem from '../components/SessionItem.vue'
 import SocialEmbed from '../components/SocialEmbed.vue'
 import DataNotice from '../components/DataNotice.vue'
+import NoticeBanner from '../components/NoticeBanner.vue'
 import { state, hasData, todayInfo, findGroup } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
@@ -28,6 +29,8 @@ const explore = [
 </script>
 
 <template>
+  <NoticeBanner />
+
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-text">

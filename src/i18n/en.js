@@ -32,6 +32,10 @@ export default {
     offline: 'Could not fetch the latest schedule. Showing the last saved version.',
     loadError: 'The schedule could not be loaded right now. Please try again shortly.',
   },
+  notices: {
+    label: 'Notices',
+    close: 'Close notice',
+  },
   home: {
     tagline: 'Boxing in Ronneby – for beginners, fitness boxers and competitors.',
     ctaSchedule: 'See the schedule',
@@ -110,6 +114,7 @@ export default {
       groups: 'Classes & prices',
       coaches: 'Coaches',
       seasons: 'Seasons',
+      notices: 'Notices',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',
