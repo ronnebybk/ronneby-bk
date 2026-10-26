@@ -17,6 +17,5 @@ defineProps({
 <style scoped>
 .social-grid {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
-  align-items: start;
 }
 </style>
