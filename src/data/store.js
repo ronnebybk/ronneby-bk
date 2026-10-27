@@ -165,6 +165,10 @@ export function groupName(name) {
   return localized(name, findGroup(name)?.nameEn)
 }
 
+export function groupNames(names) {
+  return names.map(groupName).join(', ')
+}
+
 export function timeRange(session) {
   return session.end ? `${session.start}–${session.end}` : session.start
 }
