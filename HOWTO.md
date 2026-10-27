@@ -28,11 +28,11 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
 | Vill du… | Gör så här |
 | --- | --- |
-| Lägga till ett pass | Fyll i en tom rad i **Schema**: säsong, dag, start, slut, grupp, tränare. Notering är valfri. |
+| Lägga till ett pass | Fyll i en tom rad i **Schema**: säsong, dag, start, slut, grupp, tränare. Notering är valfri. Tränar flera grupper samtidigt? Skriv grupperna med komma emellan, t.ex. `Motionsboxning, Nybörjare`. |
 | Ändra en tid | Skriv över tiden. Format `17:30` (kolon, inte komma). |
 | Ta bort ett pass | Markera raden → högerklicka → *Ta bort rad*. |
 | Byta tränare på ett pass | Välj en annan i rullistan i kolumnen Tränare. |
-| Ändra pris | Fliken **Grupper**, kolumnen *Pris (kr)*. Bara siffror. `0` visas som "Gratis". |
+| Ändra pris | Fliken **Grupper**, kolumnen *Pris (kr)*. Bara siffror. `0` visas som "Gratis". Flera sätt att betala (t.ex. per termin och per år)? Lägg en ny rad med exakt samma gruppnamn, bara pris och prisperiod ifyllda. Beskrivning och ålder räcker på en av raderna. |
 | Lägga in sommarschema | 1) **Säsonger**: ny rad med namn, start- och slutdatum (`ÅÅÅÅ-MM-DD`). 2) **Schema**: lägg in passen med den säsongen. Hemsidan byter själv när datumet kommer. |
 | Lägga till en tränare | Ny rad i **Tränare**. Bild läggs in av webbansvarig. |
 | Lägga upp ett anslag | Ny rad i **Anslag**: skriv meddelandet (och gärna en engelsk text), fyll i *Visa från* och *Visa till* som `ÅÅÅÅ-MM-DD` eller lämna dem tomma. Anslaget syns högst upp på startsidan inom ca 5 minuter. Ta bort raden när det inte längre gäller. |
@@ -236,8 +236,9 @@ Use the club's Google account, not a personal one. The board keeps the login det
 
 1. Google Drive → **New → File upload** → `sheet-template/ronneby-boxing-team-mall.xlsx`.
 2. Open it → **File → Save as Google Sheets**. Use the new Sheet and delete the `.xlsx`.
-3. Check the dropdowns in *Schema* (Dag, Säsong, Grupp, Tränare) and *Grupper* (Prisperiod). If one is
-   missing: select the column → **Data → Data validation → Dropdown (from a range)**, e.g. `Grupper!A2:A50`.
+3. Check the dropdowns in *Schema* (Dag, Säsong, Tränare) and *Grupper* (Prisperiod). If one is
+   missing: select the column → **Data → Data validation → Dropdown (from a range)**, e.g. `Tränare!A2:A50`.
+   *Grupp* in *Schema* is plain text on purpose, so a session can list several groups (`Motionsboxning, Nybörjare`).
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
    In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,

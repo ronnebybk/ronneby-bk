@@ -18,11 +18,11 @@ watch(season, () => (groupFilter.value = ''))
 
 const sessions = computed(() => sessionsFor(season.value))
 const groupsInSeason = computed(() => {
-  const names = new Set(sessions.value.map((s) => s.group))
+  const names = new Set(sessions.value.flatMap((s) => s.groups))
   return state.groups.filter((g) => names.has(g.name))
 })
 const filtered = computed(() =>
-  groupFilter.value ? sessions.value.filter((s) => s.group === groupFilter.value) : sessions.value,
+  groupFilter.value ? sessions.value.filter((s) => s.groups.includes(groupFilter.value)) : sessions.value,
 )
 
 const today = weekday()

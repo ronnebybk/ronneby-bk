@@ -6,13 +6,17 @@ import { useI18n } from '../i18n/index.js'
 const { t, localized } = useI18n()
 
 function sessionsOf(group) {
-  return sessionsFor(currentSeason.value).filter((s) => s.group === group.name)
+  return sessionsFor(currentSeason.value).filter((s) => s.groups.includes(group.name))
 }
 
 function priceText(group) {
-  if (group.price === null) return ''
-  if (group.price === 0) return t('common.free')
-  return t('groups.perPeriod', { price: group.price.toLocaleString('sv-SE'), period: t(`periods.${group.period}`) })
+  return group.prices
+    .map(({ price, period }) =>
+      price === 0
+        ? t('common.free')
+        : t('groups.perPeriod', { price: price.toLocaleString('sv-SE'), period: t(`periods.${period}`) }),
+    )
+    .join(' · ')
 }
 </script>
 
@@ -50,7 +54,7 @@ function priceText(group) {
           <p v-else class="muted">{{ t('groups.noSessions') }}</p>
         </div>
 
-        <p v-if="priceText(group)" class="price">{{ priceText(group) }}</p>
+        <p v-if="group.prices.length" class="price">{{ priceText(group) }}</p>
       </article>
     </div>
   </div>

@@ -74,23 +74,39 @@ export function parseSeasons(rows) {
     .sort((a, b) => a.from.localeCompare(b.from))
 }
 
+const GROUP_FIELDS = { nameEn: 'Grupp (EN)', ages: 'Ålder', description: 'Beskrivning', descriptionEn: 'Beskrivning (EN)' }
+
+// "1 100,00 kr" → 1100. Only a 1–2 digit ending counts as decimals, so "1,100" stays 1100.
+function parsePrice(text) {
+  const digits = text.replace(/[.,]\d{1,2}(?=\D*$)/, '').replace(/[^\d]/g, '')
+  return digits === '' ? null : Number(digits)
+}
+
+// Rows with the same group name are one group with several ways to pay (e.g. per term and per
+// year). Each detail comes from the first row that has it, like in Klubbinfo; each row adds its price.
 export function parseGroups(rows) {
-  return rows
-    .map(normalizeRow)
-    .map((row) => {
-      const price = field(row, 'Pris (kr)').replace(/[^\d]/g, '')
-      const period = field(row, 'Prisperiod').toLowerCase()
-      return {
-        name: field(row, 'Grupp'),
-        nameEn: field(row, 'Grupp (EN)'),
-        ages: field(row, 'Ålder'),
-        description: field(row, 'Beskrivning'),
-        descriptionEn: field(row, 'Beskrivning (EN)'),
-        price: price === '' ? null : Number(price),
-        period: PERIODS.includes(period) ? period : 'termin',
-      }
-    })
-    .filter((group) => group.name)
+  const byName = new Map()
+  for (const row of rows.map(normalizeRow)) {
+    const name = field(row, 'Grupp')
+    if (!name) continue
+    if (!byName.has(name)) byName.set(name, { name, nameEn: '', ages: '', description: '', descriptionEn: '', prices: [] })
+    const group = byName.get(name)
+    for (const [key, column] of Object.entries(GROUP_FIELDS)) group[key] ||= field(row, column)
+
+    const price = parsePrice(field(row, 'Pris (kr)'))
+    if (price === null) continue
+    const period = field(row, 'Prisperiod').toLowerCase()
+    const option = { price, period: PERIODS.includes(period) ? period : 'termin' }
+    // A pasted copy of the same row shouldn't list the same price twice, and free is free whatever the period.
+    if (!group.prices.some((p) => p.price === price && (price === 0 || p.period === option.period))) {
+      group.prices.push(option)
+    }
+  }
+  // "Gratis · 800 kr / termin" contradicts itself, so a free row only counts when nothing costs money.
+  for (const group of byName.values()) {
+    if (group.prices.some((p) => p.price > 0)) group.prices = group.prices.filter((p) => p.price > 0)
+  }
+  return [...byName.values()]
 }
 
 export function parseSessions(rows) {
@@ -101,12 +117,13 @@ export function parseSessions(rows) {
       day: parseDay(field(row, 'Dag')),
       start: parseTime(field(row, 'Start')),
       end: parseTime(field(row, 'Slut')),
-      group: field(row, 'Grupp'),
+      // Several groups can share a session, comma-separated like Grupper in the Tränare tab.
+      groups: field(row, 'Grupp').split(',').map(clean).filter(Boolean),
       coach: field(row, 'Tränare'),
       note: field(row, 'Notering'),
       noteEn: field(row, 'Notering (EN)'),
     }))
-    .filter((session) => session.season && session.day && session.start && session.group)
+    .filter((session) => session.season && session.day && session.start && session.groups.length)
     .sort((a, b) => a.day - b.day || a.start.localeCompare(b.start))
 }
 
