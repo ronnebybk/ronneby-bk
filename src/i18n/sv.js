@@ -126,7 +126,7 @@ export default {
     reachTitle: 'Kontakta oss',
     joinTitle: 'Bli medlem',
     joinText:
-      'Kom förbi på ett pass och prova på – första gången är gratis. Prata med tränaren om medlemskap och betalning.',
+      'Vill du fortsätta efter att ha provat på? Prata med en tränare om medlemskap och betalning, eller hör av dig till oss här ovan. Priserna hittar du under #/grupper.',
     trialLink: 'Ny här? Läs om att prova på',
     socialTitle: 'Sociala medier',
     missing: 'Uppgifter kommer snart.',
