@@ -171,6 +171,18 @@ export function telHref(phone) {
   return `tel:${phone.replace(/[^\d+]/g, '')}`
 }
 
+const siteBase = (url) => url.replace(/index\.html$/, '').replace(/\/$/, '')
+
+// A pasted URL only counts as one of our pages when it points at the site the visitor is on, so
+// another site's "#/kontakt" stays an external link. Compared at runtime, so it works on any domain.
+function ownRoute(url) {
+  const hash = url.indexOf('#')
+  const here = globalThis.location
+  if (hash < 0 || !here) return undefined
+  if (siteBase(url.slice(0, hash)) !== siteBase(here.origin + here.pathname)) return undefined
+  return url.slice(hash).match(/^#(\/[\w-]*)$/)?.[1]
+}
+
 // Splits a message into plain-text, external-link and in-app-link parts, so the banner can render
 // links without v-html. A hash route that matches one of our pages becomes an in-app link, whether
 // the editor wrote "#/grupper" or pasted a whole URL from the address bar.
@@ -183,7 +195,7 @@ export function linkParts(value) {
     const token = match[0]
     // Trailing punctuation usually belongs to the sentence, not the address.
     const url = token.startsWith('#') ? token : token.replace(/[.,;:!?)]+$/, '')
-    const route = url.startsWith('#') ? url.slice(1) : url.match(/#(\/[\w-]*)$/)?.[1]
+    const route = url.startsWith('#') ? url.slice(1) : ownRoute(url)
     const page = route ? navLinks.find((link) => link.to === route) : undefined
     if (page) parts.push({ to: page.to, navKey: page.key })
     else if (token.startsWith('#')) parts.push({ text: token })
