@@ -31,4 +31,10 @@ ul:last-child {
 ul {
   padding-left: 1.2em;
 }
+
+/* Sheet text can contain long links; they must never widen the card. */
+p,
+li {
+  overflow-wrap: anywhere;
+}
 </style>
