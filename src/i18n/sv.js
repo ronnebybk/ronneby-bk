@@ -4,6 +4,7 @@ export default {
     schedule: 'Schema',
     groups: 'Grupper & priser',
     coaches: 'Tränare',
+    faq: 'Frågor',
     contact: 'Kontakt',
     menu: 'Meny',
     close: 'Stäng',
@@ -81,6 +82,11 @@ export default {
     mail: 'Mejla',
     empty: 'Inga tränare upplagda just nu.',
   },
+  faq: {
+    title: 'Vanliga frågor',
+    empty: 'Inga frågor ännu.',
+    emptyLink: 'Kontakta oss',
+  },
   contact: {
     title: 'Kontakt',
     whereTitle: 'Här tränar vi',
@@ -118,6 +124,7 @@ export default {
       seasons: 'Säsonger',
       notices: 'Anslag',
       club: 'Klubbinfo',
+      faq: 'Frågor',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

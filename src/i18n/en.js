@@ -4,6 +4,7 @@ export default {
     schedule: 'Schedule',
     groups: 'Classes & prices',
     coaches: 'Coaches',
+    faq: 'FAQ',
     contact: 'Contact',
     menu: 'Menu',
     close: 'Close',
@@ -81,6 +82,11 @@ export default {
     mail: 'Email',
     empty: 'No coaches published right now.',
   },
+  faq: {
+    title: 'Frequently asked questions',
+    empty: 'No questions yet.',
+    emptyLink: 'Contact us',
+  },
   contact: {
     title: 'Contact',
     whereTitle: 'Where we train',
@@ -118,6 +124,7 @@ export default {
       seasons: 'Seasons',
       notices: 'Notices',
       club: 'Club info',
+      faq: 'FAQ',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',

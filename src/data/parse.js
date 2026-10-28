@@ -237,6 +237,46 @@ export function parseClub(rows) {
   return club
 }
 
+// A line break inside a cell starts a new paragraph, and consecutive lines starting with "-", "–" or
+// "•" become one bullet list, so editors can format with Alt+Enter inside a sheet cell.
+export function textBlocks(value) {
+  const blocks = []
+  let list = []
+  const flush = () => {
+    if (list.length) blocks.push({ list })
+    list = []
+  }
+  for (const line of clean(value).split(/\r?\n/).map(clean)) {
+    if (!line) {
+      flush()
+      continue
+    }
+    if (/^[-–•]/.test(line)) {
+      const item = clean(line.replace(/^[-–•]\s*/, ''))
+      if (item) list.push(item)
+      continue
+    }
+    flush()
+    blocks.push({ paragraph: line })
+  }
+  flush()
+  return blocks
+}
+
+// The Frågor tab: one row per question, kept in sheet order. A row needs a Swedish question and
+// answer to be shown; the English cells are optional and fall back per cell.
+export function parseFaq(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => ({
+      question: field(row, 'Fråga'),
+      questionEn: field(row, 'Fråga (EN)'),
+      answer: field(row, 'Svar'),
+      answerEn: field(row, 'Svar (EN)'),
+    }))
+    .filter((item) => item.question && item.answer)
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)

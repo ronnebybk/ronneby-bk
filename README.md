@@ -1,11 +1,12 @@
 # Ronneby Boxing Team
 
-Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, coaches, contact, and Facebook/Instagram.
+Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, coaches, FAQ, contact, and Facebook/Instagram.
 
 - **Live:** https://ronnebybk.github.io/ronneby-bk/
 - **Stack:** Vue 3 + Vite, hosted on GitHub Pages, deployed by GitHub Actions on every push to `main`
-- **Content:** a Google Sheet (schedule, notices and news, classes, prices, coaches, seasons, contact details and social
+- **Content:** a Google Sheet (schedule, notices and news, classes, prices, coaches, seasons, FAQ, contact details and social
   links), read by the site on every visit.
+  Tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Klubbinfo* and *Frågor*.
   Editors change it through the hidden admin page, with no account needed.
 - **Languages:** Swedish (default) and English, switched with the flags in the header.
 

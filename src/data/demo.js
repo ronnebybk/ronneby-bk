@@ -8,6 +8,7 @@ export const columns = {
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
   notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
   club: ['Fält', 'Värde', 'Värde (EN)'],
+  faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
 }
 
 export const seasons = [
@@ -91,7 +92,7 @@ export const notices = [
     'Meddelande (EN)': 'Welcome to the autumn sessions! New members are welcome to try a class.',
   },
   {
-    'Meddelande': 'Schema och grupper hittar du på https://ronnebybk.github.io/ronneby-bk/#/schema',
+    'Meddelande': 'Schema och grupper hittar du under Schema och Grupper & priser i menyn.',
   },
   {
     'Meddelande': 'Inställd träning på grund av sjukdom.',
@@ -163,4 +164,45 @@ export const club = [
   { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },
   { 'Fält': 'Fax', 'Värde': 'Okänd inställning som hoppas över.' },
   { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
+]
+
+// The three questions from the issue with placeholder answers, plus rows that exercise the page:
+// English missing for the answer only (per-cell fallback), a link, paragraphs and a list, and two
+// incomplete rows that must be skipped.
+export const faq = [
+  {
+    'Fråga': 'Behöver jag egna handskar?',
+    'Fråga (EN)': 'Do I need my own gloves?',
+    'Svar':
+      'Du kan låna handskar av klubben de första gångerna. Har du egna är det bra, men köp inget förrän du har provat.',
+    'Svar (EN)':
+      'You can borrow gloves from the club for your first few sessions. Your own are nice to have, but do not buy anything before you have tried.',
+  },
+  {
+    'Fråga': 'Får föräldrar titta på?',
+    'Fråga (EN)': 'Can parents watch?',
+    'Svar': 'Ja, föräldrar är välkomna att sitta med och titta på träningen.',
+    // No English answer on purpose: the English page falls back to Swedish for this cell only.
+    'Svar (EN)': '',
+  },
+  {
+    'Fråga': 'Finns det någon åldersgräns?',
+    'Fråga (EN)': 'Is there an age limit?',
+    'Svar':
+      'Vi har grupper från 8 år och uppåt:\n- Knattar: 8–12 år\n- Nybörjare: från 13 år\n- Tävling: från 15 år\n\nÄr du osäker på vilken grupp som passar? Hör av dig till en tränare.',
+    'Svar (EN)':
+      'We have groups from age 8 and up:\n- Kids: 8–12\n- Beginners: from 13\n- Competition: from 15\n\nNot sure which group suits you? Talk to a coach.',
+  },
+  {
+    'Fråga': 'Hur anmäler jag mig?',
+    'Fråga (EN)': 'How do I sign up?',
+    'Svar':
+      'Kom förbi på ett pass och prova på. Frågor kan du ställa i vår Facebookgrupp: https://www.facebook.com/groups/251477413001',
+    'Svar (EN)':
+      'Drop by a session and give it a try. You can ask questions in our Facebook group: https://www.facebook.com/groups/251477413001',
+  },
+  // Skipped: an answer without a question.
+  { 'Fråga': '', 'Fråga (EN)': '', 'Svar': 'Det här svaret har ingen fråga.', 'Svar (EN)': '' },
+  // Skipped: a question without an answer.
+  { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
 ]

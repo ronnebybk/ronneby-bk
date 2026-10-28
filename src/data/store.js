@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseFaq } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -16,6 +16,7 @@ export const state = reactive({
   groups: [],
   sessions: [],
   coaches: [],
+  faq: [],
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
@@ -35,6 +36,7 @@ function apply(raw) {
   // A cache written before these optional tabs existed has no such fields.
   state.notices = parseNotices(raw.notices ?? [])
   state.club = parseClub(raw.club ?? [])
+  state.faq = parseFaq(raw.faq ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -62,9 +64,8 @@ async function fetchTab(tab) {
   }
 }
 
-// The notices and Klubbinfo tabs are optional: if one is missing, unpublished or broken, the rest
-// of the site must still load. Fall back to the cached copy so "cancelled tonight" survives a
-// Google hiccup.
+// These tabs are optional: if one is missing, unpublished or broken, the rest of the site must
+// still load. Fall back to the cached copy so "cancelled tonight" survives a Google hiccup.
 async function fetchOptional(tab, cached) {
   if (!config.sheet.gids[tab]) return []
   try {
@@ -91,9 +92,14 @@ export function loadData() {
   const cached = loadJson(CACHE_KEY)
   if (cached) apply(cached)
 
-  loading = Promise.all([...TABS.map(fetchTab), fetchOptional('notices', cached), fetchOptional('club', cached)])
-    .then(([seasons, groups, schedule, coaches, notices, club]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club }
+  loading = Promise.all([
+    ...TABS.map(fetchTab),
+    fetchOptional('notices', cached),
+    fetchOptional('club', cached),
+    fetchOptional('faq', cached),
+  ])
+    .then(([seasons, groups, schedule, coaches, notices, club, faq]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, faq }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
