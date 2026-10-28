@@ -5,5 +5,6 @@ export const navLinks = [
   { to: '/grupper', key: 'nav.groups' },
   { to: '/tranare', key: 'nav.coaches' },
   { to: '/prova-pa', key: 'nav.trial' },
+  { to: '/fragor', key: 'nav.faq' },
   { to: '/kontakt', key: 'nav.contact' },
 ]

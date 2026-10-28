@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import LinkedText from '../components/LinkedText.vue'
+import TextBlocks from '../components/TextBlocks.vue'
 import SocialSection from '../components/SocialSection.vue'
 import { useI18n } from '../i18n/index.js'
 import { state } from '../data/store.js'
@@ -50,7 +50,7 @@ const joinText = computed(() => localized(club.value.join, club.value.joinEn) ||
 
       <section class="card join">
         <h2>{{ t('contact.joinTitle') }}</h2>
-        <p class="join-text"><LinkedText :text="joinText" /></p>
+        <div class="join-text"><TextBlocks :text="joinText" /></div>
         <RouterLink to="/grupper" class="btn btn-primary">{{ t('nav.groups') }}</RouterLink>
         <p class="trial-link">
           <RouterLink to="/prova-pa">{{ t('contact.trialLink') }} →</RouterLink>
@@ -85,6 +85,7 @@ address {
 }
 
 .join-text {
+  margin: 0 0 16px;
   overflow-wrap: anywhere;
 }
 

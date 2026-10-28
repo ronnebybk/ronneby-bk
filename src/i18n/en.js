@@ -4,6 +4,7 @@ export default {
     schedule: 'Schedule',
     groups: 'Classes & prices',
     coaches: 'Coaches',
+    faq: 'FAQ',
     contact: 'Contact',
     trial: 'Try boxing',
     menu: 'Menu',
@@ -118,6 +119,11 @@ export default {
     ctaSchedule: 'See the schedule',
     ctaJoin: 'Become a member',
   },
+  faq: {
+    title: 'Frequently asked questions',
+    empty: 'No questions yet.',
+    emptyLink: 'Contact us',
+  },
   contact: {
     title: 'Contact',
     whereTitle: 'Where we train',
@@ -157,6 +163,7 @@ export default {
       notices: 'Notices',
       club: 'Club info',
       trial: 'Try boxing',
+      faq: 'FAQ',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',

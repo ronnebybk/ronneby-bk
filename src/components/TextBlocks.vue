@@ -1,15 +1,19 @@
 <script setup>
+import { computed } from 'vue'
 import LinkedText from './LinkedText.vue'
 import { textBlocks } from '../data/parse.js'
 
 // One renderer for both sheet text and the built-in fallback text, so they look the same.
-defineProps({
+const props = defineProps({
   text: { type: String, default: '' },
 })
+
+// Parse once per text change instead of on every re-render.
+const blocks = computed(() => textBlocks(props.text))
 </script>
 
 <template>
-  <template v-for="(block, index) in textBlocks(text)" :key="index">
+  <template v-for="(block, index) in blocks" :key="index">
     <ul v-if="block.list">
       <li v-for="(item, i) in block.list" :key="i"><LinkedText :text="item" /></li>
     </ul>

@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import LangToggle from './LangToggle.vue'
 import { useI18n } from '../i18n/index.js'
+import { state } from '../data/store.js'
 import { navLinks } from '../nav.js'
 import config from '../config.js'
 import logo from '../assets/logo.svg'
@@ -13,7 +14,8 @@ const open = ref(false)
 
 watch(() => route.fullPath, () => (open.value = false))
 
-const links = navLinks
+// The FAQ item appears only when there are questions, so an empty tab hides it.
+const links = computed(() => navLinks.filter((link) => link.to !== '/fragor' || state.faq.length))
 </script>
 
 <template>
@@ -78,6 +80,7 @@ nav a {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
   padding: 8px 12px;
   border-radius: 6px;
 }
@@ -116,7 +119,7 @@ nav a.router-link-exact-active {
   border-radius: 2px;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 960px) {
   .actions {
     margin-left: auto;
   }
