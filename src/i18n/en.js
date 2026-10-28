@@ -125,7 +125,7 @@ export default {
     reachTitle: 'Contact us',
     joinTitle: 'Become a member',
     joinText:
-      'Want to keep going after your trial? Talk to a coach about membership and payment, or get in touch using the details above. Prices are under #/grupper.',
+      'Tried a session and want to keep going? Talk to a coach about membership and payment.',
     trialLink: 'New here? Read about trying a class',
     socialTitle: 'Social media',
     missing: 'Details coming soon.',

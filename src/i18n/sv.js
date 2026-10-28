@@ -126,7 +126,7 @@ export default {
     reachTitle: 'Kontakta oss',
     joinTitle: 'Bli medlem',
     joinText:
-      'Vill du fortsätta efter att ha provat på? Prata med en tränare om medlemskap och betalning, eller hör av dig till oss här ovan. Priserna hittar du under #/grupper.',
+      'Har du provat på och vill fortsätta? Prata med en tränare om medlemskap och betalning.',
     trialLink: 'Ny här? Läs om att prova på',
     socialTitle: 'Sociala medier',
     missing: 'Uppgifter kommer snart.',
