@@ -13,6 +13,7 @@ export default {
     gids: {
       notices: '1455255462', // empty hides the banner until the Anslag tab exists
       club: '678595018', // Klubbinfo; empty shows "coming soon" for contact details and social links
+      trial: '573508208', // Prova på
       faq: '1972595536', // Frågor
       seasons: '956987468',
       groups: '1580659590',

@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseFaq } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -20,6 +20,8 @@ export const state = reactive({
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
+  // Sections for the Prova på page; empty means the page's built-in text.
+  trial: [],
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',
 })
@@ -36,6 +38,7 @@ function apply(raw) {
   // A cache written before these optional tabs existed has no such fields.
   state.notices = parseNotices(raw.notices ?? [])
   state.club = parseClub(raw.club ?? [])
+  state.trial = parseTrial(raw.trial ?? [])
   state.faq = parseFaq(raw.faq ?? [])
 }
 
@@ -96,10 +99,11 @@ export function loadData() {
     ...TABS.map(fetchTab),
     fetchOptional('notices', cached),
     fetchOptional('club', cached),
+    fetchOptional('trial', cached),
     fetchOptional('faq', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, faq]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, faq }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'

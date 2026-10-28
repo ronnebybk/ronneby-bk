@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import LangToggle from './LangToggle.vue'
 import { useI18n } from '../i18n/index.js'
 import { state } from '../data/store.js'
+import { navLinks } from '../nav.js'
 import config from '../config.js'
 import logo from '../assets/logo.svg'
 
@@ -14,14 +15,7 @@ const open = ref(false)
 watch(() => route.fullPath, () => (open.value = false))
 
 // The FAQ item appears only when there are questions, so an empty tab hides it.
-const links = computed(() => [
-  { to: '/', key: 'nav.home' },
-  { to: '/schema', key: 'nav.schedule' },
-  { to: '/grupper', key: 'nav.groups' },
-  { to: '/tranare', key: 'nav.coaches' },
-  ...(state.faq.length ? [{ to: '/fragor', key: 'nav.faq' }] : []),
-  { to: '/kontakt', key: 'nav.contact' },
-])
+const links = computed(() => navLinks.filter((link) => link.to !== '/fragor' || state.faq.length))
 </script>
 
 <template>

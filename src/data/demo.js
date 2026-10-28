@@ -8,6 +8,7 @@ export const columns = {
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
   notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
   club: ['Fält', 'Värde', 'Värde (EN)'],
+  trial: ['Rubrik', 'Rubrik (EN)', 'Text', 'Text (EN)'],
   faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
 }
 
@@ -92,7 +93,7 @@ export const notices = [
     'Meddelande (EN)': 'Welcome to the autumn sessions! New members are welcome to try a class.',
   },
   {
-    'Meddelande': 'Schema och grupper hittar du under Schema och Grupper & priser i menyn.',
+    'Meddelande': 'Schema och grupper hittar du på #/schema',
   },
   {
     'Meddelande': 'Inställd träning på grund av sjukdom.',
@@ -164,6 +165,50 @@ export const club = [
   { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },
   { 'Fält': 'Fax', 'Värde': 'Okänd inställning som hoppas över.' },
   { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
+]
+
+// Sections for the Prova på page, in page order. Keep the wording in step with trial.sections in
+// src/i18n/sv.js and en.js. One SV-only row (English falls back to the Swedish sheet text) and one
+// EN-only row (the parser must skip it) stay on purpose.
+export const trial = [
+  {
+    'Rubrik': 'Vad ska jag ha med mig?',
+    'Rubrik (EN)': 'What should I bring?',
+    'Text': 'Bekväma kläder och en vattenflaska räcker.\n\n- Träningskläder\n- Vattenflaska\n- Handduk\n\nHar du inga handskar? Fråga en tränare om att låna ett par.',
+    'Text (EN)': 'Comfortable clothes and a water bottle are enough.\n\n- Training clothes\n- Water bottle\n- Towel\n\nNo gloves? Ask a coach about borrowing a pair.',
+  },
+  {
+    'Rubrik': 'Första gången',
+    'Rubrik (EN)': 'Your first time',
+    'Text': 'Kom gärna några minuter innan passet börjar och säg till en tränare att du är ny.\n\nVi visar dig vad du behöver veta, och du kan ta det i din egen takt.',
+    'Text (EN)': 'Arrive a few minutes before the session and tell a coach that you are new.\n\nWe will show you what you need to know, and you can take it at your own pace.',
+  },
+  {
+    'Rubrik': 'Du behöver inte vara i form',
+    'Rubrik (EN)': "You don't need to be fit",
+    'Text': 'Alla börjar någonstans. Säg till om du behöver ta en paus.',
+    'Text (EN)': 'Everyone starts somewhere. Tell us if you need to take a break.',
+  },
+  {
+    'Rubrik': 'Föräldrar och vänner',
+    'Text': 'Vill du följa med och titta? Fråga en tränare på plats.',
+  },
+  {
+    'Rubrik': 'Vad kostar det?',
+    'Rubrik (EN)': 'What does it cost?',
+    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
+    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper.',
+  },
+  {
+    'Rubrik': 'Hur tar jag mig dit?',
+    'Rubrik (EN)': 'How do I get there?',
+    'Text': 'Lokalen och adressen hittar du under #/kontakt.',
+    'Text (EN)': 'The venue and address are under #/kontakt.',
+  },
+  {
+    'Rubrik (EN)': 'English-only row',
+    'Text (EN)': 'This row has no Swedish text and must be skipped.',
+  },
 ]
 
 // The three questions from the issue with placeholder answers, plus rows that exercise the page:

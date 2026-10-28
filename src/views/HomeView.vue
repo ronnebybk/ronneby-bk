@@ -42,7 +42,7 @@ const explore = [
         <p class="tagline">{{ t('home.tagline') }}</p>
         <div class="cta">
           <RouterLink to="/schema" class="btn btn-primary">{{ t('home.ctaSchedule') }}</RouterLink>
-          <RouterLink to="/kontakt" class="btn btn-outline">{{ t('home.ctaTry') }}</RouterLink>
+          <RouterLink to="/prova-pa" class="btn btn-outline">{{ t('home.ctaTry') }}</RouterLink>
         </div>
       </div>
       <img class="hero-logo" :src="logo" alt="" width="697" height="545" />

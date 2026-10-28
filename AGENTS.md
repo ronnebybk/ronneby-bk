@@ -19,8 +19,9 @@ Visitors → Vue app on GitHub Pages → fetches the published Google Sheet (CSV
 Editors  → hidden /#/admin page    → the same Google Sheet, embedded in an iframe
 ```
 
-- **Content lives in a Google Sheet**, not in the code. It has 7 tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Klubbinfo*, *Frågor*.
+- **Content lives in a Google Sheet**, not in the code. It has 8 tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*.
   - *Klubbinfo* holds contact details, venue, the "how to join" text and social links, one row per setting.
+  - *Prova på* holds the text for the trial page (`/#/prova-pa`).
   - *Frågor* holds the FAQ: one question and answer per row, shown in row order.
   - The site reads the tabs' published CSV links. The IDs are in `src/config.js` (`sheet.publishedId`, `sheet.gids`).
   - Google republishes about every 5 minutes. A cached copy in `localStorage` covers outages.

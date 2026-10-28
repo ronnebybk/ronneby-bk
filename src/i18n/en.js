@@ -6,6 +6,7 @@ export default {
     coaches: 'Coaches',
     faq: 'FAQ',
     contact: 'Contact',
+    trial: 'Try boxing',
     menu: 'Menu',
     close: 'Close',
   },
@@ -82,6 +83,42 @@ export default {
     mail: 'Email',
     empty: 'No coaches published right now.',
   },
+  trial: {
+    title: 'Try boxing',
+    intro: "You don't need experience or to be fit to start. Here is what you need to know before your first time.",
+    sections: [
+      {
+        title: 'What should I bring?',
+        text: 'Comfortable clothes and a water bottle are enough.\n\n- Training clothes\n- Water bottle\n- Towel\n\nNo gloves? Ask a coach about borrowing a pair.',
+      },
+      {
+        title: 'Your first time',
+        text: 'Arrive a few minutes before the session and tell a coach that you are new.\n\nWe will show you what you need to know, and you can take it at your own pace.',
+      },
+      {
+        title: "You don't need to be fit",
+        text: 'Everyone starts somewhere. Tell us if you need to take a break.',
+      },
+      {
+        title: 'Parents and friends',
+        text: 'Would you like to come and watch? Ask a coach on site.',
+      },
+      {
+        title: 'What does it cost?',
+        text: 'Trying a session is free. Membership and prices are under #/grupper.',
+      },
+      {
+        title: 'How do I get there?',
+        text: 'The venue and address are under #/kontakt.',
+      },
+    ],
+    agesTitle: 'Which class suits me?',
+    agesIntro: 'The classes below have an age listed. Read more about training times and prices on the classes page.',
+    agesNone: 'Read about the classes and find the one that suits you.',
+    agesLink: 'See all classes',
+    ctaSchedule: 'See the schedule',
+    ctaJoin: 'Become a member',
+  },
   faq: {
     title: 'Frequently asked questions',
     empty: 'No questions yet.',
@@ -94,7 +131,8 @@ export default {
     reachTitle: 'Contact us',
     joinTitle: 'Become a member',
     joinText:
-      'Drop by a session and give it a try – your first time is free. Talk to the coach about membership and payment.',
+      'Tried a session and want to keep going? Talk to a coach about membership and payment.',
+    trialLink: 'New here? Read about trying a class',
     socialTitle: 'Social media',
     missing: 'Details coming soon.',
   },
@@ -124,6 +162,7 @@ export default {
       seasons: 'Seasons',
       notices: 'Notices',
       club: 'Club info',
+      trial: 'Try boxing',
       faq: 'FAQ',
     },
     help:

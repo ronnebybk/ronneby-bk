@@ -2,6 +2,8 @@
 // Editors type into the sheet by hand, so everything here is forgiving:
 // rows that can't be understood are skipped instead of breaking the page.
 
+import { navLinks } from '../nav.js'
+
 const DAY_NAMES = {
   måndag: 1, mån: 1, monday: 1, mon: 1,
   tisdag: 2, tis: 2, tuesday: 2, tue: 2,
@@ -169,16 +171,35 @@ export function telHref(phone) {
   return `tel:${phone.replace(/[^\d+]/g, '')}`
 }
 
-// Splits a message into plain-text and link parts, so the banner can render links without v-html.
+const siteBase = (url) => url.replace(/index\.html$/, '').replace(/\/$/, '')
+
+// A pasted URL only counts as one of our pages when it points at the site the visitor is on, so
+// another site's "#/kontakt" stays an external link. Compared at runtime, so it works on any domain.
+function ownRoute(url) {
+  const hash = url.indexOf('#')
+  const here = globalThis.location
+  if (hash < 0 || !here) return undefined
+  if (siteBase(url.slice(0, hash)) !== siteBase(here.origin + here.pathname)) return undefined
+  return url.slice(hash).match(/^#(\/[\w-]*)$/)?.[1]
+}
+
+// Splits a message into plain-text, external-link and in-app-link parts, so the banner can render
+// links without v-html. A hash route that matches one of our pages becomes an in-app link, whether
+// the editor wrote "#/grupper" or pasted a whole URL from the address bar.
 export function linkParts(value) {
   const text = clean(value)
   const parts = []
   let last = 0
-  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+/g)) {
-    // Trailing punctuation usually belongs to the sentence, not the address.
-    const url = match[0].replace(/[.,;:!?)]+$/, '')
+  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+|#\/[\w-]*/g)) {
     if (match.index > last) parts.push({ text: text.slice(last, match.index) })
-    parts.push({ text: url, href: url })
+    const token = match[0]
+    // Trailing punctuation usually belongs to the sentence, not the address.
+    const url = token.startsWith('#') ? token : token.replace(/[.,;:!?)]+$/, '')
+    const route = url.startsWith('#') ? url.slice(1) : ownRoute(url)
+    const page = route ? navLinks.find((link) => link.to === route) : undefined
+    if (page) parts.push({ to: page.to, navKey: page.key })
+    else if (token.startsWith('#')) parts.push({ text: token })
+    else parts.push({ text: url, href: url })
     last = match.index + url.length
   }
   if (last < text.length) parts.push({ text: text.slice(last) })
@@ -235,6 +256,20 @@ export function parseClub(rows) {
     if (CLUB_TRANSLATED.includes(key)) club[`${key}En`] = field(row, 'Värde (EN)')
   }
   return club
+}
+
+// The Prova på tab: free-form sections, one row each, kept in sheet order. A row counts when it
+// has Swedish text; a heading or a body on its own is fine, a row with only English is skipped.
+export function parseTrial(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => ({
+      title: field(row, 'Rubrik'),
+      titleEn: field(row, 'Rubrik (EN)'),
+      text: field(row, 'Text'),
+      textEn: field(row, 'Text (EN)'),
+    }))
+    .filter((section) => section.title || section.text)
 }
 
 // A line break inside a cell starts a new paragraph, and consecutive lines starting with "-", "–" or

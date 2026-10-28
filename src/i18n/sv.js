@@ -6,6 +6,7 @@ export default {
     coaches: 'Tränare',
     faq: 'Frågor',
     contact: 'Kontakt',
+    trial: 'Prova på',
     menu: 'Meny',
     close: 'Stäng',
   },
@@ -82,6 +83,43 @@ export default {
     mail: 'Mejla',
     empty: 'Inga tränare upplagda just nu.',
   },
+  trial: {
+    title: 'Prova på boxning',
+    intro:
+      'Du behöver varken vara erfaren eller i form för att börja. Här är vad du behöver veta inför första gången.',
+    sections: [
+      {
+        title: 'Vad ska jag ha med mig?',
+        text: 'Bekväma kläder och en vattenflaska räcker.\n\n- Träningskläder\n- Vattenflaska\n- Handduk\n\nHar du inga handskar? Fråga en tränare om att låna ett par.',
+      },
+      {
+        title: 'Första gången',
+        text: 'Kom gärna några minuter innan passet börjar och säg till en tränare att du är ny.\n\nVi visar dig vad du behöver veta, och du kan ta det i din egen takt.',
+      },
+      {
+        title: 'Du behöver inte vara i form',
+        text: 'Alla börjar någonstans. Säg till om du behöver ta en paus.',
+      },
+      {
+        title: 'Föräldrar och vänner',
+        text: 'Vill du följa med och titta? Fråga en tränare på plats.',
+      },
+      {
+        title: 'Vad kostar det?',
+        text: 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
+      },
+      {
+        title: 'Hur tar jag mig dit?',
+        text: 'Lokalen och adressen hittar du under #/kontakt.',
+      },
+    ],
+    agesTitle: 'Vilken grupp passar mig?',
+    agesIntro: 'Grupperna nedan har en ålder angiven. Läs mer om träningstider och priser på gruppsidan.',
+    agesNone: 'Läs om grupperna och se vilken som passar dig.',
+    agesLink: 'Se alla grupper',
+    ctaSchedule: 'Se schemat',
+    ctaJoin: 'Bli medlem',
+  },
   faq: {
     title: 'Vanliga frågor',
     empty: 'Inga frågor ännu.',
@@ -94,7 +132,8 @@ export default {
     reachTitle: 'Kontakta oss',
     joinTitle: 'Bli medlem',
     joinText:
-      'Kom förbi på ett pass och prova på – första gången är gratis. Prata med tränaren om medlemskap och betalning.',
+      'Har du provat på och vill fortsätta? Prata med en tränare om medlemskap och betalning.',
+    trialLink: 'Ny här? Läs om att prova på',
     socialTitle: 'Sociala medier',
     missing: 'Uppgifter kommer snart.',
   },
@@ -124,6 +163,7 @@ export default {
       seasons: 'Säsonger',
       notices: 'Anslag',
       club: 'Klubbinfo',
+      trial: 'Prova på',
       faq: 'Frågor',
     },
     help:
