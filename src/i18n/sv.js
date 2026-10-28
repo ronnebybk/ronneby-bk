@@ -81,6 +81,42 @@ export default {
     mail: 'Mejla',
     empty: 'Inga tränare upplagda just nu.',
   },
+  trial: {
+    title: 'Prova på boxning',
+    intro:
+      'Du behöver varken vara erfaren eller i form för att börja. Här är vad du behöver veta inför första gången.',
+    sections: [
+      {
+        title: 'Vad ska jag ha med mig?',
+        text: 'Bekväma kläder och en vattenflaska räcker.\n\n- Träningskläder\n- Vattenflaska\n- Handduk\n\nHar du inga handskar? Fråga en tränare om att låna ett par.',
+      },
+      {
+        title: 'Första gången',
+        text: 'Kom gärna några minuter innan passet börjar och säg till en tränare att du är ny.\n\nVi visar dig vad du behöver veta, och du kan ta det i din egen takt.',
+      },
+      {
+        title: 'Du behöver inte vara i form',
+        text: 'Alla börjar någonstans. Säg till om du behöver ta en paus.',
+      },
+      {
+        title: 'Föräldrar och vänner',
+        text: 'Vill du följa med och titta? Fråga en tränare på plats.',
+      },
+      {
+        title: 'Vad kostar det?',
+        text: 'Att prova på är gratis. Medlemskap och priser hittar du på gruppsidan: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+      },
+      {
+        title: 'Hur tar jag mig dit?',
+        text: 'Lokalen och adressen hittar du på kontaktsidan: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+      },
+    ],
+    agesTitle: 'Vilken grupp passar mig?',
+    agesIntro: 'Grupperna nedan har en ålder angiven. Läs mer om träningstider och priser på gruppsidan.',
+    agesLink: 'Se alla grupper',
+    ctaSchedule: 'Se schemat',
+    ctaJoin: 'Bli medlem',
+  },
   contact: {
     title: 'Kontakt',
     whereTitle: 'Här tränar vi',

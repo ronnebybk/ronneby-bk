@@ -81,6 +81,41 @@ export default {
     mail: 'Email',
     empty: 'No coaches published right now.',
   },
+  trial: {
+    title: 'Try boxing',
+    intro: "You don't need experience or to be fit to start. Here is what you need to know before your first time.",
+    sections: [
+      {
+        title: 'What should I bring?',
+        text: 'Comfortable clothes and a water bottle are enough.\n\n- Training clothes\n- Water bottle\n- Towel\n\nNo gloves? Ask a coach about borrowing a pair.',
+      },
+      {
+        title: 'Your first time',
+        text: 'Arrive a few minutes before the session and tell a coach that you are new.\n\nWe will show you what you need to know, and you can take it at your own pace.',
+      },
+      {
+        title: "You don't need to be fit",
+        text: 'Everyone starts somewhere. Tell us if you need to take a break.',
+      },
+      {
+        title: 'Parents and friends',
+        text: 'Would you like to come and watch? Ask a coach on site.',
+      },
+      {
+        title: 'What does it cost?',
+        text: 'Trying a session is free. Membership and prices are on the groups page: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+      },
+      {
+        title: 'How do I get there?',
+        text: 'The venue and address are on the contact page: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+      },
+    ],
+    agesTitle: 'Which class suits me?',
+    agesIntro: 'The classes below have an age listed. Read more about training times and prices on the classes page.',
+    agesLink: 'See all classes',
+    ctaSchedule: 'See the schedule',
+    ctaJoin: 'Become a member',
+  },
   contact: {
     title: 'Contact',
     whereTitle: 'Where we train',
