@@ -5,6 +5,7 @@ export default {
     groups: 'Grupper & priser',
     coaches: 'Tränare',
     contact: 'Kontakt',
+    trial: 'Prova på',
     menu: 'Meny',
     close: 'Stäng',
   },
@@ -125,6 +126,7 @@ export default {
     joinTitle: 'Bli medlem',
     joinText:
       'Kom förbi på ett pass och prova på – första gången är gratis. Prata med tränaren om medlemskap och betalning.',
+    trialLink: 'Ny här? Läs om att prova på',
     socialTitle: 'Sociala medier',
     missing: 'Uppgifter kommer snart.',
   },
@@ -154,6 +156,7 @@ export default {
       seasons: 'Säsonger',
       notices: 'Anslag',
       club: 'Klubbinfo',
+      trial: 'Prova på',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

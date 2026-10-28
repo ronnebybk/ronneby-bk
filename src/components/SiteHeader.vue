@@ -17,6 +17,7 @@ const links = [
   { to: '/schema', key: 'nav.schedule' },
   { to: '/grupper', key: 'nav.groups' },
   { to: '/tranare', key: 'nav.coaches' },
+  { to: '/prova-pa', key: 'nav.trial' },
   { to: '/kontakt', key: 'nav.contact' },
 ]
 </script>

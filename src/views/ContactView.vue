@@ -52,6 +52,9 @@ const joinText = computed(() => localized(club.value.join, club.value.joinEn) ||
         <h2>{{ t('contact.joinTitle') }}</h2>
         <p class="join-text"><LinkedText :text="joinText" /></p>
         <RouterLink to="/grupper" class="btn btn-primary">{{ t('nav.groups') }}</RouterLink>
+        <p class="trial-link">
+          <RouterLink to="/prova-pa">{{ t('contact.trialLink') }} →</RouterLink>
+        </p>
       </section>
     </div>
 
@@ -83,5 +86,9 @@ address {
 
 .join-text {
   overflow-wrap: anywhere;
+}
+
+.trial-link {
+  margin: 12px 0 0;
 }
 </style>

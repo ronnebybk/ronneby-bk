@@ -5,6 +5,7 @@ export default {
     groups: 'Classes & prices',
     coaches: 'Coaches',
     contact: 'Contact',
+    trial: 'Try boxing',
     menu: 'Menu',
     close: 'Close',
   },
@@ -124,6 +125,7 @@ export default {
     joinTitle: 'Become a member',
     joinText:
       'Drop by a session and give it a try – your first time is free. Talk to the coach about membership and payment.',
+    trialLink: 'New here? Read about trying a class',
     socialTitle: 'Social media',
     missing: 'Details coming soon.',
   },
@@ -153,6 +155,7 @@ export default {
       seasons: 'Seasons',
       notices: 'Notices',
       club: 'Club info',
+      trial: 'Try boxing',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',
