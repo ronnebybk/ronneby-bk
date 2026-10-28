@@ -237,6 +237,46 @@ export function parseClub(rows) {
   return club
 }
 
+// The Prova på tab: free-form sections, one row each, kept in sheet order. A row counts when it
+// has Swedish text; a heading or a body on its own is fine, a row with only English is skipped.
+export function parseTrial(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => ({
+      title: field(row, 'Rubrik'),
+      titleEn: field(row, 'Rubrik (EN)'),
+      text: field(row, 'Text'),
+      textEn: field(row, 'Text (EN)'),
+    }))
+    .filter((section) => section.title || section.text)
+}
+
+// A line break inside a cell starts a new paragraph, and consecutive lines starting with "-" become
+// one bullet list, so editors can format with Alt+Enter inside a sheet cell.
+export function textBlocks(value) {
+  const blocks = []
+  let list = []
+  const flush = () => {
+    if (list.length) blocks.push({ list })
+    list = []
+  }
+  for (const line of clean(value).split(/\r?\n/).map(clean)) {
+    if (!line) {
+      flush()
+      continue
+    }
+    if (line.startsWith('-')) {
+      const item = clean(line.replace(/^-\s*/, ''))
+      if (item) list.push(item)
+      continue
+    }
+    flush()
+    blocks.push({ paragraph: line })
+  }
+  flush()
+  return blocks
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)

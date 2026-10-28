@@ -8,6 +8,7 @@ export const columns = {
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
   notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
   club: ['Fält', 'Värde', 'Värde (EN)'],
+  trial: ['Rubrik', 'Rubrik (EN)', 'Text', 'Text (EN)'],
 }
 
 export const seasons = [
@@ -163,4 +164,47 @@ export const club = [
   { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },
   { 'Fält': 'Fax', 'Värde': 'Okänd inställning som hoppas över.' },
   { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
+]
+
+// Sections for the Prova på page, in page order: a bullet list, a link, one SV-only row (English
+// falls back to the Swedish sheet text), plus an EN-only row the parser must skip.
+export const trial = [
+  {
+    'Rubrik': 'Vad ska jag ha med mig?',
+    'Rubrik (EN)': 'What should I bring?',
+    'Text': 'Bekväma kläder och en vattenflaska räcker.\n\n- Träningskläder\n- Vattenflaska\n- Handduk\n\nHar du inga handskar? Fråga en tränare om att låna ett par.',
+    'Text (EN)': 'Comfortable clothes and a water bottle are enough.\n\n- Training clothes\n- Water bottle\n- Towel\n\nNo gloves? Ask a coach about borrowing a pair.',
+  },
+  {
+    'Rubrik': 'Första gången',
+    'Rubrik (EN)': 'Your first time',
+    'Text': 'Kom ungefär 15 minuter innan passet börjar, så hinner vi visa dig runt.\n\nPasset börjar med uppvärmning och vi går igenom grunderna i lugn takt. Du bestämmer själv hur hårt du vill köra.',
+    'Text (EN)': 'Arrive about 15 minutes before the session so we have time to show you around.\n\nEvery session starts with a warm-up, and we go through the basics at a calm pace. You decide how hard you want to train.',
+  },
+  {
+    'Rubrik': 'Du behöver inte vara i form',
+    'Rubrik (EN)': "You don't need to be fit",
+    'Text': 'Alla börjar någonstans. Träningen anpassas efter dig, och du kan ta pauser när du behöver.',
+    'Text (EN)': 'Everyone starts somewhere. Training is adapted to you, and you can take breaks whenever you need.',
+  },
+  {
+    'Rubrik': 'Föräldrar och vänner',
+    'Text': 'Det går bra att komma med och titta på ett pass. Fråga gärna en tränare på plats om du undrar något.',
+  },
+  {
+    'Rubrik': 'Vad kostar det?',
+    'Rubrik (EN)': 'What does it cost?',
+    'Text': 'Att prova på är gratis. Vill du fortsätta hittar du medlemskap och priser på gruppsidan: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+    'Text (EN)': 'Trying a session is free. If you want to continue, membership and prices are on the groups page: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+  },
+  {
+    'Rubrik': 'Hur tar jag mig dit?',
+    'Rubrik (EN)': 'How do I get there?',
+    'Text': 'Lokalen och adressen hittar du på kontaktsidan: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+    'Text (EN)': 'The venue and address are on the contact page: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+  },
+  {
+    'Rubrik (EN)': 'English-only row',
+    'Text (EN)': 'This row has no Swedish text and must be skipped.',
+  },
 ]
