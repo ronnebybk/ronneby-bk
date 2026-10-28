@@ -166,8 +166,9 @@ export const club = [
   { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
 ]
 
-// Sections for the Prova på page, in page order: a bullet list, a link, one SV-only row (English
-// falls back to the Swedish sheet text), plus an EN-only row the parser must skip.
+// Sections for the Prova på page, in page order. Keep the wording in step with trial.sections in
+// src/i18n/sv.js and en.js. One SV-only row (English falls back to the Swedish sheet text) and one
+// EN-only row (the parser must skip it) stay on purpose.
 export const trial = [
   {
     'Rubrik': 'Vad ska jag ha med mig?',
@@ -178,30 +179,30 @@ export const trial = [
   {
     'Rubrik': 'Första gången',
     'Rubrik (EN)': 'Your first time',
-    'Text': 'Kom ungefär 15 minuter innan passet börjar, så hinner vi visa dig runt.\n\nPasset börjar med uppvärmning och vi går igenom grunderna i lugn takt. Du bestämmer själv hur hårt du vill köra.',
-    'Text (EN)': 'Arrive about 15 minutes before the session so we have time to show you around.\n\nEvery session starts with a warm-up, and we go through the basics at a calm pace. You decide how hard you want to train.',
+    'Text': 'Kom gärna några minuter innan passet börjar och säg till en tränare att du är ny.\n\nVi visar dig vad du behöver veta, och du kan ta det i din egen takt.',
+    'Text (EN)': 'Arrive a few minutes before the session and tell a coach that you are new.\n\nWe will show you what you need to know, and you can take it at your own pace.',
   },
   {
     'Rubrik': 'Du behöver inte vara i form',
     'Rubrik (EN)': "You don't need to be fit",
-    'Text': 'Alla börjar någonstans. Träningen anpassas efter dig, och du kan ta pauser när du behöver.',
-    'Text (EN)': 'Everyone starts somewhere. Training is adapted to you, and you can take breaks whenever you need.',
+    'Text': 'Alla börjar någonstans. Säg till om du behöver ta en paus.',
+    'Text (EN)': 'Everyone starts somewhere. Tell us if you need to take a break.',
   },
   {
     'Rubrik': 'Föräldrar och vänner',
-    'Text': 'Det går bra att komma med och titta på ett pass. Fråga gärna en tränare på plats om du undrar något.',
+    'Text': 'Vill du följa med och titta? Fråga en tränare på plats.',
   },
   {
     'Rubrik': 'Vad kostar det?',
     'Rubrik (EN)': 'What does it cost?',
-    'Text': 'Att prova på är gratis. Vill du fortsätta hittar du medlemskap och priser på #/grupper',
-    'Text (EN)': 'Trying a session is free. If you want to continue, membership and prices are under #/grupper',
+    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
+    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper.',
   },
   {
     'Rubrik': 'Hur tar jag mig dit?',
     'Rubrik (EN)': 'How do I get there?',
-    'Text': 'Lokalen och adressen hittar du under #/kontakt',
-    'Text (EN)': 'The venue and address are under #/kontakt',
+    'Text': 'Lokalen och adressen hittar du under #/kontakt.',
+    'Text (EN)': 'The venue and address are under #/kontakt.',
   },
   {
     'Rubrik (EN)': 'English-only row',
