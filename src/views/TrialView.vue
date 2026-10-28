@@ -25,7 +25,8 @@ const ageGroups = computed(() => state.groups.filter((group) => group.ages))
     <h1>{{ t('trial.title') }}</h1>
     <p class="page-intro">{{ t('trial.intro') }}</p>
 
-    <div class="sections">
+    <p v-if="state.status === 'loading' && !state.trial.length" class="muted">{{ t('common.loading') }}</p>
+    <div v-else class="sections">
       <section v-for="(section, index) in sections" :key="index" class="card">
         <h2 v-if="section.title">{{ section.title }}</h2>
         <TextBlocks :text="section.text" />
