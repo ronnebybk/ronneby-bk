@@ -92,7 +92,7 @@ export const notices = [
     'Meddelande (EN)': 'Welcome to the autumn sessions! New members are welcome to try a class.',
   },
   {
-    'Meddelande': 'Schema och grupper hittar du på https://ronnebybk.github.io/ronneby-bk/#/schema',
+    'Meddelande': 'Schema och grupper hittar du på #/schema',
   },
   {
     'Meddelande': 'Inställd träning på grund av sjukdom.',
@@ -194,14 +194,14 @@ export const trial = [
   {
     'Rubrik': 'Vad kostar det?',
     'Rubrik (EN)': 'What does it cost?',
-    'Text': 'Att prova på är gratis. Vill du fortsätta hittar du medlemskap och priser på gruppsidan: https://ronnebybk.github.io/ronneby-bk/#/grupper',
-    'Text (EN)': 'Trying a session is free. If you want to continue, membership and prices are on the groups page: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+    'Text': 'Att prova på är gratis. Vill du fortsätta hittar du medlemskap och priser på #/grupper',
+    'Text (EN)': 'Trying a session is free. If you want to continue, membership and prices are under #/grupper',
   },
   {
     'Rubrik': 'Hur tar jag mig dit?',
     'Rubrik (EN)': 'How do I get there?',
-    'Text': 'Lokalen och adressen hittar du på kontaktsidan: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
-    'Text (EN)': 'The venue and address are on the contact page: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+    'Text': 'Lokalen och adressen hittar du under #/kontakt',
+    'Text (EN)': 'The venue and address are under #/kontakt',
   },
   {
     'Rubrik (EN)': 'English-only row',

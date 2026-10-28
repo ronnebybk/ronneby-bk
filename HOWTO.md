@@ -60,8 +60,9 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - **Prova på:** fliken med samma namn styr texten på sidan *Prova på* och ersätter de inbyggda texterna helt
   så snart den har minst en rad med svensk *Rubrik* eller *Text*. En rad med bara engelsk text hoppas över.
   Enter i en cell (Alt+Enter) börjar ett nytt stycke, rader som börjar med `-` blir en punktlista, och en länk
-  blir klickbar. Grupplistan med åldrar längst ner skapas automatiskt från **Grupper**, och knapparna
-  *Se schemat* och *Bli medlem* går inte att ändra i arket.
+  blir klickbar. Skriv `#/grupper`, `#/schema`, `#/tranare`, `#/prova-pa` eller `#/kontakt` för att länka till en
+  sida på hemsidan; länken visas med sidans namn. Grupplistan med åldrar längst ner skapas automatiskt från
+  **Grupper**, och knapparna *Se schemat* och *Bli medlem* går inte att ändra i arket.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.

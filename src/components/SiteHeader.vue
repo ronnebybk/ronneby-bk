@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import LangToggle from './LangToggle.vue'
 import { useI18n } from '../i18n/index.js'
+import { navLinks } from '../nav.js'
 import config from '../config.js'
 import logo from '../assets/logo.svg'
 
@@ -12,14 +13,7 @@ const open = ref(false)
 
 watch(() => route.fullPath, () => (open.value = false))
 
-const links = [
-  { to: '/', key: 'nav.home' },
-  { to: '/schema', key: 'nav.schedule' },
-  { to: '/grupper', key: 'nav.groups' },
-  { to: '/tranare', key: 'nav.coaches' },
-  { to: '/prova-pa', key: 'nav.trial' },
-  { to: '/kontakt', key: 'nav.contact' },
-]
+const links = navLinks
 </script>
 
 <template>

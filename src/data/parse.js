@@ -2,6 +2,8 @@
 // Editors type into the sheet by hand, so everything here is forgiving:
 // rows that can't be understood are skipped instead of breaking the page.
 
+import { navLinks } from '../nav.js'
+
 const DAY_NAMES = {
   måndag: 1, mån: 1, monday: 1, mon: 1,
   tisdag: 2, tis: 2, tuesday: 2, tue: 2,
@@ -169,16 +171,23 @@ export function telHref(phone) {
   return `tel:${phone.replace(/[^\d+]/g, '')}`
 }
 
-// Splits a message into plain-text and link parts, so the banner can render links without v-html.
+// Splits a message into plain-text, external-link and in-app-link parts, so the banner can render
+// links without v-html. A hash route that matches one of our pages becomes an in-app link, whether
+// the editor wrote "#/grupper" or pasted a whole URL from the address bar.
 export function linkParts(value) {
   const text = clean(value)
   const parts = []
   let last = 0
-  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+/g)) {
-    // Trailing punctuation usually belongs to the sentence, not the address.
-    const url = match[0].replace(/[.,;:!?)]+$/, '')
+  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+|#\/[\w-]*/g)) {
     if (match.index > last) parts.push({ text: text.slice(last, match.index) })
-    parts.push({ text: url, href: url })
+    const token = match[0]
+    // Trailing punctuation usually belongs to the sentence, not the address.
+    const url = token.startsWith('#') ? token : token.replace(/[.,;:!?)]+$/, '')
+    const route = url.startsWith('#') ? url.slice(1) : url.match(/#(\/[\w-]*)$/)?.[1]
+    const page = route ? navLinks.find((link) => link.to === route) : undefined
+    if (page) parts.push({ to: page.to, navKey: page.key })
+    else if (token.startsWith('#')) parts.push({ text: token })
+    else parts.push({ text: url, href: url })
     last = match.index + url.length
   }
   if (last < text.length) parts.push({ text: text.slice(last) })

@@ -104,11 +104,11 @@ export default {
       },
       {
         title: 'What does it cost?',
-        text: 'Trying a session is free. Membership and prices are on the groups page: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+        text: 'Trying a session is free. Membership and prices are under #/grupper.',
       },
       {
         title: 'How do I get there?',
-        text: 'The venue and address are on the contact page: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+        text: 'The venue and address are under #/kontakt.',
       },
     ],
     agesTitle: 'Which class suits me?',

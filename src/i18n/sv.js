@@ -105,11 +105,11 @@ export default {
       },
       {
         title: 'Vad kostar det?',
-        text: 'Att prova på är gratis. Medlemskap och priser hittar du på gruppsidan: https://ronnebybk.github.io/ronneby-bk/#/grupper',
+        text: 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
       },
       {
         title: 'Hur tar jag mig dit?',
-        text: 'Lokalen och adressen hittar du på kontaktsidan: https://ronnebybk.github.io/ronneby-bk/#/kontakt',
+        text: 'Lokalen och adressen hittar du under #/kontakt.',
       },
     ],
     agesTitle: 'Vilken grupp passar mig?',
