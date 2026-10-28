@@ -114,6 +114,7 @@ export default {
     ],
     agesTitle: 'Vilken grupp passar mig?',
     agesIntro: 'Grupperna nedan har en ålder angiven. Läs mer om träningstider och priser på gruppsidan.',
+    agesNone: 'Läs om grupperna och se vilken som passar dig.',
     agesLink: 'Se alla grupper',
     ctaSchedule: 'Se schemat',
     ctaJoin: 'Bli medlem',

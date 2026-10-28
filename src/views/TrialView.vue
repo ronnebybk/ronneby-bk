@@ -18,6 +18,9 @@ const sections = computed(() =>
 
 // Only groups with an age are useful for "which group fits me?".
 const ageGroups = computed(() => state.groups.filter((group) => group.ages))
+
+// While loading there is nothing to list yet: don't flash "no ages" before the data arrives.
+const agesReady = computed(() => state.status !== 'loading' || state.groups.length > 0)
 </script>
 
 <template>
@@ -35,13 +38,15 @@ const ageGroups = computed(() => state.groups.filter((group) => group.ages))
 
     <section class="card ages">
       <h2>{{ t('trial.agesTitle') }}</h2>
-      <p>{{ t('trial.agesIntro') }}</p>
-      <ul v-if="ageGroups.length" class="ages-list">
-        <li v-for="group in ageGroups" :key="group.name">
-          <span>{{ localized(group.name, group.nameEn) }}</span>
-          <span class="tag">{{ t('common.age') }} {{ group.ages }}</span>
-        </li>
-      </ul>
+      <template v-if="agesReady">
+        <p>{{ ageGroups.length ? t('trial.agesIntro') : t('trial.agesNone') }}</p>
+        <ul v-if="ageGroups.length" class="ages-list">
+          <li v-for="group in ageGroups" :key="group.name">
+            <span>{{ localized(group.name, group.nameEn) }}</span>
+            <span class="tag">{{ t('common.age') }} {{ group.ages }}</span>
+          </li>
+        </ul>
+      </template>
       <p><RouterLink to="/grupper">{{ t('trial.agesLink') }} →</RouterLink></p>
     </section>
 

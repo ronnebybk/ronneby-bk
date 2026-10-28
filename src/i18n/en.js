@@ -113,6 +113,7 @@ export default {
     ],
     agesTitle: 'Which class suits me?',
     agesIntro: 'The classes below have an age listed. Read more about training times and prices on the classes page.',
+    agesNone: 'Read about the classes and find the one that suits you.',
     agesLink: 'See all classes',
     ctaSchedule: 'See the schedule',
     ctaJoin: 'Become a member',
