@@ -3,31 +3,41 @@ import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, weekday, groupColorIndex } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, weekday, groupStyle } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
 const route = useRoute()
 
 const selectedName = ref(null)
-const groupFilter = ref('')
+const chosenGroup = ref('')
 
 // Follow the current season until the visitor picks another one.
 const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 
-// /#/schema?grupp=<name> (the QR code on a one-group poster) opens filtered. It is read once, when
-// the groups are known; a name that matches nothing leaves all groups showing.
-let wanted = route.query.grupp
+// A filter whose group is no longer in the season (renamed in the sheet, or another season picked)
+// shows all groups, so the visitor is never stuck on an empty week.
+const groupFilter = computed(() => (groupsInSeason.value.some((g) => g.name === chosenGroup.value) ? chosenGroup.value : ''))
+
+// /#/schema?grupp=<name> (the QR code on a one-group poster) opens filtered. A repeated grupp
+// arrives as an array: the first one counts. The cached copy may predate the group, so the name
+// waits for the live data; it is dropped once it matches, once the data is final, or on a click.
+let wanted = [route.query.grupp].flat()[0]
 function applyWanted() {
-  if (!wanted || !groupsInSeason.value.length) return
-  if (groupsInSeason.value.some((g) => g.name === wanted)) groupFilter.value = wanted
-  wanted = null
+  if (!wanted) return
+  if (groupsInSeason.value.some((g) => g.name === wanted)) {
+    chosenGroup.value = wanted
+    wanted = null
+  } else if (state.status !== 'loading') {
+    wanted = null
+  }
 }
-watch(season, () => {
-  groupFilter.value = ''
-  applyWanted()
-})
 watch(groupsInSeason, applyWanted, { immediate: true })
+
+function pickGroup(name) {
+  wanted = null
+  chosenGroup.value = name
+}
 
 const filtered = computed(() =>
   groupFilter.value ? sessions.value.filter((s) => s.groups.includes(groupFilter.value)) : sessions.value,
@@ -76,7 +86,7 @@ const days = computed(() =>
       </div>
 
       <div v-if="groupsInSeason.length > 1" class="filters" :aria-label="t('schedule.filter')" role="group">
-        <button type="button" :class="{ active: !groupFilter }" @click="groupFilter = ''">
+        <button type="button" :class="{ active: !groupFilter }" @click="pickGroup('')">
           {{ t('schedule.allGroups') }}
         </button>
         <button
@@ -84,8 +94,8 @@ const days = computed(() =>
           :key="group.name"
           type="button"
           :class="{ active: groupFilter === group.name }"
-          :style="{ '--group-color': `var(--group-${groupColorIndex(group.name)})` }"
-          @click="groupFilter = groupFilter === group.name ? '' : group.name"
+          :style="groupStyle(group.name)"
+          @click="pickGroup(groupFilter === group.name ? '' : group.name)"
         >
           <span class="dot"></span>{{ localized(group.name, group.nameEn) }}
         </button>
