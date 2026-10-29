@@ -73,6 +73,30 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
 - Blev något fel? Säg till webbansvarig. Alla tidigare versioner finns sparade (*Arkiv → Versionshistorik*).
 
+### Skriv ut en affisch
+
+Hemsidan kan göra två affischer i A4 av det som står i kalkylarket, till anslagstavlan: **Schema** (liggande)
+och **Grupper & priser** (stående). Inget behöver skrivas om för hand.
+
+1. Gå till **#/admin** och tryck på *Skriv ut affisch: Schema* eller *Skriv ut affisch: Grupper & priser*
+   (länkarna finns också längst ner på sidorna Schema och Grupper & priser).
+2. Överst (syns inte på pappret) kan du byta språk (svenska/engelska) och, på schemat, välja **säsong**,
+   **grupp** (alla eller en) och om **tränare** ska visas.
+3. Tryck på **Skriv ut**. Vill du ha en PDF väljer du *Spara som PDF* som skrivare i utskriftsrutan.
+
+**Bra att veta**
+
+- Affischen visar det som finns i kalkylarket just nu. Ser du en gul varning överst, t.ex. att exempeldata
+  eller en sparad kopia visas, vänta och ladda om sidan innan du skriver ut.
+- QR-koden leder till motsvarande sida på hemsidan, där inställda pass och senaste ändringar syns.
+  På en affisch för en enda grupp leder den till schemat filtrerat på den gruppen.
+- Använd utskriftens standardinställningar: A4, skala 100 %, standardmarginaler. Rubriker och sidfötter från
+  webbläsaren (adress, datum) kan du stänga av i utskriftsrutan.
+- Gruppernas färger skrivs ut, men gruppens namn står alltid bredvid, så affischen fungerar även i svartvitt.
+- Affischen ska rymmas på **en sida**. Är en dag väldigt full (fler än fem pass med tränare och noteringar),
+  eller är beskrivningarna mycket långa, kan det bli en andra sida. Då hjälper det att dölja tränarna, välja
+  en grupp eller korta ner texten i kalkylarket.
+
 ### Visa Facebook och Instagram på hemsidan
 
 Kortet för Facebook och Instagram finns på startsidan och på sidan Kontakt. Allt ställs in i fliken
