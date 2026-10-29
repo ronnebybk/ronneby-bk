@@ -155,6 +155,12 @@ export default {
     printed: 'Utskriven {date}',
     scheduleQr: 'Scanna för aktuellt schema och inställda pass.',
     groupsQr: 'Scanna för aktuella grupper och priser.',
+    seasonLabel: 'Säsong',
+    groupLabel: 'Grupp',
+    coachesLabel: 'Visa tränare',
+    legend: 'Grupper',
+    trialTitle: 'Prova på!',
+    trialText: 'Att prova på är gratis. Kom några minuter innan passet, säg till en tränare att du är ny och ta med träningskläder och en vattenflaska.',
     link: 'Skriv ut affisch',
   },
   privacy: {

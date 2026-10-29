@@ -88,13 +88,13 @@ const contact = computed(() => {
 
 .poster.landscape {
   width: 297mm;
-  height: 210mm;
+  min-height: 210mm;
   page: poster-landscape;
 }
 
 .poster.portrait {
   width: 210mm;
-  height: 297mm;
+  min-height: 297mm;
   page: poster-portrait;
 }
 
@@ -108,7 +108,7 @@ const contact = computed(() => {
 
 /* The logo's white outlines need the dark background it was drawn for. */
 .head img {
-  height: 20mm;
+  height: 16mm;
   width: auto;
   box-sizing: content-box;
   padding: 2mm 4mm;
@@ -128,7 +128,7 @@ const contact = computed(() => {
 
 h1 {
   margin: 0;
-  font-size: 30pt;
+  font-size: 26pt;
 }
 
 .body {
@@ -173,8 +173,8 @@ h1 {
 
 .qr svg {
   flex: none;
-  width: 24mm;
-  height: 24mm;
+  width: 20mm;
+  height: 20mm;
 }
 
 .qr p {
@@ -198,12 +198,12 @@ h1 {
 
   .poster.landscape {
     width: 277mm;
-    height: 189mm;
+    min-height: 189mm;
   }
 
   .poster.portrait {
     width: 190mm;
-    height: 276mm;
+    min-height: 276mm;
   }
 }
 </style>

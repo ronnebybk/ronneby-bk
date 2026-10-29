@@ -154,6 +154,12 @@ export default {
     printed: 'Printed {date}',
     scheduleQr: 'Scan for the current schedule and cancellations.',
     groupsQr: 'Scan for the current classes and prices.',
+    seasonLabel: 'Season',
+    groupLabel: 'Class',
+    coachesLabel: 'Show coaches',
+    legend: 'Classes',
+    trialTitle: 'Try it!',
+    trialText: 'Trying a session is free. Come a few minutes early, tell a coach you are new and bring training clothes and a water bottle.',
     link: 'Print poster',
   },
   privacy: {
