@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, hasData, visibleSeasons, useSeasonSchedule, groupColorIndex, groupName, groupNames, timeRange } from '../data/store.js'
+import { state, hasData, visibleSeasons, useSeasonSchedule, groupStyle, groupName, timeRange } from '../data/store.js'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -30,12 +30,15 @@ const legend = computed(() => {
   return state.groups.filter((g) => names.has(g.name))
 })
 
-// One step smaller text when a day is crowded, so a busy week still fits one page.
-const DENSE_FROM = 3
-const dense = computed(() => Math.max(0, ...days.value.map((d) => d.sessions.length)) > DENSE_FROM)
+// Text size from the busiest day and the number of columns: larger when there is room, one step
+// smaller when a day is crowded or the columns are narrow. A rough guess, no measuring.
+const busiest = computed(() => Math.max(0, ...days.value.map((d) => d.sessions.length)))
+const size = computed(() => {
+  if (busiest.value > 3 || days.value.length >= 7) return 'dense'
+  return busiest.value <= 2 && days.value.length <= 5 ? 'roomy' : ''
+})
 
 const qrTo = computed(() => ({ name: 'schedule', query: activeGroup.value ? { grupp: activeGroup.value } : {} }))
-const colorOf = (name) => ({ '--group-color': `var(--group-${groupColorIndex(name)})` })
 </script>
 
 <template>
@@ -59,22 +62,24 @@ const colorOf = (name) => ({ '--group-color': `var(--group-${groupColorIndex(nam
   </PosterToolbar>
 
   <PosterFrame orientation="landscape" :qr-to="season ? qrTo : null" :qr-caption="t('poster.scheduleQr')">
-    <template #title>
-      {{ t('poster.scheduleTitle') }}<template v-if="season">: {{ localized(season.name, season.nameEn) }}</template>
+    <template #title>{{ t('poster.scheduleTitle') }}</template>
+    <template v-if="season" #subtitle>
+      <strong>{{ localized(season.name, season.nameEn) }}</strong> ·
+      {{ t('schedule.validFrom', { from: formatDate(season.from), to: formatDate(season.to) }) }}
     </template>
 
     <p v-if="state.status === 'loading' && !hasData" class="empty">{{ t('common.loading') }}</p>
     <p v-else-if="!season" class="empty">{{ state.status === 'error' ? t('poster.loadError') : t('schedule.empty') }}</p>
 
-    <div v-else :class="['sheet', { dense }]">
-      <p class="valid">{{ t('schedule.validFrom', { from: formatDate(season.from), to: formatDate(season.to) }) }}</p>
-
+    <div v-else :class="['sheet', size]">
       <div class="week" :style="{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }">
         <section v-for="d in days" :key="d.day" class="day">
           <h2>{{ t('days')[d.day - 1] }}</h2>
-          <div v-for="(s, i) in d.sessions" :key="i" class="session" :style="colorOf(s.groups[0])">
+          <div v-for="(s, i) in d.sessions" :key="i" class="session" :style="groupStyle(s.groups[0])">
             <p class="time">{{ timeRange(s) }}</p>
-            <p class="group">{{ groupNames(s.groups) }}</p>
+            <p class="chips">
+              <span v-for="(g, j) in s.groups" :key="j" class="chip" :style="groupStyle(g)">{{ groupName(g) }}</span>
+            </p>
             <p v-if="showCoaches && s.coach" class="meta">{{ t('common.coach') }}: {{ s.coach }}</p>
             <p v-if="s.note" class="meta note">{{ localized(s.note, s.noteEn) }}</p>
           </div>
@@ -83,13 +88,12 @@ const colorOf = (name) => ({ '--group-color': `var(--group-${groupColorIndex(nam
 
       <div class="lower">
         <ul class="legend" :aria-label="t('poster.legend')">
-          <li v-for="g in legend" :key="g.name" :style="colorOf(g.name)">
-            <span class="swatch"></span>
-            <strong>{{ groupName(g.name) }}</strong>
-            <template v-if="g.ages"> · {{ t('common.age') }} {{ g.ages }}</template>
+          <li v-for="g in legend" :key="g.name">
+            <span class="chip" :style="groupStyle(g.name)">{{ groupName(g.name) }}</span>
+            <template v-if="g.ages">{{ t('common.age') }} {{ g.ages }}</template>
           </li>
         </ul>
-        <aside class="trial">
+        <aside class="note-box trial">
           <strong>{{ t('poster.trialTitle') }}</strong>
           {{ t('poster.trialText') }}
         </aside>
@@ -123,51 +127,75 @@ select {
 }
 
 .sheet {
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 4mm;
-  min-height: 100%;
-  --time-size: 17pt;
-  --group-size: 12pt;
+  gap: 5mm;
+  --time-size: 19pt;
+  --chip-size: 11pt;
   --meta-size: 10pt;
-  --session-gap: 2.5mm;
+  --card-max: 40mm;
+}
+
+.sheet.roomy {
+  --time-size: 22pt;
+  --chip-size: 12pt;
+  --meta-size: 11pt;
+  --card-max: 75mm;
 }
 
 .sheet.dense {
-  --time-size: 11pt;
-  --group-size: 9.5pt;
+  --time-size: 13pt;
+  --chip-size: 9pt;
   --meta-size: 8pt;
-  --session-gap: 1.5mm;
+  --card-max: 30mm;
 }
 
 p {
   margin: 0;
 }
 
-.valid {
-  font-size: 11pt;
-  color: var(--muted);
-}
-
+/* Columns stretch to the footer and the cards share the height, so a quiet week fills the page. */
 .week {
+  flex: 1 0 auto;
   display: grid;
   gap: 3mm;
-  align-items: start;
-  flex: 1;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5mm;
+  min-width: 0;
 }
 
 .day h2 {
-  margin: 0 0 2mm;
-  padding-bottom: 1mm;
-  border-bottom: 0.5mm solid #000;
+  margin: 0;
+  padding: 1mm 0;
+  border-radius: 1.5mm;
+  background: var(--ink);
+  color: #fff;
   font-size: 16pt;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .session {
+  /* Grows towards --card-max while there is room; an explicit min-height beats max-height, so a
+     card with more text than the cap grows instead of spilling over the next one. */
+  flex: 1 1 auto;
+  max-height: var(--card-max);
+  min-height: min-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5mm;
   break-inside: avoid;
-  margin-bottom: var(--session-gap);
-  padding-left: 2.5mm;
+  padding: 2mm 3mm;
   border-left: 2mm solid var(--group-color);
+  border-radius: 1.5mm;
+  background: color-mix(in srgb, var(--group-color) 14%, #fff);
+  overflow-wrap: break-word;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -176,17 +204,17 @@ p {
   font-family: var(--font-display);
   font-size: var(--time-size);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
-.group {
-  font-size: var(--group-size);
-  font-weight: 700;
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm;
 }
 
 .meta {
   font-size: var(--meta-size);
-  color: var(--muted);
 }
 
 .note {
@@ -197,6 +225,7 @@ p {
   display: flex;
   align-items: stretch;
   gap: 6mm;
+  break-inside: avoid;
 }
 
 .legend {
@@ -204,38 +233,26 @@ p {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
-  gap: 1mm 6mm;
+  gap: 2mm 6mm;
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 10pt;
+  font-size: 11pt;
 }
 
-.swatch {
-  display: inline-block;
-  width: 4mm;
-  height: 4mm;
-  vertical-align: -0.8mm;
-  margin-right: 1mm;
-  background: var(--group-color);
-  border: 0.3mm solid #000;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+}
+
+.legend .chip {
+  font-size: 11pt;
 }
 
 .trial {
   flex: none;
-  width: 110mm;
-  padding: 2mm 3mm;
-  border: 0.6mm solid #000;
-  border-radius: 2mm;
-  font-size: 10pt;
-}
-
-.trial strong {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 13pt;
-  text-transform: uppercase;
+  width: 140mm;
+  font-size: 10.5pt;
 }
 </style>

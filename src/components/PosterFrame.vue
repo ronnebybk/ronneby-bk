@@ -21,10 +21,11 @@ const router = useRouter()
 // Built from where the poster is opened, so the code follows the site if it moves.
 const qrUrl = computed(() => (props.qrTo ? location.origin + location.pathname + router.resolve(props.qrTo).href : ''))
 
+const venue = computed(() => localized(state.club.venue, state.club.venueEn))
 const contact = computed(() => {
-  const { venue, venueEn, street, city, email, phone } = state.club
+  const { street, city, email, phone } = state.club
   const address = [street, city].filter(Boolean).join(', ')
-  return [localized(venue, venueEn), address, email, phone].filter(Boolean)
+  return [venue.value, address, email, phone].filter(Boolean)
 })
 </script>
 
@@ -33,23 +34,33 @@ const contact = computed(() => {
     <article :class="['poster', props.orientation]">
       <header class="head">
         <img :src="logo" :alt="config.clubName" width="697" height="545" />
-        <div>
+        <div class="titles">
           <p class="club">{{ config.clubName }}</p>
           <h1><slot name="title" /></h1>
+          <p v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></p>
         </div>
+        <p class="badge">
+          <span>{{ t('poster.badgeTop') }}</span>
+          <strong>{{ t('poster.badgeMain') }}</strong>
+        </p>
       </header>
 
       <div class="body"><slot /></div>
 
       <footer class="foot">
-        <ul v-if="contact.length" class="contact">
-          <li v-for="item in contact" :key="item">{{ item }}</li>
-        </ul>
+        <div class="contact">
+          <p v-if="contact.length">
+            <span v-for="(item, i) in contact" :key="i" :class="{ venue: i === 0 && venue }">{{ item }}</span>
+          </p>
+          <p class="printed">{{ t('poster.printed', { date: formatDate(todayIso()) }) }}</p>
+        </div>
         <div v-if="qrUrl" class="qr">
           <QrCode :value="qrUrl" />
-          <p v-if="qrCaption">{{ qrCaption }}</p>
+          <div>
+            <p class="scan">{{ t('poster.scan') }}</p>
+            <p v-if="qrCaption">{{ qrCaption }}</p>
+          </div>
         </div>
-        <p class="printed">{{ t('poster.printed', { date: formatDate(todayIso()) }) }}</p>
       </footer>
     </article>
   </div>
@@ -71,10 +82,12 @@ const contact = computed(() => {
   --surface: #fff;
   --line: #8a8381;
   --paper: #fff;
+  --highlight: #fde8e8;
+  --ink-tint: #eeeae7;
   color-scheme: light;
   display: flex;
   flex-direction: column;
-  gap: 4mm;
+  gap: 5mm;
   box-sizing: border-box;
   width: max-content;
   margin: 0 auto;
@@ -98,87 +111,140 @@ const contact = computed(() => {
   page: poster-portrait;
 }
 
+p {
+  margin: 0;
+}
+
+/* The black band is what makes it a club poster; it costs toner, which the club accepted. */
 .head {
   display: flex;
   align-items: center;
-  gap: 6mm;
-  padding-bottom: 3mm;
-  border-bottom: 1.5mm solid #000;
-}
-
-/* The logo's white outlines need the dark background it was drawn for. */
-.head img {
-  height: 16mm;
-  width: auto;
-  box-sizing: content-box;
-  padding: 2mm 4mm;
-  border-radius: 2mm;
-  background: #1e1d1c;
+  gap: 7mm;
+  padding: 3mm 6mm;
+  /* Square bottom corners keep the red stripe straight to its ends. */
+  border-radius: 3mm 3mm 0 0;
+  border-bottom: 2mm solid var(--red);
+  background: var(--ink);
+  color: #fff;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
+.head img {
+  flex: none;
+  height: 22mm;
+  width: auto;
+}
+
+.titles {
+  flex: 1;
+  min-width: 0;
+}
+
 .club {
-  margin: 0;
   font-family: var(--font-display);
-  font-size: 12pt;
-  letter-spacing: 0.08em;
+  font-size: 13pt;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 h1 {
   margin: 0;
-  font-size: 26pt;
+  color: #fff;
+  font-size: 36pt;
+  line-height: 1.05;
 }
 
+.subtitle {
+  margin-top: 1mm;
+  font-size: 12pt;
+}
+
+/* Tilted so it reads as a sticker; still legible in greyscale (white on dark grey). */
+.badge {
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 27mm;
+  height: 27mm;
+  border: 0.8mm solid #fff;
+  border-radius: 50%;
+  background: var(--red-strong);
+  color: #fff;
+  font-family: var(--font-display);
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.05;
+  transform: rotate(-8deg);
+}
+
+.badge span {
+  font-size: 8.5pt;
+}
+
+.badge strong {
+  font-size: 18pt;
+}
+
+/* Growing from its content size (basis auto, not 0): with basis 0, Chrome lays the footer over
+   the content when a full poster spills onto a second printed page. */
 .body {
-  flex: 1;
-  min-height: 0;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .foot {
   display: flex;
-  align-items: flex-end;
-  gap: 6mm;
-  padding-top: 3mm;
-  border-top: 0.5mm solid #000;
-  font-size: 10pt;
+  align-items: center;
+  gap: 8mm;
+  padding-top: 2mm;
+  border-top: 0.8mm solid #000;
 }
 
 .contact {
   flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1mm 6mm;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  flex-direction: column;
+  gap: 2mm;
+  font-size: 12pt;
+}
+
+.contact span:not(:last-child)::after {
+  content: ' · ';
+}
+
+.venue {
+  font-weight: 700;
 }
 
 .printed {
-  margin: 0;
   font-size: 8pt;
   color: var(--muted);
-  align-self: flex-end;
 }
 
 .qr {
   display: flex;
   align-items: center;
-  gap: 3mm;
-  max-width: 85mm;
-  font-size: 9pt;
+  gap: 4mm;
+  max-width: 105mm;
+  font-size: 10pt;
   line-height: 1.25;
 }
 
 .qr svg {
   flex: none;
-  width: 20mm;
-  height: 20mm;
+  width: 26mm;
+  height: 26mm;
 }
 
-.qr p {
-  margin: 0;
+.scan {
+  margin-bottom: 1mm;
+  font-family: var(--font-display);
+  font-size: 22pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--red-strong);
 }
 
 /* The sheet is the page: the @page margin replaces its on-screen padding. Slightly under the page
@@ -205,5 +271,45 @@ h1 {
     width: 190mm;
     min-height: 276mm;
   }
+}
+</style>
+
+<!-- Shared by both posters' bodies. Unscoped, but every rule is under .poster. -->
+<style>
+/* A group's name on its colour: a black-and-white printout loses nothing. */
+.poster .chip {
+  display: inline-block;
+  padding: 0.3mm 2.5mm;
+  border-radius: 999px;
+  background: var(--group-color);
+  color: var(--group-ink);
+  font-size: var(--chip-size, 11pt);
+  font-weight: 700;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* "Prova på" and "Bli medlem" boxes. */
+.poster .note-box {
+  padding: 2.5mm 4mm;
+  border-left: 2mm solid var(--red);
+  border-radius: 1.5mm;
+  background: var(--highlight);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.poster .note-box.ink {
+  border-left-color: var(--ink);
+  background: var(--ink-tint);
+}
+
+.poster .note-box > strong,
+.poster .note-box > h2 {
+  display: block;
+  margin: 0 0 1mm;
+  font-family: var(--font-display);
+  font-size: 14pt;
+  text-transform: uppercase;
 }
 </style>

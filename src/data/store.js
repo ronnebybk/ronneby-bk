@@ -238,3 +238,9 @@ export function groupColorIndex(name) {
   const index = state.groups.findIndex((g) => g.name === name)
   return index === -1 ? 0 : index % 6
 }
+
+// The group's colour and the text colour that reads on it, as CSS variables for filled labels.
+export function groupStyle(name) {
+  const index = groupColorIndex(name)
+  return { '--group-color': `var(--group-${index})`, '--group-ink': `var(--group-${index}-ink)` }
+}
