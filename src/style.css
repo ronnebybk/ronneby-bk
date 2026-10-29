@@ -225,3 +225,24 @@ button {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Print posters (/#/affisch/…). Named pages, because @page is global and a poster's CSS stays
+   loaded after navigating away; each poster picks its page with `page:`. */
+@page poster-landscape {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@page poster-portrait {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  body,
+  #app {
+    display: block;
+    min-height: 0;
+    background: #fff;
+  }
+}

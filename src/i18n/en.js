@@ -147,6 +147,13 @@ export default {
     groupButton: 'Join the Facebook group',
     privacy: 'Read more in the privacy policy',
   },
+  poster: {
+    print: 'Print',
+    scheduleTitle: 'Schedule',
+    groupsTitle: 'Classes & prices',
+    printed: 'Printed {date}',
+    link: 'Print poster',
+  },
   privacy: {
     title: 'Privacy policy',
   },

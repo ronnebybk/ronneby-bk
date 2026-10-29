@@ -148,6 +148,13 @@ export default {
     groupButton: 'Gå med i Facebookgruppen',
     privacy: 'Läs mer i integritetspolicyn',
   },
+  poster: {
+    print: 'Skriv ut',
+    scheduleTitle: 'Schema',
+    groupsTitle: 'Grupper & priser',
+    printed: 'Utskriven {date}',
+    link: 'Skriv ut affisch',
+  },
   privacy: {
     title: 'Integritetspolicy',
   },
