@@ -1,22 +1,12 @@
 <script setup>
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, sessionsFor, groupColorIndex, timeRange } from '../data/store.js'
+import { state, hasData, currentSeason, sessionsFor, groupColorIndex, timeRange, priceText } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
 
 function sessionsOf(group) {
   return sessionsFor(currentSeason.value).filter((s) => s.groups.includes(group.name))
-}
-
-function priceText(group) {
-  return group.prices
-    .map(({ price, period }) =>
-      price === 0
-        ? t('common.free')
-        : t('groups.perPeriod', { price: price.toLocaleString('sv-SE'), period: t(`periods.${period}`) }),
-    )
-    .join(' · ')
 }
 </script>
 

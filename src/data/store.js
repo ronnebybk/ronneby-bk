@@ -3,7 +3,7 @@ import Papa from 'papaparse'
 import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
-import { localized } from '../i18n/index.js'
+import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
@@ -177,6 +177,17 @@ export function groupName(name) {
 
 export function groupNames(names) {
   return names.map(groupName).join(', ')
+}
+
+// "600 kr / termin · 2 000 kr / år", or "Gratis"; shared by the groups page and its poster.
+export function priceText(group) {
+  return group.prices
+    .map(({ price, period }) =>
+      price === 0
+        ? t('common.free')
+        : t('groups.perPeriod', { price: price.toLocaleString('sv-SE'), period: t(`periods.${period}`) }),
+    )
+    .join(' · ')
 }
 
 export function timeRange(session) {
