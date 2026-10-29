@@ -1,6 +1,6 @@
 <script setup>
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, sessionsFor, groupColorIndex, timeRange, priceText } from '../data/store.js'
+import { state, hasData, currentSeason, sessionsFor, groupStyle, timeRange, priceText } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
@@ -24,7 +24,7 @@ function sessionsOf(group) {
         v-for="group in state.groups"
         :key="group.name"
         class="card group"
-        :style="{ '--group-color': `var(--group-${groupColorIndex(group.name)})` }"
+        :style="groupStyle(group.name)"
       >
         <header>
           <h2>{{ localized(group.name, group.nameEn) }}</h2>
