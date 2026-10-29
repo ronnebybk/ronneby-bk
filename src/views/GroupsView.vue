@@ -47,10 +47,18 @@ function sessionsOf(group) {
         <p v-if="group.prices.length" class="price">{{ priceText(group) }}</p>
       </article>
     </div>
+
+    <p v-if="state.groups.length" class="print-link">
+      <RouterLink to="/affisch/grupper">{{ t('poster.link') }}</RouterLink>
+    </p>
   </div>
 </template>
 
 <style scoped>
+.print-link {
+  margin: 24px 0 0;
+}
+
 .group {
   display: flex;
   flex-direction: column;

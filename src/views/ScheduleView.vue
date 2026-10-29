@@ -111,6 +111,10 @@ const days = computed(() =>
           </div>
         </section>
       </div>
+
+      <p class="print-link">
+        <RouterLink to="/affisch/schema">{{ t('poster.link') }}</RouterLink>
+      </p>
     </template>
   </div>
 </template>
@@ -119,6 +123,10 @@ const days = computed(() =>
 /* Seven day columns need more room than the other pages. */
 .wide {
   max-width: 1360px;
+}
+
+.print-link {
+  margin: 24px 0 0;
 }
 
 .season-bar {
