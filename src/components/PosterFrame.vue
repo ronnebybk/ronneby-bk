@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import QrCode from './QrCode.vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from '../i18n/index.js'
 import { state, todayIso } from '../data/store.js'
 import config from '../config.js'
@@ -8,9 +10,16 @@ import logo from '../assets/logo.svg'
 const props = defineProps({
   // 'landscape' is the schedule, 'portrait' the groups & prices poster; both are A4.
   orientation: { type: String, default: 'portrait' },
+  // Route of the live page (it becomes an absolute address) and the sentence printed next to its QR.
+  qrTo: { type: Object, default: null },
+  qrCaption: { type: String, default: '' },
 })
 
 const { t, localized, formatDate } = useI18n()
+const router = useRouter()
+
+// Built from where the poster is opened, so the code follows the site if it moves.
+const qrUrl = computed(() => (props.qrTo ? location.origin + location.pathname + router.resolve(props.qrTo).href : ''))
 
 const contact = computed(() => {
   const { venue, venueEn, street, city, email, phone } = state.club
@@ -36,7 +45,10 @@ const contact = computed(() => {
         <ul v-if="contact.length" class="contact">
           <li v-for="item in contact" :key="item">{{ item }}</li>
         </ul>
-        <div class="qr"><slot name="qr" /></div>
+        <div v-if="qrUrl" class="qr">
+          <QrCode :value="qrUrl" />
+          <p v-if="qrCaption">{{ qrCaption }}</p>
+        </div>
         <p class="printed">{{ t('poster.printed', { date: formatDate(todayIso()) }) }}</p>
       </footer>
     </article>
@@ -150,8 +162,23 @@ h1 {
   align-self: flex-end;
 }
 
-.qr:empty {
-  display: none;
+.qr {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  max-width: 85mm;
+  font-size: 9pt;
+  line-height: 1.25;
+}
+
+.qr svg {
+  flex: none;
+  width: 24mm;
+  height: 24mm;
+}
+
+.qr p {
+  margin: 0;
 }
 
 /* The sheet is the page: the @page margin replaces its on-screen padding. Slightly under the page

@@ -152,6 +152,8 @@ export default {
     scheduleTitle: 'Schedule',
     groupsTitle: 'Classes & prices',
     printed: 'Printed {date}',
+    scheduleQr: 'Scan for the current schedule and cancellations.',
+    groupsQr: 'Scan for the current classes and prices.',
     link: 'Print poster',
   },
   privacy: {

@@ -153,6 +153,8 @@ export default {
     scheduleTitle: 'Schema',
     groupsTitle: 'Grupper & priser',
     printed: 'Utskriven {date}',
+    scheduleQr: 'Scanna för aktuellt schema och inställda pass.',
+    groupsQr: 'Scanna för aktuella grupper och priser.',
     link: 'Skriv ut affisch',
   },
   privacy: {

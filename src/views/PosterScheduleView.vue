@@ -8,7 +8,11 @@ const { t } = useI18n()
 
 <template>
   <PosterToolbar />
-  <PosterFrame orientation="landscape">
+  <PosterFrame
+    orientation="landscape"
+    :qr-to="{ name: 'schedule' }"
+    :qr-caption="t('poster.scheduleQr')"
+  >
     <template #title>{{ t('poster.scheduleTitle') }}</template>
   </PosterFrame>
 </template>
