@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, sessionsFor, weekday, groupColorIndex } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, weekday, groupColorIndex } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
@@ -13,15 +13,7 @@ const selectedName = ref(null)
 const groupFilter = ref('')
 
 // Follow the current season until the visitor picks another one.
-const season = computed(
-  () => visibleSeasons.value.find((s) => s.name === selectedName.value) ?? currentSeason.value,
-)
-
-const sessions = computed(() => sessionsFor(season.value))
-const groupsInSeason = computed(() => {
-  const names = new Set(sessions.value.flatMap((s) => s.groups))
-  return state.groups.filter((g) => names.has(g.name))
-})
+const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 
 // /#/schema?grupp=<name> (the QR code on a one-group poster) opens filtered. It is read once, when
 // the groups are known; a name that matches nothing leaves all groups showing.

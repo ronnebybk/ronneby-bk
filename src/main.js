@@ -9,4 +9,6 @@ import router from './router.js'
 import { loadData } from './data/store.js'
 
 loadData()
-createApp(App).use(router).mount('#app')
+// Wait for the first route, so a poster page never flashes the site header and footer.
+const app = createApp(App).use(router)
+router.isReady().then(() => app.mount('#app'))

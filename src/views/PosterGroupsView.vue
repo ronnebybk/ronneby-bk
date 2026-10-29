@@ -1,13 +1,11 @@
 <script setup>
-import { computed } from 'vue'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
+import TextBlocks from '../components/TextBlocks.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, groupColorIndex, priceText } from '../data/store.js'
+import { state, hasData, joinText, groupColorIndex, priceText } from '../data/store.js'
 
 const { t, localized } = useI18n()
-
-const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
 </script>
 
 <template>
@@ -19,7 +17,8 @@ const joinText = computed(() => localized(state.club.join, state.club.joinEn) ||
   >
     <template #title>{{ t('poster.groupsTitle') }}</template>
 
-    <p v-if="!state.groups.length" class="empty">{{ t('groups.empty') }}</p>
+    <p v-if="state.status === 'loading' && !hasData" class="empty">{{ t('common.loading') }}</p>
+    <p v-else-if="!state.groups.length" class="empty">{{ state.status === 'error' ? t('poster.loadError') : t('groups.empty') }}</p>
 
     <div v-else class="sheet">
       <div class="groups">
@@ -45,7 +44,7 @@ const joinText = computed(() => localized(state.club.join, state.club.joinEn) ||
         </aside>
         <section class="join">
           <h2>{{ t('contact.joinTitle') }}</h2>
-          <p>{{ joinText }}</p>
+          <TextBlocks :text="joinText" />
         </section>
       </div>
     </div>
@@ -138,10 +137,5 @@ h2 {
 
 .join h2 {
   font-size: 14pt;
-}
-
-.join p {
-  white-space: pre-line;
-  overflow-wrap: anywhere;
 }
 </style>

@@ -166,6 +166,21 @@ export function sessionsFor(season) {
   return state.sessions.filter((s) => s.season === season.name)
 }
 
+// The chosen season (the current one until `nameRef` names another visible season), its sessions
+// and the groups that have sessions in it; shared by the schedule page and its poster.
+export function useSeasonSchedule(nameRef) {
+  const season = computed(() => visibleSeasons.value.find((s) => s.name === nameRef.value) ?? currentSeason.value)
+  const sessions = computed(() => sessionsFor(season.value))
+  const groupsInSeason = computed(() => {
+    const names = new Set(sessions.value.flatMap((s) => s.groups))
+    return state.groups.filter((g) => names.has(g.name))
+  })
+  return { season, sessions, groupsInSeason }
+}
+
+// The "how to join" text from Klubbinfo, or the built-in one; shared by the contact page and the groups poster.
+export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
+
 export function findGroup(name) {
   return state.groups.find((g) => g.name === name)
 }

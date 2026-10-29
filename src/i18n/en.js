@@ -160,6 +160,7 @@ export default {
     legend: 'Classes',
     trialTitle: 'Try it!',
     trialText: 'Trying a session is free. Come a few minutes early, tell a coach you are new and bring training clothes and a water bottle.',
+    loadError: 'The content could not be loaded right now. Please try again shortly.',
     link: 'Print poster',
   },
   privacy: {

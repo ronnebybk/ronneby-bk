@@ -161,6 +161,7 @@ export default {
     legend: 'Grupper',
     trialTitle: 'Prova på!',
     trialText: 'Att prova på är gratis. Kom några minuter innan passet, säg till en tränare att du är ny och ta med träningskläder och en vattenflaska.',
+    loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
     link: 'Skriv ut affisch',
   },
   privacy: {

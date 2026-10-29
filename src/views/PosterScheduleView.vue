@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, currentSeason, visibleSeasons, sessionsFor, groupColorIndex, groupName, groupNames, timeRange } from '../data/store.js'
+import { state, hasData, visibleSeasons, useSeasonSchedule, groupColorIndex, groupName, groupNames, timeRange } from '../data/store.js'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -11,15 +11,14 @@ const seasonName = ref(null)
 const group = ref('')
 const showCoaches = ref(true)
 
-// Same seasons as the schedule page; the current one until the editor picks another.
-const season = computed(() => visibleSeasons.value.find((s) => s.name === seasonName.value) ?? currentSeason.value)
-const sessions = computed(() => sessionsFor(season.value))
-const groupsInSeason = computed(() => {
-  const names = new Set(sessions.value.flatMap((s) => s.groups))
-  return state.groups.filter((g) => names.has(g.name))
+const { season, sessions, groupsInSeason } = useSeasonSchedule(seasonName)
+// The selects follow what the poster shows, so they never start blank. A group chosen for another
+// season falls back to all groups.
+const chosenSeason = computed({ get: () => season.value?.name, set: (name) => (seasonName.value = name) })
+const activeGroup = computed({
+  get: () => (groupsInSeason.value.some((g) => g.name === group.value) ? group.value : ''),
+  set: (name) => (group.value = name),
 })
-// A group chosen for another season falls back to all groups.
-const activeGroup = computed(() => (groupsInSeason.value.some((g) => g.name === group.value) ? group.value : ''))
 const shown = computed(() => (activeGroup.value ? sessions.value.filter((s) => s.groups.includes(activeGroup.value)) : sessions.value))
 
 // Only days that have sessions get a column.
@@ -44,13 +43,13 @@ const colorOf = (name) => ({ '--group-color': `var(--group-${groupColorIndex(nam
     <template v-if="season">
       <label v-if="visibleSeasons.length > 1">
         {{ t('poster.seasonLabel') }}
-        <select v-model="seasonName">
+        <select v-model="chosenSeason">
           <option v-for="s in visibleSeasons" :key="s.name" :value="s.name">{{ localized(s.name, s.nameEn) }}</option>
         </select>
       </label>
       <label v-if="groupsInSeason.length > 1">
         {{ t('poster.groupLabel') }}
-        <select v-model="group">
+        <select v-model="activeGroup">
           <option value="">{{ t('schedule.allGroups') }}</option>
           <option v-for="g in groupsInSeason" :key="g.name" :value="g.name">{{ groupName(g.name) }}</option>
         </select>
@@ -64,7 +63,8 @@ const colorOf = (name) => ({ '--group-color': `var(--group-${groupColorIndex(nam
       {{ t('poster.scheduleTitle') }}<template v-if="season">: {{ localized(season.name, season.nameEn) }}</template>
     </template>
 
-    <p v-if="!season" class="empty">{{ t('schedule.empty') }}</p>
+    <p v-if="state.status === 'loading' && !hasData" class="empty">{{ t('common.loading') }}</p>
+    <p v-else-if="!season" class="empty">{{ state.status === 'error' ? t('poster.loadError') : t('schedule.empty') }}</p>
 
     <div v-else :class="['sheet', { dense }]">
       <p class="valid">{{ t('schedule.validFrom', { from: formatDate(season.from), to: formatDate(season.to) }) }}</p>
