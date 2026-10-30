@@ -34,7 +34,7 @@ function onImageError(event) {
     <div v-else class="grid">
       <article v-for="coach in state.coaches" :key="coach.name" class="card coach">
         <div class="photo">
-          <img v-if="coach.image" :src="coach.image" :alt="coach.name" loading="lazy" @error="onImageError" />
+          <img v-if="coach.image" :src="coach.image" :alt="coach.name" loading="lazy" referrerpolicy="no-referrer" @error="onImageError" />
           <span class="initials" :hidden="Boolean(coach.image)" aria-hidden="true">{{ initials(coach.name) }}</span>
         </div>
         <div class="body">
@@ -67,11 +67,15 @@ function onImageError(event) {
 .photo {
   aspect-ratio: 4 / 3;
   background: var(--ink);
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
 }
 
 .photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
