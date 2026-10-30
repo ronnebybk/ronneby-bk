@@ -104,9 +104,10 @@ export function loadData() {
     fetchOptional('club', cached),
     fetchOptional('trial', cached),
     fetchOptional('faq', cached),
+    fetchOptional('documents', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
