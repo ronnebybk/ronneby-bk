@@ -15,6 +15,7 @@ const titleKeys = {
   contact: 'nav.contact',
   trial: 'trial.title',
   faq: 'faq.title',
+  results: 'results.title',
   privacy: 'privacy.title',
   documents: 'documents.title',
   admin: 'admin.title',
