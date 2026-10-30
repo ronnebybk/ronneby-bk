@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import TextBlocks from '../components/TextBlocks.vue'
 import SocialSection from '../components/SocialSection.vue'
 import { useI18n } from '../i18n/index.js'
-import { state } from '../data/store.js'
+import { state, joinText } from '../data/store.js'
 import { telHref } from '../data/parse.js'
 
 const { t, localized } = useI18n()
@@ -15,7 +15,6 @@ const mapUrl = computed(() => {
   const { venue, street, city } = club.value
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([venue, street, city].filter(Boolean).join(', '))}`
 })
-const joinText = computed(() => localized(club.value.join, club.value.joinEn) || t('contact.joinText'))
 </script>
 
 <template>

@@ -24,6 +24,13 @@
   --group-3: #3b6fb6;
   --group-4: #8a55b0;
   --group-5: #5b8c3a;
+  /* Text on a filled group label: whichever of black and white passes WCAG AA (4.5:1) on that colour. */
+  --group-0-ink: #000;
+  --group-1-ink: #000;
+  --group-2-ink: #000;
+  --group-3-ink: #fff;
+  --group-4-ink: #fff;
+  --group-5-ink: #000;
 
   --radius: 10px;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
@@ -224,4 +231,27 @@ button {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* Print posters (/#/affisch/…). Named pages, because @page is global and a poster's CSS stays
+   loaded after navigating away; each poster picks its page with `page:`. No margin leaves the browser
+   no room for its own header and footer (title, address, date); the poster's padding is the margin. */
+@page poster-landscape {
+  size: A4 landscape;
+  margin: 0;
+}
+
+@page poster-portrait {
+  size: A4 portrait;
+  margin: 0;
+}
+
+/* Site-wide on purpose: the full-height flex layout can stretch a printed page or add a blank one. */
+@media print {
+  body,
+  #app {
+    display: block;
+    min-height: 0;
+    background: #fff;
+  }
 }

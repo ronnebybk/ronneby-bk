@@ -218,10 +218,14 @@ const CLUB_FIELDS = {
   facebook: 'facebookUrl',
   instagram: 'instagramUrl',
   behold: 'beholdFeedId',
+  // Poster texts (/#/affisch/…): the badge and the Prova på box. No built-in fallback, so a poster
+  // never promises anything about trying out that the sheet doesn't say.
+  'affisch märke': 'posterBadge',
+  'affisch prova på': 'posterTrial',
 }
 
 // Only these are shown as text a visitor reads; the rest are addresses, numbers and links.
-const CLUB_TRANSLATED = ['venue', 'join']
+const CLUB_TRANSLATED = ['venue', 'join', 'posterBadge', 'posterTrial']
 
 const INSTAGRAM_RESERVED = ['explore', 'p', 'reel', 'reels', 'stories', 'tv', 'accounts', 'direct']
 

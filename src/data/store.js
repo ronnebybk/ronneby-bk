@@ -3,7 +3,7 @@ import Papa from 'papaparse'
 import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
-import { localized } from '../i18n/index.js'
+import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
@@ -117,7 +117,7 @@ export function loadData() {
 
 // --- Dates -------------------------------------------------------------------
 
-function todayIso(date = new Date()) {
+export function todayIso(date = new Date()) {
   const pad = (n) => String(n).padStart(2, '0')
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
@@ -166,6 +166,34 @@ export function sessionsFor(season) {
   return state.sessions.filter((s) => s.season === season.name)
 }
 
+// The chosen season (the current one until `nameRef` names another visible season), its sessions
+// and the groups that have sessions in it; shared by the schedule page and its poster.
+export function useSeasonSchedule(nameRef) {
+  const season = computed(() => visibleSeasons.value.find((s) => s.name === nameRef.value) ?? currentSeason.value)
+  const sessions = computed(() => sessionsFor(season.value))
+  const groupsInSeason = computed(() => {
+    const names = new Set(sessions.value.flatMap((s) => s.groups))
+    return state.groups.filter((g) => names.has(g.name))
+  })
+  return { season, sessions, groupsInSeason }
+}
+
+// The posters' Prova på box (Klubbinfo "Affisch prova på"); empty means no box.
+export const posterTrial = computed(() => localized(state.club.posterTrial, state.club.posterTrialEn))
+
+// The "how to join" text from Klubbinfo, or the built-in one; shared by the contact page and the groups poster.
+export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
+
+// Query for a link to the schedule page or its poster: the season only when it isn't the current one,
+// so a link stays right when the seasons roll over. Between seasons the next one counts as current, so
+// a poster printed then may open another season if the sheet later adds one that starts earlier.
+export function scheduleQuery(season, group) {
+  const query = {}
+  if (season && season.name !== currentSeason.value?.name) query.sasong = season.name
+  if (group) query.grupp = group
+  return query
+}
+
 export function findGroup(name) {
   return state.groups.find((g) => g.name === name)
 }
@@ -177,6 +205,17 @@ export function groupName(name) {
 
 export function groupNames(names) {
   return names.map(groupName).join(', ')
+}
+
+// "600 kr / termin · 2 000 kr / år", or "Gratis"; shared by the groups page and its poster.
+export function priceText(group) {
+  return group.prices
+    .map(({ price, period }) =>
+      price === 0
+        ? t('common.free')
+        : t('groups.perPeriod', { price: price.toLocaleString('sv-SE'), period: t(`periods.${period}`) }),
+    )
+    .join(' · ')
 }
 
 export function timeRange(session) {
@@ -211,4 +250,10 @@ export const todayInfo = computed(() => {
 export function groupColorIndex(name) {
   const index = state.groups.findIndex((g) => g.name === name)
   return index === -1 ? 0 : index % 6
+}
+
+// The group's colour and the text colour that reads on it, as CSS variables for filled labels.
+export function groupStyle(name) {
+  const index = groupColorIndex(name)
+  return { '--group-color': `var(--group-${index})`, '--group-ink': `var(--group-${index}-ink)` }
 }

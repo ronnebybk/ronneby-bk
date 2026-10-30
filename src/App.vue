@@ -15,6 +15,8 @@ const titleKeys = {
   contact: 'nav.contact',
   privacy: 'privacy.title',
   admin: 'admin.title',
+  posterSchedule: 'poster.scheduleTitle',
+  posterGroups: 'poster.groupsTitle',
 }
 
 watchEffect(() => {
@@ -24,9 +26,9 @@ watchEffect(() => {
 </script>
 
 <template>
-  <SiteHeader />
+  <SiteHeader v-if="!route.meta.bare" />
   <main id="main">
     <RouterView />
   </main>
-  <SiteFooter v-if="route.name !== 'admin'" />
+  <SiteFooter v-if="route.name !== 'admin' && !route.meta.bare" />
 </template>

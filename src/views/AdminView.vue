@@ -79,6 +79,8 @@ function forget() {
       <div class="container links">
         <a :href="fullUrl" target="_blank" rel="noopener">{{ t('admin.openInSheets') }} ↗</a>
         <RouterLink to="/">{{ t('admin.viewSite') }}</RouterLink>
+        <RouterLink to="/affisch/schema">{{ t('poster.link') }}: {{ t('nav.schedule') }}</RouterLink>
+        <RouterLink to="/affisch/grupper">{{ t('poster.link') }}: {{ t('nav.groups') }}</RouterLink>
         <button type="button" class="link-btn" @click="forget">{{ t('admin.forget') }}</button>
       </div>
     </template>

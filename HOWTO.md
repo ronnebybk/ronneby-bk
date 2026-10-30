@@ -38,6 +38,7 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Lägga upp ett anslag | Ny rad i **Anslag**: skriv meddelandet (och gärna en engelsk text), fyll i *Visa från* och *Visa till* som `ÅÅÅÅ-MM-DD` eller lämna dem tomma. Anslaget syns högst upp på startsidan inom ca 5 minuter. Ta bort raden när det inte längre gäller. |
 | Lägga upp en nyhet | Ny rad i **Anslag** med *Typ* = **Nyhet**: skriv en *Rubrik* och/eller ett meddelande (och gärna engelska texter). *Visa från* blir nyhetens datum. Fyll i *Visa till* så försvinner nyheten av sig själv. Nyheter syns under "Nyheter" på startsidan, nyaste först. |
 | Ändra adress, e-post, telefon eller "Bli medlem" | Fliken **Klubbinfo**: skriv i kolumnen *Värde* på rätt rad (*Lokal*, *Gatuadress*, *Ort*, *E-post*, *Telefon*, *Bli medlem*). *Värde (EN)* är valfri engelsk text, t.ex. för *Bli medlem*. En länk i *Bli medlem* blir klickbar. |
+| Ändra märket och "Prova på"-rutan på affischerna | Fliken **Klubbinfo**: *Affisch märke* = texten i den röda runda etiketten (kort, t.ex. "Första passet gratis!"), *Affisch prova på* = texten i rutan *Prova på!*. *Värde (EN)* används när affischen skrivs ut på engelska. Är en av raderna tom skrivs den delen inte ut. |
 | Ändra Facebook eller Instagram | Fliken **Klubbinfo**: *Facebook* = hela adressen (`https://www.facebook.com/…`), *Instagram* = kontonamnet eller länken till profilen. |
 | Ändra texten på Prova på-sidan | Fliken **Prova på**: en rad per avsnitt, med *Rubrik* och *Text* (och gärna *Rubrik (EN)* / *Text (EN)*). Raderna visas i samma ordning som i arket. Finns minst en ifylld rad ersätter fliken standardtexten helt. |
 | Lägga till en fråga | Ny rad i **Frågor**: skriv frågan i *Fråga* och svaret i *Svar*. *Fråga (EN)* och *Svar (EN)* är valfria – saknas de visas den svenska texten även på engelska. Radordningen i arket är ordningen på sidan, så flytta en rad för att ändra ordningen. |
@@ -72,6 +73,34 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - Lägg **aldrig** in privata uppgifter (medlemslistor, personnummer, betalningar). Allt i kalkylarket är offentligt.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
 - Blev något fel? Säg till webbansvarig. Alla tidigare versioner finns sparade (*Arkiv → Versionshistorik*).
+
+### Skriv ut en affisch
+
+Hemsidan kan göra två affischer i A4 av det som står i kalkylarket, till anslagstavlan: **Schema** (liggande)
+och **Grupper & priser** (stående). Inget behöver skrivas om för hand.
+
+1. Gå till **#/admin** och tryck på *Skriv ut affisch: Schema* eller *Skriv ut affisch: Grupper & priser*
+   (länkarna finns också längst ner på sidorna Schema och Grupper & priser).
+2. Överst (syns inte på pappret) kan du byta språk (svenska/engelska) och, på schemat, välja **säsong**,
+   **grupp** (alla eller en) och om **tränare** ska visas.
+3. Tryck på **Skriv ut**. Vill du ha en PDF väljer du *Spara som PDF* som skrivare i utskriftsrutan.
+
+**Bra att veta**
+
+- Affischen visar det som finns i kalkylarket just nu. Ser du en gul varning överst, t.ex. att exempeldata
+  eller en sparad kopia visas, vänta och ladda om sidan innan du skriver ut.
+- QR-koden leder till motsvarande sida på hemsidan, där inställda pass och senaste ändringar syns.
+  På en affisch för en enda grupp leder den till schemat filtrerat på den gruppen, och på en affisch för
+  en kommande säsong till den säsongen.
+- Märket ("Första passet gratis!") och rutan **Prova på!** hämtas från raderna *Affisch märke* och
+  *Affisch prova på* i fliken **Klubbinfo**. Är en rad tom skrivs den delen inte ut.
+- Använd utskriftens standardinställningar: A4, skala 100 %, standardmarginaler. Affischen har egna
+  marginaler, så webbläsarens rubriker och sidfötter (adress, datum) kommer inte med. I Firefox kan de
+  behöva stängas av i utskriftsrutan.
+- Gruppernas färger skrivs ut, men gruppens namn står alltid bredvid, så affischen fungerar även i svartvitt.
+- Affischen ska rymmas på **en sida**. Är en dag väldigt full (fler än fem pass med tränare och noteringar),
+  eller är beskrivningarna mycket långa, kan det bli en andra sida. Då hjälper det att dölja tränarna, välja
+  en grupp eller korta ner texten i kalkylarket.
 
 ### Visa Facebook och Instagram på hemsidan
 
@@ -258,7 +287,8 @@ Use the club's Google account, not a personal one. The board keeps the login det
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
    In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,
-   `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`. Every one of those nine
+   `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`, `Affisch märke`,
+   `Affisch prova på`. Every one of those eleven
    needs its own row, since editors can't add rows once column A is protected (step 5).
    Also check that *Klubbinfo* columns B:C are **Format → Number → Plain text**. Otherwise Sheets turns a phone
    number like `+46 70…` into a number and drops the `+` and leading zeros. Do the same for *Prova på*

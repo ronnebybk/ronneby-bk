@@ -1,26 +1,52 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, sessionsFor, weekday, groupColorIndex } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, groupStyle } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
+const route = useRoute()
 
 const selectedName = ref(null)
-const groupFilter = ref('')
+const chosenGroup = ref('')
 
-// Follow the current season until the visitor picks another one.
-const season = computed(
-  () => visibleSeasons.value.find((s) => s.name === selectedName.value) ?? currentSeason.value,
-)
-watch(season, () => (groupFilter.value = ''))
+// The season the visitor picked, else ?sasong=, else the current one.
+const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 
-const sessions = computed(() => sessionsFor(season.value))
-const groupsInSeason = computed(() => {
-  const names = new Set(sessions.value.flatMap((s) => s.groups))
-  return state.groups.filter((g) => names.has(g.name))
-})
+// A filter whose group is no longer in the season (renamed in the sheet, or another season picked)
+// shows all groups, so the visitor is never stuck on an empty week.
+const groupFilter = computed(() => (groupsInSeason.value.some((g) => g.name === chosenGroup.value) ? chosenGroup.value : ''))
+
+// The poster's QR code links here with ?sasong= and ?grupp=. The cached copy may predate the group,
+// so its name waits for the live data.
+let wanted = null
+function applyWanted() {
+  if (!wanted) return
+  if (groupsInSeason.value.some((g) => g.name === wanted)) {
+    chosenGroup.value = wanted
+    wanted = null
+  } else if (state.status !== 'loading') {
+    wanted = null
+  }
+}
+function readQuery() {
+  selectedName.value = firstQuery(route.query, 'sasong')
+  chosenGroup.value = ''
+  wanted = firstQuery(route.query, 'grupp')
+  applyWanted()
+}
+readQuery()
+watch([() => route.query.sasong, () => route.query.grupp], readQuery)
+watch([groupsInSeason, () => state.status], applyWanted)
+
+function pickGroup(name) {
+  wanted = null
+  chosenGroup.value = name
+}
+
 const filtered = computed(() =>
   groupFilter.value ? sessions.value.filter((s) => s.groups.includes(groupFilter.value)) : sessions.value,
 )
@@ -68,7 +94,7 @@ const days = computed(() =>
       </div>
 
       <div v-if="groupsInSeason.length > 1" class="filters" :aria-label="t('schedule.filter')" role="group">
-        <button type="button" :class="{ active: !groupFilter }" @click="groupFilter = ''">
+        <button type="button" :class="{ active: !groupFilter }" @click="pickGroup('')">
           {{ t('schedule.allGroups') }}
         </button>
         <button
@@ -76,8 +102,8 @@ const days = computed(() =>
           :key="group.name"
           type="button"
           :class="{ active: groupFilter === group.name }"
-          :style="{ '--group-color': `var(--group-${groupColorIndex(group.name)})` }"
-          @click="groupFilter = groupFilter === group.name ? '' : group.name"
+          :style="groupStyle(group.name)"
+          @click="pickGroup(groupFilter === group.name ? '' : group.name)"
         >
           <span class="dot"></span>{{ localized(group.name, group.nameEn) }}
         </button>
@@ -95,6 +121,10 @@ const days = computed(() =>
           </div>
         </section>
       </div>
+
+      <p class="print-link">
+        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
+      </p>
     </template>
   </div>
 </template>
@@ -103,6 +133,10 @@ const days = computed(() =>
 /* Seven day columns need more room than the other pages. */
 .wide {
   max-width: 1360px;
+}
+
+.print-link {
+  margin: 24px 0 0;
 }
 
 .season-bar {

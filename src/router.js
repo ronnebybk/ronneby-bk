@@ -11,9 +11,15 @@ const routes = [
   { path: '/fragor', name: 'faq', component: () => import('./views/FaqView.vue') },
   { path: '/kontakt', name: 'contact', component: () => import('./views/ContactView.vue') },
   { path: '/integritet', name: 'privacy', component: () => import('./views/PrivacyView.vue') },
+  // Print posters: no site header or footer around them.
+  { path: '/affisch/schema', name: 'posterSchedule', component: () => import('./views/PosterScheduleView.vue'), meta: { bare: true } },
+  { path: '/affisch/grupper', name: 'posterGroups', component: () => import('./views/PosterGroupsView.vue'), meta: { bare: true } },
   { path: '/admin', name: 'admin', component: () => import('./views/AdminView.vue') },
   { path: '/:pathMatch(.*)*', name: 'notFound', component: () => import('./views/NotFoundView.vue') },
 ]
+
+// A repeated query parameter arrives as an array: the first one counts.
+export const firstQuery = (query, key) => [query[key]].flat()[0] ?? null
 
 export default createRouter({
   history: createWebHashHistory(),

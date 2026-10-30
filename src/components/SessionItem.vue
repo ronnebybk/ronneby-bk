@@ -1,5 +1,5 @@
 <script setup>
-import { groupColorIndex, groupNames, timeRange } from '../data/store.js'
+import { groupStyle, groupNames, timeRange } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 defineProps({
@@ -11,7 +11,7 @@ const { t, localized } = useI18n()
 </script>
 
 <template>
-  <div class="session" :style="{ '--group-color': `var(--group-${groupColorIndex(session.groups[0])})` }">
+  <div class="session" :style="groupStyle(session.groups[0])">
     <div class="time">
       <span v-if="showDay" class="day">{{ t('days')[session.day - 1] }}</span>
       {{ timeRange(session) }}
