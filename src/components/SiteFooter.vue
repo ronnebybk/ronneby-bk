@@ -14,6 +14,7 @@ const year = new Date().getFullYear()
       <nav>
         <a v-if="state.club.facebookUrl" :href="state.club.facebookUrl" target="_blank" rel="noopener">Facebook</a>
         <a v-if="state.club.instagramUrl" :href="state.club.instagramUrl" target="_blank" rel="noopener">Instagram</a>
+        <RouterLink to="/dokument">{{ t('footer.documents') }}</RouterLink>
         <RouterLink to="/integritet">{{ t('footer.privacy') }}</RouterLink>
       </nav>
     </div>

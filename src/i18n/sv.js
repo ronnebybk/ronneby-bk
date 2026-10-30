@@ -167,7 +167,16 @@ export default {
   privacy: {
     title: 'Integritetspolicy',
   },
+  documents: {
+    title: 'Dokument',
+    empty: 'Inga dokument är publicerade än.',
+    emptyLink: 'Kontakta oss',
+    other: 'Övrigt',
+    pdf: 'PDF',
+    opensNewTab: '(öppnas i ny flik)',
+  },
   footer: {
+    documents: 'Dokument',
     privacy: 'Integritetspolicy',
   },
   admin: {

@@ -166,7 +166,16 @@ export default {
   privacy: {
     title: 'Privacy policy',
   },
+  documents: {
+    title: 'Documents',
+    empty: 'No documents published yet.',
+    emptyLink: 'Contact us',
+    other: 'Other',
+    pdf: 'PDF',
+    opensNewTab: '(opens in a new tab)',
+  },
   footer: {
+    documents: 'Documents',
     privacy: 'Privacy policy',
   },
   admin: {
