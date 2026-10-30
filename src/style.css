@@ -246,6 +246,7 @@ button {
   margin: 0;
 }
 
+/* Site-wide on purpose: the full-height flex layout can stretch a printed page or add a blank one. */
 @media print {
   body,
   #app {

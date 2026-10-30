@@ -25,7 +25,7 @@ const code = computed(() => {
 </script>
 
 <template>
-  <svg :viewBox="`0 0 ${code.box} ${code.box}`" role="img" aria-hidden="true" shape-rendering="crispEdges">
+  <svg :viewBox="`0 0 ${code.box} ${code.box}`" aria-hidden="true" shape-rendering="crispEdges">
     <rect :width="code.box" :height="code.box" fill="#fff" />
     <path :d="code.path" fill="#000" />
   </svg>
