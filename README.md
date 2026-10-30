@@ -29,5 +29,5 @@ npm run dev
 | `src/i18n/` | Swedish and English texts |
 | `src/views/` | Pages |
 | `sheet-template/` | Google Sheet template to import |
-| `public/coaches/` | Coach photos |
+| `public/coaches/` | Coach photos (fallback only — editors paste a Google Drive share link in the sheet's *Bild* column) |
 | `design/` | Logo as vector (SVG, with and without background) and high-res PNG |

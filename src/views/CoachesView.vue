@@ -1,10 +1,15 @@
 <script setup>
+import { reactive } from 'vue'
 import DataNotice from '../components/DataNotice.vue'
 import { state, hasData, groupName } from '../data/store.js'
 import { telHref } from '../data/parse.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
+
+// URLs that failed to load, so the image hides and initials show. Reactive so that when live
+// data replaces a broken cached URL, the new URL starts as not-failed and the photo reappears.
+const failedImages = reactive(new Set())
 
 function initials(name) {
   return name
@@ -13,12 +18,6 @@ function initials(name) {
     .slice(0, 2)
     .join('')
     .toUpperCase()
-}
-
-// Hide the photo and fall back to initials if the image file is missing.
-function onImageError(event) {
-  event.target.hidden = true
-  event.target.nextElementSibling.hidden = false
 }
 </script>
 
@@ -32,10 +31,10 @@ function onImageError(event) {
     <p v-else-if="!state.coaches.length" class="muted">{{ t('coaches.empty') }}</p>
 
     <div v-else class="grid">
-      <article v-for="coach in state.coaches" :key="coach.name" class="card coach">
+      <article v-for="(coach, i) in state.coaches" :key="i" class="card coach">
         <div class="photo">
-          <img v-if="coach.image" :src="coach.image" :alt="coach.name" loading="lazy" @error="onImageError" />
-          <span class="initials" :hidden="Boolean(coach.image)" aria-hidden="true">{{ initials(coach.name) }}</span>
+          <img v-if="coach.image && !failedImages.has(coach.image)" :src="coach.image" :alt="coach.name" loading="lazy" referrerpolicy="no-referrer" @error="failedImages.add(coach.image)" />
+          <span v-else class="initials" aria-hidden="true">{{ initials(coach.name) }}</span>
         </div>
         <div class="body">
           <h2>{{ coach.name }}</h2>
@@ -67,11 +66,15 @@ function onImageError(event) {
 .photo {
   aspect-ratio: 4 / 3;
   background: var(--ink);
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
 }
 
 .photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -82,10 +85,6 @@ function onImageError(event) {
   font-size: 3.5rem;
   font-weight: 700;
   color: var(--red);
-}
-
-.initials[hidden] {
-  display: none;
 }
 
 .body {

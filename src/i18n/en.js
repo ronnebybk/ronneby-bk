@@ -189,6 +189,11 @@ export default {
     forgetConfirm: 'Remove admin access from this device?',
     noAccessTitle: 'No access',
     noAccessText: 'You need the admin link to edit. Ask the board or the web admin for it.',
+    imageWarnings: {
+      title: 'Images that don\'t load',
+      failed: 'check that the file is shared as "Anyone with the link" and that it still exists',
+      unrecognised: 'the value is not a link or filename the site understands',
+    },
   },
   notFound: {
     title: 'Page not found',

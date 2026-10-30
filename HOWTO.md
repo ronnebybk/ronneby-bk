@@ -34,7 +34,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Byta tränare på ett pass | Välj en annan i rullistan i kolumnen Tränare. |
 | Ändra pris | Fliken **Grupper**, kolumnen *Pris (kr)*. Bara siffror. `0` visas som "Gratis". Flera sätt att betala (t.ex. per termin och per år)? Lägg en ny rad med exakt samma gruppnamn, bara pris och prisperiod ifyllda. Beskrivning och ålder räcker på en av raderna. |
 | Lägga in sommarschema | 1) **Säsonger**: ny rad med namn, start- och slutdatum (`ÅÅÅÅ-MM-DD`). 2) **Schema**: lägg in passen med den säsongen. Hemsidan byter själv när datumet kommer. |
-| Lägga till en tränare | Ny rad i **Tränare**. Bild läggs in av webbansvarig. |
+| Lägga till en tränare | Ny rad i **Tränare**. Bild: se [Bilder](#bilder) nedan. |
+| Lägga till eller byta en tränarbild | Se [Bilder](#bilder) nedan – ladda upp på klubbens Drive och klistra in delningslänken i kolumnen *Bild*. |
 | Lägga upp ett anslag | Ny rad i **Anslag**: skriv meddelandet (och gärna en engelsk text), fyll i *Visa från* och *Visa till* som `ÅÅÅÅ-MM-DD` eller lämna dem tomma. Anslaget syns högst upp på startsidan inom ca 5 minuter. Ta bort raden när det inte längre gäller. |
 | Lägga upp en nyhet | Ny rad i **Anslag** med *Typ* = **Nyhet**: skriv en *Rubrik* och/eller ett meddelande (och gärna engelska texter). *Visa från* blir nyhetens datum. Fyll i *Visa till* så försvinner nyheten av sig själv. Nyheter syns under "Nyheter" på startsidan, nyaste först. |
 | Ändra adress, e-post, telefon eller "Bli medlem" | Fliken **Klubbinfo**: skriv i kolumnen *Värde* på rätt rad (*Lokal*, *Gatuadress*, *Ort*, *E-post*, *Telefon*, *Bli medlem*). *Värde (EN)* är valfri engelsk text, t.ex. för *Bli medlem*. En länk i *Bli medlem* blir klickbar. |
@@ -139,6 +140,26 @@ För att också visa **bilderna** som ett flöde behövs ett gratis konto hos Be
 annonsblockerare (t.ex. Firefox eller Brave med skydd påslaget) är det blockeraren, inte hemsidan. Prova en
 annan webbläsare. Länkarna under flödet fungerar alltid.
 
+### Bilder
+
+Tränarbilder (och senare även sponsorlogotyper) ligger i en mapp på klubbens Google Drive, inte i kodförrådet.
+Så kan du som redigerare lägga till, byta eller ta bort en bild själv:
+
+1. Ladda upp bilden till klubbens bildmapp på Drive (kräver ett Google-konto; använd klubbens konto så att
+   filen ägs av klubben, inte av en privatperson).
+2. Högerklicka på filen → **Dela** → ändra till **Alla som har länken → Läsare** (viktigt, annars kan hemsidan
+   inte visa bilden).
+3. Klicka på **Kopiera länk**.
+4. Klistra in länken i kolumnen *Bild* på tränarens rad i fliken **Tränare**. Klistra **aldrig** in länken till
+   klubbens eget kalkylark — bara länkar till bildfiler på Drive.
+
+Bilden syns på hemsidan inom ca 5 minuter. Saknas bilden eller länken är fel visas tränarens initialer istället.
+
+- **Byta bild:** ladda upp en ny fil och klistra in den nya länken, eller använd *Hantera versioner → Ladda upp
+  ny version* på samma fil (samma länk, men Google kan visa den gamla bilden en stund på grund av cache).
+- **Ta bort bild:** ta bort länken ur *Bild*-kolumnen, eller radera filen på Drive.
+- Admin-sidan varnar om någon bild inte laddas.
+
 ---
 
 ## 2. Maintainers: common tasks
@@ -189,11 +210,18 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 
 ### Add a coach photo
 
+Editors do this themselves via Google Drive (see the Swedish section *Bilder* above). The steps below are
+the developer fallback when a file must live in the repo:
+
 1. Get the coach's OK to publish it.
-2. Resize to about 800 px wide JPG and put it in `public/coaches/`, e.g. `anna.jpg`. Push.
+2. Resize to about 800 px wide JPG and put it in `public/coaches/`, e.g. `anna.jpg` (filename without
+   spaces). Push.
 3. Write `anna.jpg` in the *Bild* column of the coach's row in the sheet.
 
 Without a photo, the card shows the coach's initials.
+
+One-time setup: create the club's image folder on Drive and share the **folder** itself as *Anyone with the
+link → Viewer*. New uploads then inherit the sharing, so editors can skip step 2 in the Swedish guide.
 
 ### Instagram feed and Facebook Page
 

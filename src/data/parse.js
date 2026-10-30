@@ -316,11 +316,45 @@ export function parseFaq(rows) {
     .filter((item) => item.question && item.answer)
 }
 
+const DRIVE_HOSTS = ['drive.google.com', 'docs.google.com', 'drive.usercontent.google.com']
+
+// Turns an image cell into an image address, or '' for no image. Editors paste a Drive share link,
+// which points at Drive's viewer page rather than the image, so it becomes Google's scaled-down
+// thumbnail instead. That endpoint is not an official API: if Google changes it, only this needs
+// updating, and until then a failed image falls back like any other.
+// A bare filename refers to public/<folder>/; any other https link is used as-is.
+export function imageUrl(value, folder) {
+  const text = clean(value)
+  if (/^https:\/\//.test(text)) {
+    let url
+    try {
+      url = new URL(text)
+    } catch {
+      return ''
+    }
+    if (!DRIVE_HOSTS.includes(url.hostname)) return text
+    // A folder link is never an image, whichever parameter carries the ID.
+    if (url.pathname.includes('/folders/')) return ''
+    // On docs.google.com only the uc?id= download form is an image; anything else there
+    // (spreadsheets, documents, …) must never end up in an <img src> on the public page —
+    // e.g. the club sheet's own edit link, if pasted by mistake.
+    if (url.hostname === 'docs.google.com' && !url.pathname.startsWith('/uc')) return ''
+    // /d/ as a whole path segment, so only a real file path yields an ID.
+    const id = url.pathname.match(/\/d\/([\w-]{10,})/)?.[1] ?? url.searchParams.get('id')
+    if (!id || !/^[\w-]{10,}$/.test(id)) return ''
+    // Files covered by Google's 2021 link-sharing update also need resourcekey in the URL.
+    const resourcekey = url.searchParams.get('resourcekey')
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w800${resourcekey ? `&resourcekey=${encodeURIComponent(resourcekey)}` : ''}`
+  }
+  // Only something that looks like a filename, so "foto kommer" means no image rather than a broken one.
+  return /^[^\s/\\:]+\.\w+$/.test(text) ? `./${folder}/${text}` : ''
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
     .map((row) => {
-      const image = field(row, 'Bild')
+      const bild = field(row, 'Bild')
       return {
         name: field(row, 'Namn'),
         role: field(row, 'Roll'),
@@ -328,8 +362,9 @@ export function parseCoaches(rows) {
         groups: field(row, 'Grupper').split(',').map(clean).filter(Boolean),
         phone: field(row, 'Telefon'),
         email: field(row, 'E-post'),
-        // A bare filename refers to public/coaches/; a full https link is used as-is.
-        image: !image ? '' : /^https:\/\//.test(image) ? image : `./coaches/${image}`,
+        image: imageUrl(bild, 'coaches'),
+        // The cell as typed, so the admin page can point out a value that gave no image.
+        imageValue: bild,
       }
     })
     .filter((coach) => coach.name)

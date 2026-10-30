@@ -35,6 +35,7 @@ const email = computed(() => state.club.email)
       <p>Schemat hämtas från ett Google-kalkylark. Google kan då se din IP-adress, enligt Googles integritetspolicy.</p>
 
       <h2>Tränare</h2>
+      <p>Tränarbilder kan laddas från Google Drive. Google kan då se din IP-adress, enligt Googles integritetspolicy.</p>
       <p>Namn, bild och kontaktuppgifter till tränare publiceras endast med deras samtycke.</p>
 
       <h2>Kontakt</h2>
@@ -65,6 +66,7 @@ const email = computed(() => state.club.email)
       <p>The schedule is loaded from a Google spreadsheet. Google may see your IP address, according to Google's privacy policy.</p>
 
       <h2>Coaches</h2>
+      <p>Coach photos may be loaded from Google Drive. Google may see your IP address, according to Google's privacy policy.</p>
       <p>Coaches' names, photos and contact details are only published with their consent.</p>
 
       <h2>Contact</h2>
