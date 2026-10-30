@@ -160,6 +160,12 @@ export const club = [
     'Värde': 'Kom förbi på ett pass och prova på. Anmälan och betalning görs på https://example.com/bli-medlem',
     'Värde (EN)': 'Drop by and try a session. Sign up and pay at https://example.com/bli-medlem',
   },
+  { 'Fält': 'Affisch märke', 'Värde': 'Första passet gratis!', 'Värde (EN)': 'First session free!' },
+  {
+    'Fält': 'Affisch prova på',
+    'Värde': 'Att prova på är gratis. Kom några minuter innan passet, säg till en tränare att du är ny och ta med träningskläder och en vattenflaska.',
+    'Värde (EN)': 'Trying a session is free. Come a few minutes early, tell a coach you are new and bring training clothes and a water bottle.',
+  },
   { 'Fält': 'Facebook', 'Värde': 'https://www.facebook.com/groups/251477413001' },
   { 'Fält': 'Instagram', 'Värde': 'https://www.instagram.com/example/' },
   { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },

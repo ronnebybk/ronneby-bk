@@ -22,6 +22,11 @@ const router = useRouter()
 const qrUrl = computed(() => (props.qrTo ? location.origin + location.pathname + router.resolve(props.qrTo).href : ''))
 
 const venue = computed(() => localized(state.club.venue, state.club.venueEn))
+// The badge text comes from Klubbinfo ("Affisch märke"); no row, no badge. Its size is a guess from
+// the length, so a short slogan is big and a long one still fits the disc.
+const badge = computed(() => localized(state.club.posterBadge, state.club.posterBadgeEn))
+const badgeSize = computed(() => (badge.value.length <= 12 ? 'short' : badge.value.length > 24 ? 'long' : ''))
+
 const contact = computed(() => {
   const { street, city, email, phone } = state.club
   const address = [street, city].filter(Boolean).join(', ')
@@ -39,10 +44,7 @@ const contact = computed(() => {
           <h1><slot name="title" /></h1>
           <p v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></p>
         </div>
-        <p class="badge">
-          <span>{{ t('poster.badgeTop') }}</span>
-          <strong>{{ t('poster.badgeMain') }}</strong>
-        </p>
+        <p v-if="badge" :class="['badge', badgeSize]">{{ badge }}</p>
       </header>
 
       <div class="body"><slot /></div>
@@ -167,23 +169,26 @@ h1 {
   place-content: center;
   width: 27mm;
   height: 27mm;
+  padding: 2mm;
   border: 0.8mm solid #fff;
   border-radius: 50%;
   background: var(--red-strong);
   color: #fff;
   font-family: var(--font-display);
+  font-size: 12pt;
   text-align: center;
   text-transform: uppercase;
   line-height: 1.05;
+  overflow-wrap: anywhere;
   transform: rotate(-8deg);
 }
 
-.badge span {
-  font-size: 8.5pt;
+.badge.short {
+  font-size: 17pt;
 }
 
-.badge strong {
-  font-size: 18pt;
+.badge.long {
+  font-size: 9pt;
 }
 
 /* Growing from its content size (basis auto, not 0): with basis 0, Chrome lays the footer over

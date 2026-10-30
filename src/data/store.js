@@ -179,6 +179,9 @@ export function useSeasonSchedule(nameRef) {
 }
 
 // The "how to join" text from Klubbinfo, or the built-in one; shared by the contact page and the groups poster.
+// The posters' Prova på box (Klubbinfo "Affisch prova på"); empty means no box.
+export const posterTrial = computed(() => localized(state.club.posterTrial, state.club.posterTrialEn))
+
 export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
 
 export function findGroup(name) {

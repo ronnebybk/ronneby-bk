@@ -2,8 +2,9 @@
 import { computed, ref } from 'vue'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
+import TextBlocks from '../components/TextBlocks.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, groupStyle, groupName, timeRange } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, posterTrial, groupStyle, groupName, timeRange } from '../data/store.js'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -99,9 +100,9 @@ const qrTo = computed(() => {
             <template v-if="g.ages">{{ t('common.age') }} {{ g.ages }}</template>
           </li>
         </ul>
-        <aside class="note-box trial">
+        <aside v-if="posterTrial" class="note-box trial">
           <strong>{{ t('poster.trialTitle') }}</strong>
-          {{ t('poster.trialText') }}
+          <TextBlocks :text="posterTrial" />
         </aside>
       </div>
     </div>

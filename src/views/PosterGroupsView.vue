@@ -4,7 +4,7 @@ import PosterFrame from '../components/PosterFrame.vue'
 import TextBlocks from '../components/TextBlocks.vue'
 import { computed } from 'vue'
 import { useI18n } from '../i18n/index.js'
-import { state, hasData, joinText, groupStyle, priceText } from '../data/store.js'
+import { state, hasData, joinText, posterTrial, groupStyle, priceText } from '../data/store.js'
 
 const { t, localized } = useI18n()
 
@@ -34,9 +34,9 @@ const dense = computed(() => state.groups.length >= DENSE_FROM)
       </div>
 
       <div class="info">
-        <aside class="note-box">
+        <aside v-if="posterTrial" class="note-box">
           <strong>{{ t('poster.trialTitle') }}</strong>
-          {{ t('poster.trialText') }}
+          <TextBlocks :text="posterTrial" />
         </aside>
         <section class="note-box ink">
           <h2>{{ t('contact.joinTitle') }}</h2>
@@ -122,7 +122,7 @@ h2 {
 
 .info {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   gap: 4mm;
   align-items: stretch;
   break-inside: avoid;
