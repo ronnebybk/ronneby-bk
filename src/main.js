@@ -9,6 +9,11 @@ import router from './router.js'
 import { loadData } from './data/store.js'
 
 loadData()
-// Wait for the first route, so a poster page never flashes the site header and footer.
+// Wait for the first route, so a poster page never flashes the site header and footer. Mount even if
+// that route fails to load (flaky network, old chunk after a deploy): a page with the site header
+// beats a blank one.
 const app = createApp(App).use(router)
-router.isReady().then(() => app.mount('#app'))
+router
+  .isReady()
+  .catch((error) => console.error('First route failed to load', error))
+  .finally(() => app.mount('#app'))
