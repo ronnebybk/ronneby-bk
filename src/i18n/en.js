@@ -191,6 +191,7 @@ export default {
       club: 'Club info',
       trial: 'Try boxing',
       faq: 'FAQ',
+      results: 'Results',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',
