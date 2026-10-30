@@ -70,6 +70,14 @@ The maintainer develops on both Windows and Debian 13.
 All work is tracked in GitHub issues. **#23 is the roadmap**: it sets the order of work and the
 acceptance criteria. Use `gh issue list -R ronnebybk/ronneby-bk`.
 
+## Keeping context small
+
+- **Don't read these whole:** the logo SVGs (`src/assets/logo.svg`, `design/*.svg`, ~100 KB of path
+  data each), `design/logo-2400.png`, `package-lock.json`, `sheet-template/*.xlsx`.
+- Search `HOWTO.md` (28 KB) for the relevant heading and read only that section.
+- Check layout as text (DOM, computed CSS) where possible. If a screenshot is needed, take one
+  cropped viewport (e.g. 390×844), not every size and theme.
+
 ## Before every commit
 
 1. Run `git status` and `git diff --cached`, and read what is actually staged.
