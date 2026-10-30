@@ -15,6 +15,7 @@ export default {
       club: '678595018', // Klubbinfo; empty shows "coming soon" for contact details and social links
       trial: '573508208', // Prova på
       faq: '1972595536', // Frågor
+      documents: '', // Dokument; empty shows "coming soon" until the tab exists
       seasons: '956987468',
       groups: '1580659590',
       schedule: '1346523284',

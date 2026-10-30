@@ -334,3 +334,43 @@ export function parseCoaches(rows) {
     })
     .filter((coach) => coach.name)
 }
+
+// The Dokument tab: rows grouped by category, in the order each category first appears.
+// Rows without a title or with a link that isn't https:// are skipped (D2); an unreadable
+// date drops only the date, not the row (D5). Empty category comes last as "Övrigt" (D4).
+// Categories match ignoring case and extra spaces; the heading uses the first row's spelling (D9).
+
+export function parseDocuments(rows) {
+  const categories = []
+  const byKey = new Map()
+  for (const row of rows.map(normalizeRow)) {
+    const title = field(row, 'Titel')
+    const url = field(row, 'Länk')
+    if (!title || !/^https:\/\//.test(url)) continue
+    const categoryRaw = field(row, 'Kategori')
+    const key = categoryRaw.toLowerCase().replace(/\s+/g, ' ').trim()
+    let category = byKey.get(key)
+    if (!category) {
+      category = { name: categoryRaw, nameEn: field(row, 'Kategori (EN)'), items: [] }
+      byKey.set(key, category)
+      categories.push(category)
+    }
+    // The English heading comes from the first row in that category with Kategori (EN).
+    if (!category.nameEn && field(row, 'Kategori (EN)')) category.nameEn = field(row, 'Kategori (EN)')
+    category.items.push({
+      title,
+      titleEn: field(row, 'Titel (EN)'),
+      description: field(row, 'Beskrivning'),
+      descriptionEn: field(row, 'Beskrivning (EN)'),
+      date: parseDate(field(row, 'Datum')),
+      url,
+    })
+  }
+  // Empty category ("Övrigt" / "Other") goes last.
+  const empty = byKey.get('')
+  if (empty) {
+    categories.splice(categories.indexOf(empty), 1)
+    categories.push(empty)
+  }
+  return categories
+}
