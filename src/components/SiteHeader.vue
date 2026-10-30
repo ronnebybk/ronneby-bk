@@ -14,8 +14,10 @@ const open = ref(false)
 
 watch(() => route.fullPath, () => (open.value = false))
 
-// The FAQ item appears only when there are questions, so an empty tab hides it.
-const links = computed(() => navLinks.filter((link) => link.to !== '/fragor' || state.faq.length))
+// The FAQ and Resultat items appear only when their tab has rows, so an empty tab hides them.
+const links = computed(() =>
+  navLinks.filter((link) => (link.to !== '/fragor' || state.faq.length) && (link.to !== '/resultat' || state.results.length)),
+)
 </script>
 
 <template>

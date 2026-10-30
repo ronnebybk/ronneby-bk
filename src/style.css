@@ -17,6 +17,11 @@
   --highlight: #fde8e8;
   --link: #b5161c;
 
+  /* Medal icons on the results page; the dark stroke keeps them readable on both themes. */
+  --gold: #d9a419;
+  --silver: #b9bec4;
+  --bronze: #b0703c;
+
   /* One colour per group in the schedule */
   --group-0: #ed2d30;
   --group-1: #d99a21;
@@ -49,6 +54,9 @@
     --line: #34302f;
     --highlight: #3b1c1c;
     --link: #ff7a72;
+    --gold: #e8bd45;
+    --silver: #d0d5da;
+    --bronze: #cd8b58;
     color-scheme: dark;
   }
 }

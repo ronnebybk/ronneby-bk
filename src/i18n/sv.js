@@ -5,6 +5,7 @@ export default {
     groups: 'Grupper & priser',
     coaches: 'Tränare',
     faq: 'Frågor',
+    results: 'Resultat',
     contact: 'Kontakt',
     trial: 'Prova på',
     menu: 'Meny',
@@ -124,6 +125,16 @@ export default {
     title: 'Vanliga frågor',
     empty: 'Inga frågor ännu.',
     emptyLink: 'Kontakta oss',
+  },
+  results: {
+    title: 'Resultat',
+    empty: 'Inga resultat upplagda ännu.',
+    link: 'Resultatlista',
+    medals: {
+      gold: 'Guld',
+      silver: 'Silver',
+      bronze: 'Brons',
+    },
   },
   contact: {
     title: 'Kontakt',

@@ -5,6 +5,7 @@ export default {
     groups: 'Classes & prices',
     coaches: 'Coaches',
     faq: 'FAQ',
+    results: 'Results',
     contact: 'Contact',
     trial: 'Try boxing',
     menu: 'Menu',
@@ -123,6 +124,16 @@ export default {
     title: 'Frequently asked questions',
     empty: 'No questions yet.',
     emptyLink: 'Contact us',
+  },
+  results: {
+    title: 'Results',
+    empty: 'No results published yet.',
+    link: 'Full results',
+    medals: {
+      gold: 'Gold',
+      silver: 'Silver',
+      bronze: 'Bronze',
+    },
   },
   contact: {
     title: 'Contact',
