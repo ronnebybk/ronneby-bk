@@ -10,6 +10,7 @@ export const columns = {
   club: ['Fält', 'Värde', 'Värde (EN)'],
   trial: ['Rubrik', 'Rubrik (EN)', 'Text', 'Text (EN)'],
   faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
+  results: ['Datum', 'Tävling', 'Tävling (EN)', 'Ort', 'Namn', 'Junior/Senior', 'Klass', 'Klass (EN)', 'Placering', 'Placering (EN)', 'Länk'],
 }
 
 export const seasons = [
@@ -256,4 +257,26 @@ export const faq = [
   { 'Fråga': '', 'Fråga (EN)': '', 'Svar': 'Det här svaret har ingen fråga.', 'Svar (EN)': '' },
   // Skipped: a question without an answer.
   { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
+]
+
+// Results for the Resultat page, deliberately out of order: two years, every medal spelling, a
+// non-medal placement, a Junior row and an empty Junior/Senior cell with full names typed (only the
+// first name may show), a valid and an invalid link, and rows the parser must skip.
+export const results = [
+  { 'Datum': '2026-09-19', 'Tävling': 'DM', 'Tävling (EN)': 'District championship', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Klass (EN)': 'Women -60 kg', 'Placering': 'Guld', 'Länk': 'https://example.com/dm-2026-resultat' },
+  { 'Datum': '2025-10-04', 'Tävling': 'SM', 'Tävling (EN)': 'Swedish championship', 'Ort': 'Stockholm', 'Namn': 'Erik Exempelsson', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Klass (EN)': 'Men -75 kg', 'Placering': 'Silver', 'Länk': '' },
+  { 'Datum': '2026-09-19', 'Tävling': 'DM', 'Tävling (EN)': 'District championship', 'Ort': 'Ronneby', 'Namn': 'Anna Karin Svensson', 'Junior/Senior': 'Junior', 'Klass': 'Flickor -57 kg', 'Klass (EN)': 'Girls -57 kg', 'Placering': '2', 'Länk': '' },
+  { 'Datum': '30.5.2026', 'Tävling': 'Regiontävling', 'Ort': 'Karlskrona', 'Namn': 'Anna-Karin Svensson', 'Junior/Senior': '', 'Klass': 'Flickor -57 kg', 'Placering': 'Brons', 'Länk': 'inte en länk' },
+  { 'Datum': '3/15/2026', 'Tävling': 'Gala', 'Tävling (EN)': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Erik Exempel', 'Junior/Senior': 'senior', 'Klass': 'Herrar -80 kg', 'Placering': '1:a', 'Länk': '' },
+  { 'Datum': '2026-03-15', 'Tävling': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Kvartsfinal', 'Placering (EN)': 'Quarterfinal', 'Länk': '' },
+  { 'Datum': '2025-05-25', 'Tävling': 'Sommarpokalen', 'Ort': 'Växjö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Gold', 'Länk': '' },
+  { 'Datum': '2025-03-08', 'Tävling': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Erik Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Placering': '3.', 'Länk': '' },
+  // Skipped: no placement.
+  { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Placering': '' },
+  // Skipped: the date can't be read.
+  { 'Datum': 'nästa vecka', 'Tävling': 'Gala', 'Namn': 'Erik Exempel', 'Placering': 'Guld' },
+  // Skipped: no name.
+  { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': '', 'Placering': 'Guld' },
+  // Skipped: no competition.
+  { 'Datum': '2026-01-10', 'Tävling': '', 'Namn': 'Sara Exempel', 'Placering': 'Guld' },
 ]

@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseResults } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -17,6 +17,8 @@ export const state = reactive({
   sessions: [],
   coaches: [],
   faq: [],
+  // Results from the Resultat tab; empty hides the page's nav link.
+  results: [],
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
@@ -40,6 +42,7 @@ function apply(raw) {
   state.club = parseClub(raw.club ?? [])
   state.trial = parseTrial(raw.trial ?? [])
   state.faq = parseFaq(raw.faq ?? [])
+  state.results = parseResults(raw.results ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -101,9 +104,10 @@ export function loadData() {
     fetchOptional('club', cached),
     fetchOptional('trial', cached),
     fetchOptional('faq', cached),
+    fetchOptional('results', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, results]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, results }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
@@ -141,6 +145,28 @@ export const activeNews = computed(() => {
   return state.notices
     .filter((item) => item.type === 'news' && isNoticeActive(item, today))
     .sort((a, b) => (b.from ?? '').localeCompare(a.from ?? ''))
+})
+
+
+// Results grouped by year, newest year first; within a year they are already newest first.
+export const resultsByYear = computed(() => {
+  const byYear = new Map()
+  for (const result of state.results) {
+    const year = result.date.slice(0, 4)
+    if (!byYear.has(year)) byYear.set(year, [])
+    byYear.get(year).push(result)
+  }
+  return [...byYear.entries()].map(([year, results]) => ({ year, results }))
+})
+
+// Medal counts for the current year, for the summary at the top of the results page.
+export const medalCount = computed(() => {
+  const year = todayIso().slice(0, 4)
+  const count = { gold: 0, silver: 0, bronze: 0 }
+  for (const result of state.results) {
+    if (result.date.startsWith(year) && result.medal) count[result.medal]++
+  }
+  return count
 })
 
 // The season covering today; otherwise the next one to start; otherwise the most recent.
