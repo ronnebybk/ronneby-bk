@@ -81,7 +81,7 @@ const qrTo = computed(() => ({ name: 'schedule', query: scheduleQuery(season.val
     </template>
 
     <p v-if="state.status === 'loading' && !hasData" class="empty">{{ t('common.loading') }}</p>
-    <p v-else-if="!season" class="empty">{{ state.status === 'error' ? t('poster.loadError') : t('schedule.empty') }}</p>
+    <p v-else-if="!season" class="empty">{{ state.status === 'error' ? t('common.loadError') : t('schedule.empty') }}</p>
 
     <div v-else :class="['sheet', size]">
       <div class="week" :style="{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }">

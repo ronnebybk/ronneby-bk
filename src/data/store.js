@@ -147,7 +147,6 @@ export const activeNews = computed(() => {
     .sort((a, b) => (b.from ?? '').localeCompare(a.from ?? ''))
 })
 
-
 // Results grouped by year, newest year first; within a year they are already newest first.
 export const resultsByYear = computed(() => {
   const byYear = new Map()
@@ -160,9 +159,10 @@ export const resultsByYear = computed(() => {
 })
 
 // Medal counts for the current year, for the summary at the top of the results page.
+// The year rides along so the view and the count can't disagree about "current".
 export const medalCount = computed(() => {
   const year = todayIso().slice(0, 4)
-  const count = { gold: 0, silver: 0, bronze: 0 }
+  const count = { year, gold: 0, silver: 0, bronze: 0 }
   for (const result of state.results) {
     if (result.date.startsWith(year) && result.medal) count[result.medal]++
   }

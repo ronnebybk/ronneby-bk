@@ -42,8 +42,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Ändra Facebook eller Instagram | Fliken **Klubbinfo**: *Facebook* = hela adressen (`https://www.facebook.com/…`), *Instagram* = kontonamnet eller länken till profilen. |
 | Ändra texten på Prova på-sidan | Fliken **Prova på**: en rad per avsnitt, med *Rubrik* och *Text* (och gärna *Rubrik (EN)* / *Text (EN)*). Raderna visas i samma ordning som i arket. Finns minst en ifylld rad ersätter fliken standardtexten helt. |
 | Lägga till en fråga | Ny rad i **Frågor**: skriv frågan i *Fråga* och svaret i *Svar*. *Fråga (EN)* och *Svar (EN)* är valfria – saknas de visas den svenska texten även på engelska. Radordningen i arket är ordningen på sidan, så flytta en rad för att ändra ordningen. |
-| Lägga till ett resultat | Ny rad i **Resultat**: *Datum* (`ÅÅÅÅ-MM-DD`), *Tävling*, *Ort*, *Namn*, *Junior/Senior* (rullista), *Klass* och *Placering* (t.ex. `Guld`, `Silver`, `Brons` eller `1`–`3`). *Tävling (EN)*, *Klass (EN)*, *Placering (EN)* och *Länk* är valfria. **Samtycke först:** lägg bara upp resultat för någon som gett sitt samtycke (för juniorer: en vårdnadshavare). Resultatet syns på sidan Resultat inom ca 5 minuter, nyaste först. |
-| Ta bort ett resultat | Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är resultatet borta från sidan (men kan finnas kvar i veckans säkerhetskopia i upp till 90 dagar). |
+| Lägga till ett resultat | Ny rad i **Resultat**: *Datum* (`ÅÅÅÅ-MM-DD`), *Tävling*, *Ort*, *Namn*, *Junior/Senior* (rullista), *Klass* och *Placering* (rullista: `Guld`, `Silver` och `Brons` ger medalj; annan text, t.ex. `Kvartsfinal`, visas som den skrivs). *Tävling (EN)*, *Klass (EN)*, *Placering (EN)* och *Länk* är valfria. **Samtycke först:** lägg bara upp resultat för någon som gett sitt samtycke (för juniorer: en vårdnadshavare). Resultatet syns på sidan Resultat inom ca 5 minuter, nyaste först. |
+| Ta bort ett resultat | Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är resultatet borta från sidan (men kan finnas kvar i veckans säkerhetskopia i upp till 90 dagar). Den som redan har sidan öppen eller sparad i webbläsaren ser ändringen nästa gång sidan laddas. |
 
 **Viktigt**
 
@@ -291,6 +291,8 @@ Use the club's Google account, not a personal one. The board keeps the login det
    *Grupp* in *Schema* is plain text on purpose, so a session can list several groups (`Motionsboxning, Nybörjare`).
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
+   In *Resultat*, check the *Placering* dropdown: `I2:I300` → **Dropdown** with the options `Guld`, `Silver`,
+   `Brons`, `Kvartsfinal`, `Deltog`, set to *Show a warning* (not *Reject the input*), so free text still works.
    In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,
    `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`, `Affisch märke`,
    `Affisch prova på`. Every one of those eleven

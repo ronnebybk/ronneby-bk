@@ -31,8 +31,8 @@ export default {
     age: 'Age',
     comingSoon: 'Coming soon',
     demoData: 'Showing example data – the schedule is not connected to the Google Sheet yet.',
-    offline: 'Could not fetch the latest schedule. Showing the last saved version.',
-    loadError: 'The schedule could not be loaded right now. Please try again shortly.',
+    offline: 'Could not fetch the latest content. Showing the last saved version.',
+    loadError: 'The content could not be loaded right now. Please try again shortly.',
   },
   notices: {
     label: 'Notices',
@@ -171,7 +171,6 @@ export default {
     coachesLabel: 'Show coaches',
     legend: 'Classes',
     trialTitle: 'Try it!',
-    loadError: 'The content could not be loaded right now. Please try again shortly.',
     link: 'Print poster',
   },
   privacy: {

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import MedalIcon from '../components/MedalIcon.vue'
+import DataNotice from '../components/DataNotice.vue'
 
 import { state, resultsByYear, medalCount } from '../data/store.js'
 
@@ -9,13 +10,11 @@ import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
 
-// The summary is hidden when the current year has no medals, rather than shown as zeros.
-const hasMedalsThisYear = computed(() => {
-  const { gold, silver, bronze } = medalCount.value
-  return gold + silver + bronze > 0
-})
+const MEDAL_ORDER = ['gold', 'silver', 'bronze']
 
-const currentYear = computed(() => String(new Date().getFullYear()))
+// Only medals with at least one win are listed; the summary is hidden when the current year has
+// no medals, rather than shown as zeros.
+const medalsWithCount = computed(() => MEDAL_ORDER.filter((m) => medalCount.value[m] > 0))
 
 // A medal shows the site's translated word; any other placement shows the sheet text as typed.
 function placementText(result) {
@@ -32,14 +31,17 @@ function entryDetails(result) {
 <template>
   <div class="container page">
     <h1>{{ t('results.title') }}</h1>
+    <DataNotice />
 
     <p v-if="state.status === 'loading' && !state.results.length" class="muted">{{ t('common.loading') }}</p>
-    <p v-else-if="!state.results.length" class="muted">{{ t('results.empty') }}</p>
+    <p v-else-if="!state.results.length" class="muted">
+      {{ state.status === 'error' ? t('common.loadError') : t('results.empty') }}
+    </p>
 
     <template v-else>
-      <p v-if="hasMedalsThisYear" class="summary">
-        <strong>{{ currentYear }}:</strong>
-        <span v-for="m in ['gold', 'silver', 'bronze']" :key="m" class="medal-count">
+      <p v-if="medalsWithCount.length" class="summary">
+        <strong>{{ medalCount.year }}:</strong>
+        <span v-for="m in medalsWithCount" :key="m" class="medal-count">
           <MedalIcon :medal="m" />{{ t(`results.medals.${m}`) }} {{ medalCount[m] }}
         </span>
       </p>
@@ -54,7 +56,9 @@ function entryDetails(result) {
             </span>
             <strong class="name">{{ result.name }}</strong>
             <span class="muted details">{{ entryDetails(result) }}</span>
-            <a v-if="result.link" :href="result.link" target="_blank" rel="noopener">{{ t('results.link') }} ↗</a>
+            <a v-if="result.link" :href="result.link" target="_blank" rel="noopener noreferrer">
+              {{ t('results.link') }} ↗<span class="visually-hidden"> – {{ localized(result.competition, result.competitionEn) }} {{ result.date.slice(0, 4) }}</span>
+            </a>
           </li>
         </ul>
       </section>

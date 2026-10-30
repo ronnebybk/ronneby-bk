@@ -31,8 +31,8 @@ export default {
     age: 'Ålder',
     comingSoon: 'Kommer snart',
     demoData: 'Exempeldata visas – schemat är inte kopplat till Google Sheet ännu.',
-    offline: 'Kunde inte hämta senaste schemat. Visar senast sparade versionen.',
-    loadError: 'Schemat kunde inte laddas just nu. Försök igen om en stund.',
+    offline: 'Kunde inte hämta senaste innehållet. Visar senast sparade versionen.',
+    loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
   },
   notices: {
     label: 'Meddelanden',
@@ -172,7 +172,6 @@ export default {
     coachesLabel: 'Visa tränare',
     legend: 'Grupper',
     trialTitle: 'Prova på!',
-    loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
     link: 'Skriv ut affisch',
   },
   privacy: {

@@ -19,7 +19,7 @@ const dense = computed(() => state.groups.length >= DENSE_FROM)
     <template #title>{{ t('poster.groupsTitle') }}</template>
 
     <p v-if="state.status === 'loading' && !hasData" class="empty">{{ t('common.loading') }}</p>
-    <p v-else-if="!state.groups.length" class="empty">{{ state.status === 'error' ? t('poster.loadError') : t('groups.empty') }}</p>
+    <p v-else-if="!state.groups.length" class="empty">{{ state.status === 'error' ? t('common.loadError') : t('groups.empty') }}</p>
 
     <div v-else :class="['sheet', { dense }]">
       <div class="groups">

@@ -346,7 +346,7 @@ const MEDALS = {
 
 // "GULD", "1:a", "2.", "3rd" all count; anything else is shown as typed, not as a medal.
 function medalOf(placement) {
-  const key = clean(placement).toLowerCase().replace(/\.$/, '').replace(/:(a|st|nd|rd)$/, '').replace(/(st|nd|rd)$/, '')
+  const key = clean(placement).toLowerCase().replace(/\.$/, '').replace(/:(a|st|nd|rd)$/, '').replace(/^([123])(st|nd|rd)$/, '$1')
   return MEDALS[key] ?? null
 }
 

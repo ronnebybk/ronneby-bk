@@ -259,7 +259,7 @@ export const faq = [
   { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
 ]
 
-// Results for the Resultat page, deliberately out of order: two years, every medal spelling, a
+// Results for the Resultat page, deliberately out of order: two years, each medal in several spellings, a
 // non-medal placement, a Junior row and an empty Junior/Senior cell with full names typed (only the
 // first name may show), a valid and an invalid link, and rows the parser must skip.
 export const results = [
