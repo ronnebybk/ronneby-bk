@@ -20,12 +20,8 @@ const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 // shows all groups, so the visitor is never stuck on an empty week.
 const groupFilter = computed(() => (groupsInSeason.value.some((g) => g.name === chosenGroup.value) ? chosenGroup.value : ''))
 
-
-// The QR code on a poster links to /#/schema?sasong=<name>&grupp=<name>. Both are read when the page
-// opens and again when the address changes (e.g. the header's Schema link), but clicks never rewrite
-// the address. An unknown season falls back to the current one. The cached copy may predate the
-// group, so its name waits for the live data; it is dropped once it matches, once the data is final,
-// or on a click.
+// The poster's QR code links here with ?sasong= and ?grupp=. The cached copy may predate the group,
+// so its name waits for the live data.
 let wanted = null
 function applyWanted() {
   if (!wanted) return
@@ -43,8 +39,8 @@ function readQuery() {
   applyWanted()
 }
 readQuery()
-watch(() => [route.query.sasong, route.query.grupp], readQuery)
-watch(groupsInSeason, applyWanted, { immediate: true })
+watch([() => route.query.sasong, () => route.query.grupp], readQuery)
+watch([groupsInSeason, () => state.status], applyWanted)
 
 function pickGroup(name) {
   wanted = null

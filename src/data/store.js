@@ -185,7 +185,8 @@ export const posterTrial = computed(() => localized(state.club.posterTrial, stat
 export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
 
 // Query for a link to the schedule page or its poster: the season only when it isn't the current one,
-// so a link stays right when the seasons roll over.
+// so a link stays right when the seasons roll over. Between seasons the next one counts as current, so
+// a poster printed then may open another season if the sheet later adds one that starts earlier.
 export function scheduleQuery(season, group) {
   const query = {}
   if (season && season.name !== currentSeason.value?.name) query.sasong = season.name

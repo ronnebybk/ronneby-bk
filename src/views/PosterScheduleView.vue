@@ -15,15 +15,13 @@ const seasonName = ref(null)
 const group = ref('')
 const showCoaches = ref(true)
 
-// The schedule page's print link passes its season and group (?sasong=, ?grupp=). An unknown name
-// falls back to the current season / all groups; a group missing from the cached copy is picked up
-// when the live data arrives, since only the name is kept.
+// Only the group's name is kept, so a group missing from the cached copy shows up with the live data.
 function readQuery() {
   seasonName.value = firstQuery(route.query, 'sasong')
   group.value = firstQuery(route.query, 'grupp') ?? ''
 }
 readQuery()
-watch(() => [route.query.sasong, route.query.grupp], readQuery)
+watch([() => route.query.sasong, () => route.query.grupp], readQuery)
 
 const { season, sessions, groupsInSeason } = useSeasonSchedule(seasonName)
 // The selects follow what the poster shows, so they never start blank. A group chosen for another
