@@ -7,6 +7,7 @@ export default {
     faq: 'Frågor',
     contact: 'Kontakt',
     trial: 'Prova på',
+    documents: 'Dokument',
     menu: 'Meny',
     close: 'Stäng',
   },
@@ -167,7 +168,16 @@ export default {
   privacy: {
     title: 'Integritetspolicy',
   },
+  documents: {
+    title: 'Dokument',
+    empty: 'Inga dokument är publicerade än.',
+    emptyLink: 'Kontakta oss',
+    other: 'Övrigt',
+    pdf: 'PDF',
+    opensNewTab: '(öppnas i ny flik)',
+  },
   footer: {
+    documents: 'Dokument',
     privacy: 'Integritetspolicy',
   },
   admin: {
@@ -181,6 +191,7 @@ export default {
       club: 'Klubbinfo',
       trial: 'Prova på',
       faq: 'Frågor',
+      documents: 'Dokument',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

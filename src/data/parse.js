@@ -2,7 +2,7 @@
 // Editors type into the sheet by hand, so everything here is forgiving:
 // rows that can't be understood are skipped instead of breaking the page.
 
-import { navLinks } from '../nav.js'
+import { linkTargets } from '../nav.js'
 
 const DAY_NAMES = {
   måndag: 1, mån: 1, monday: 1, mon: 1,
@@ -196,7 +196,7 @@ export function linkParts(value) {
     // Trailing punctuation usually belongs to the sentence, not the address.
     const url = token.startsWith('#') ? token : token.replace(/[.,;:!?)]+$/, '')
     const route = url.startsWith('#') ? url.slice(1) : ownRoute(url)
-    const page = route ? navLinks.find((link) => link.to === route) : undefined
+    const page = route ? linkTargets.find((link) => link.to === route) : undefined
     if (page) parts.push({ to: page.to, navKey: page.key })
     else if (token.startsWith('#')) parts.push({ text: token })
     else parts.push({ text: url, href: url })
@@ -368,4 +368,50 @@ export function parseCoaches(rows) {
       }
     })
     .filter((coach) => coach.name)
+}
+
+// The Dokument tab: rows grouped by category, in the order each category first appears.
+// Rows without a title or with a link that isn't https:// are skipped (D2); an unreadable
+// date drops only the date, not the row (D5). Empty category comes last as "Övrigt" (D4).
+// Categories match ignoring case and extra spaces; the heading uses the first row's spelling (D9).
+// Each category carries its normalized `key` so the view can use it as a stable, unique :key.
+
+export function parseDocuments(rows) {
+  const categories = []
+  const byKey = new Map()
+  for (const row of rows.map(normalizeRow)) {
+    const title = field(row, 'Titel')
+    const url = field(row, 'Länk')
+    if (!title || !/^https:\/\//i.test(url)) continue
+    const categoryRaw = field(row, 'Kategori')
+    // An explicit "Övrigt" and an empty category are the same section, so both end up under one heading.
+    let key = categoryRaw.toLowerCase().replace(/\s+/g, ' ').trim()
+    if (key === 'övrigt') key = ''
+    let category = byKey.get(key)
+    if (!category) {
+      // The empty category always shows the translated "Övrigt"/"Other", never the raw cell text.
+      category = key === ''
+        ? { key, name: '', nameEn: '', items: [] }
+        : { key, name: categoryRaw, nameEn: field(row, 'Kategori (EN)'), items: [] }
+      byKey.set(key, category)
+      categories.push(category)
+    }
+    // The English heading comes from the first row in that category with Kategori (EN).
+    if (key && !category.nameEn && field(row, 'Kategori (EN)')) category.nameEn = field(row, 'Kategori (EN)')
+    category.items.push({
+      title,
+      titleEn: field(row, 'Titel (EN)'),
+      description: field(row, 'Beskrivning'),
+      descriptionEn: field(row, 'Beskrivning (EN)'),
+      date: parseDate(field(row, 'Datum')),
+      url,
+    })
+  }
+  // Empty category ("Övrigt" / "Other") goes last.
+  const empty = byKey.get('')
+  if (empty) {
+    categories.splice(categories.indexOf(empty), 1)
+    categories.push(empty)
+  }
+  return categories
 }

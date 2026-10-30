@@ -24,7 +24,7 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 **ronnebybk.github.io/ronneby-bk/#/admin**. Tips: lägg till sidan på hemskärmen i mobilen.
 Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
-**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor.
+**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument.
 
 | Vill du… | Gör så här |
 | --- | --- |
@@ -43,6 +43,7 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Ändra Facebook eller Instagram | Fliken **Klubbinfo**: *Facebook* = hela adressen (`https://www.facebook.com/…`), *Instagram* = kontonamnet eller länken till profilen. |
 | Ändra texten på Prova på-sidan | Fliken **Prova på**: en rad per avsnitt, med *Rubrik* och *Text* (och gärna *Rubrik (EN)* / *Text (EN)*). Raderna visas i samma ordning som i arket. Finns minst en ifylld rad ersätter fliken standardtexten helt. |
 | Lägga till en fråga | Ny rad i **Frågor**: skriv frågan i *Fråga* och svaret i *Svar*. *Fråga (EN)* och *Svar (EN)* är valfria – saknas de visas den svenska texten även på engelska. Radordningen i arket är ordningen på sidan, så flytta en rad för att ändra ordningen. |
+| Lägga upp ett dokument | 1) Ladda upp PDF:en till klubbens Drive-mapp (**Dokument** – mappen ägs av klubbens Google-konto, se 4.1; ladda inte upp i din egen Drive, då försvinner filen när du lämnar klubben) → högerklicka → *Dela* → *Alla med länken kan visa* → kopiera länken. 2) Ny rad i **Dokument**: *Kategori* (t.ex. Regler, Föreningen), *Titel*, valfri *Beskrivning*, *Datum* (`ÅÅÅÅ-MM-DD`) och *Länk*. *Kategori (EN)*, *Titel (EN)* och *Beskrivning (EN)* är valfria. Dokumentet syns på sidan Dokument inom ca 5 minuter. |
 
 **Viktigt**
 
@@ -63,11 +64,13 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - **Prova på:** fliken med samma namn styr texten på sidan *Prova på* och ersätter de inbyggda texterna helt
   så snart den har minst en rad med svensk *Rubrik* eller *Text*. En rad med bara engelsk text hoppas över.
   Enter i en cell (Alt+Enter) börjar ett nytt stycke, rader som börjar med `-` blir en punktlista, och en länk
-  blir klickbar. Skriv `#/grupper`, `#/schema`, `#/tranare`, `#/prova-pa` eller `#/kontakt` för att länka till en
+  blir klickbar. Skriv `#/grupper`, `#/schema`, `#/tranare`, `#/prova-pa`, `#/fragor`, `#/dokument`, `#/integritet` eller `#/kontakt` för att länka till en
   sida på hemsidan; länken visas med sidans namn. Grupplistan med åldrar längst ner skapas automatiskt från
   **Grupper**, och knapparna *Se schemat* och *Bli medlem* går inte att ändra i arket.
 - **Ett pass som inte syns** har nästan alltid ett stavfel: fel säsongsnamn, fel dag, eller tid skriven som `17,30`.
 - **Frågor:** en rad per fråga. En rad utan fråga eller svar visas inte.
+- **Dokument:** en rad per dokument. Rader utan titel eller utan en `https://`-länk visas inte. Tom *Kategori* eller *Övrigt* hamnar sist under ”Övrigt” (på engelska ”Other”. Ett datum som inte går att läsa gör att bara datumet hoppas över. **Ersätta:** i Drive, högerklicka på filen → *Hantera versioner* → ladda upp den nya PDF:en; länken är oförändrad så raden i arket behöver inte ändras (annars klistra in den nya länken i *Länk*). **Ta bort:** ta bort raden i arket och ta även bort filen i Drive eller sluta dela den – bara att ta bort raden lämnar PDF:en offentlig för alla som har länken.
+- **Dokument – metadata:** innan du laddar upp en PDF, kontrollera att den inte innehåller personliga uppgifter i metadata eller innehåll: författarnamn, signaturer, personnummer, adresser, privata telefonnummer. Ta bort eller anonymisera sådant (t.ex. i Word: *Arkiv → Info → Kontrollera om det finns problem → Ta bort personlig information*). Årsmötesprotokoll: ta bort eventuella personuppgifter om medlemmar innan du publicerar. Kontrollera också PDF:ens egenskaper innan du laddar upp den (i en PDF-läsare: *Arkiv → Egenskaper* – författare, titel, nyckelord); innehåller de ett namn, exportera om filen eller ”skriv ut till PDF”. Skannade protokoll kan dessutom innehålla handskrivna signaturer som bara syns i bilden.
 - **Formatering i celler:** i *Svar* (Frågor) och *Bli medlem* (Klubbinfo) ger en radbrytning
   (Alt+Enter i Excel, Ctrl+Enter eller Cmd+Enter i Google Sheets) ett nytt stycke, och rader som
   börjar med `-`, `–` eller `•` blir en punktlista. Länkar blir klickbara.
@@ -203,6 +206,7 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 | Club address, email, phone, "how to join" text, Facebook / Instagram | The *Klubbinfo* tab in the sheet (no code) |
 | The text of the *Prova på* page | The *Prova på* tab in the sheet (no code) |
 | FAQ questions and answers | The *Frågor* tab in the sheet (no code) |
+| Official documents (rules, statutes, minutes) | The *Dokument* tab in the sheet; the PDFs in the club's Drive folder (no code) |
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
@@ -250,7 +254,7 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 
 | What | How it's backed up | Restore |
 | --- | --- | --- |
-| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på* and *Frågor* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor* and *Dokument* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
 | Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
 | Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
 | The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
@@ -318,12 +322,13 @@ Use the club's Google account, not a personal one. The board keeps the login det
    `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`, `Affisch märke`,
    `Affisch prova på`. Every one of those eleven
    needs its own row, since editors can't add rows once column A is protected (step 5).
+   In *Dokument*, check the date validation on *Datum*: select `G2:G300` → **Data → Data validation → Is valid date**. Also set *Dokument* columns A:F and H to **Format → Number → Plain text**, so a text like `8–12` stays as typed.
    Also check that *Klubbinfo* columns B:C are **Format → Number → Plain text**. Otherwise Sheets turns a phone
    number like `+46 70…` into a number and drops the `+` and leading zeros. Do the same for *Prova på*
    columns A:D, so a text like `8–12` stays as typed.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
-   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`.
+   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`, `Dokument!1:1`.
    Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
    Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since
    the owner's account is never blocked.

@@ -7,6 +7,7 @@ export default {
     faq: 'FAQ',
     contact: 'Contact',
     trial: 'Try boxing',
+    documents: 'Documents',
     menu: 'Menu',
     close: 'Close',
   },
@@ -166,7 +167,16 @@ export default {
   privacy: {
     title: 'Privacy policy',
   },
+  documents: {
+    title: 'Documents',
+    empty: 'No documents published yet.',
+    emptyLink: 'Contact us',
+    other: 'Other',
+    pdf: 'PDF',
+    opensNewTab: '(opens in a new tab)',
+  },
   footer: {
+    documents: 'Documents',
     privacy: 'Privacy policy',
   },
   admin: {
@@ -180,6 +190,7 @@ export default {
       club: 'Club info',
       trial: 'Try boxing',
       faq: 'FAQ',
+      documents: 'Documents',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',

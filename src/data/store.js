@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -17,6 +17,8 @@ export const state = reactive({
   sessions: [],
   coaches: [],
   faq: [],
+  // Official documents grouped by category from the Dokument tab.
+  documents: [],
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
@@ -40,6 +42,7 @@ function apply(raw) {
   state.club = parseClub(raw.club ?? [])
   state.trial = parseTrial(raw.trial ?? [])
   state.faq = parseFaq(raw.faq ?? [])
+  state.documents = parseDocuments(raw.documents ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -101,9 +104,10 @@ export function loadData() {
     fetchOptional('club', cached),
     fetchOptional('trial', cached),
     fetchOptional('faq', cached),
+    fetchOptional('documents', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'

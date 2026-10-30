@@ -10,6 +10,7 @@ export const columns = {
   club: ['Fält', 'Värde', 'Värde (EN)'],
   trial: ['Rubrik', 'Rubrik (EN)', 'Text', 'Text (EN)'],
   faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
+  documents: ['Kategori', 'Kategori (EN)', 'Titel', 'Titel (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Datum', 'Länk'],
 }
 
 export const seasons = [
@@ -202,8 +203,8 @@ export const trial = [
   {
     'Rubrik': 'Vad kostar det?',
     'Rubrik (EN)': 'What does it cost?',
-    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
-    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper.',
+    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper. Officiella dokument som regler och stadgar finns på #/dokument.',
+    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper. Official documents like rules and statutes are under #/dokument.',
   },
   {
     'Rubrik': 'Hur tar jag mig dit?',
@@ -256,4 +257,80 @@ export const faq = [
   { 'Fråga': '', 'Fråga (EN)': '', 'Svar': 'Det här svaret har ingen fråga.', 'Svar (EN)': '' },
   // Skipped: a question without an answer.
   { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
+]
+
+// Example documents: 2 named categories plus one empty-category row (3 headings on the page),
+// one row with empty English title, one unreadable date, plus broken rows (no title / no link /
+// http:// link) that must be skipped.
+
+export const documents = [
+  {
+    'Kategori': 'Regler',
+    'Kategori (EN)': 'Rules',
+    'Titel': 'Gymregler',
+    'Titel (EN)': 'Gym rules',
+    'Beskrivning': 'Gäller för alla som tränar i lokalen.',
+    'Beskrivning (EN)': 'Applies to everyone training in the venue.',
+    'Datum': '2026-03-15',
+    'Länk': 'https://example.com/gymregler.pdf',
+  },
+  {
+    'Kategori': 'Regler',
+    'Kategori (EN)': 'Rules',
+    'Titel': 'Säkerhetsregler',
+    'Titel (EN)': 'Safety rules',
+    'Beskrivning': '',
+    'Beskrivning (EN)': '',
+    'Datum': '2026-03-15',
+    'Länk': 'https://example.com/sakerhetsregler.pdf',
+  },
+  {
+    'Kategori': 'Regler',
+    'Kategori (EN)': 'Rules',
+    'Titel': 'Barnskyddspolicy',
+    'Titel (EN)': 'Child protection policy',
+    'Beskrivning': 'Hur vi arbetar för att alla barn ska känna sig trygga.',
+    'Beskrivning (EN)': 'How we make sure all children feel safe.',
+    'Datum': '2026-01-10',
+    'Länk': 'https://example.com/barnskyddspolicy.pdf',
+  },
+  {
+    'Kategori': 'Föreningen',
+    'Kategori (EN)': 'The club',
+    'Titel': 'Stadgar',
+    // No English title on purpose: the English page falls back to Swedish for this cell only.
+    'Titel (EN)': '',
+    'Beskrivning': 'Föreningens stadgar.',
+    'Beskrivning (EN)': "The club's statutes.",
+    'Datum': '2026-02-20',
+    'Länk': 'https://example.com/stadgar.pdf',
+  },
+  {
+    'Kategori': 'Föreningen',
+    'Kategori (EN)': 'The club',
+    'Titel': 'Årsmötesprotokoll 2026',
+    'Titel (EN)': 'Annual meeting minutes 2026',
+    'Beskrivning': 'Protokoll från årsmötet den 20 februari 2026.',
+    'Beskrivning (EN)': 'Minutes from the annual meeting on 20 February 2026.',
+    // Unreadable date on purpose: the row is shown, just without the date.
+    'Datum': 'inte ett datum',
+    'Länk': 'https://example.com/arsmote-2026.pdf',
+  },
+  {
+    // Empty category on purpose: shown last under "Övrigt" / "Other".
+    'Kategori': '',
+    'Kategori (EN)': '',
+    'Titel': 'Medlemsinformation',
+    'Titel (EN)': 'Membership information',
+    'Beskrivning': 'Praktisk information för medlemmar.',
+    'Beskrivning (EN)': 'Practical information for members.',
+    'Datum': '',
+    'Länk': 'https://example.com/medlemsinfo.pdf',
+  },
+  // Skipped: no title.
+  { 'Kategori': 'Regler', 'Titel': '', 'Länk': 'https://example.com/saknas-titel.pdf' },
+  // Skipped: no link.
+  { 'Kategori': 'Regler', 'Titel': 'Saknar länk', 'Länk': '' },
+  // Skipped: link is not https://.
+  { 'Kategori': 'Regler', 'Titel': 'Osäker länk', 'Länk': 'http://example.com/osaker.pdf' },
 ]
