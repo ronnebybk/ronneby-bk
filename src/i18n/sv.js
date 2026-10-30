@@ -5,6 +5,7 @@ export default {
     groups: 'Grupper & priser',
     coaches: 'Tränare',
     faq: 'Frågor',
+    results: 'Resultat',
     contact: 'Kontakt',
     trial: 'Prova på',
     documents: 'Dokument',
@@ -30,9 +31,9 @@ export default {
     coach: 'Tränare',
     age: 'Ålder',
     comingSoon: 'Kommer snart',
-    demoData: 'Exempeldata visas – schemat är inte kopplat till Google Sheet ännu.',
-    offline: 'Kunde inte hämta senaste schemat. Visar senast sparade versionen.',
-    loadError: 'Schemat kunde inte laddas just nu. Försök igen om en stund.',
+    demoData: 'Exempeldata visas – webbplatsen är inte kopplad till Google Sheet ännu.',
+    offline: 'Kunde inte hämta senaste innehållet. Visar senast sparade versionen.',
+    loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
   },
   notices: {
     label: 'Meddelanden',
@@ -126,6 +127,16 @@ export default {
     empty: 'Inga frågor ännu.',
     emptyLink: 'Kontakta oss',
   },
+  results: {
+    title: 'Resultat',
+    empty: 'Inga resultat upplagda ännu.',
+    link: 'Resultatlista',
+    medals: {
+      gold: 'Guld',
+      silver: 'Silver',
+      bronze: 'Brons',
+    },
+  },
   contact: {
     title: 'Kontakt',
     whereTitle: 'Här tränar vi',
@@ -162,7 +173,6 @@ export default {
     coachesLabel: 'Visa tränare',
     legend: 'Grupper',
     trialTitle: 'Prova på!',
-    loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
     link: 'Skriv ut affisch',
   },
   privacy: {
@@ -192,6 +202,7 @@ export default {
       trial: 'Prova på',
       faq: 'Frågor',
       documents: 'Dokument',
+      results: 'Resultat',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',

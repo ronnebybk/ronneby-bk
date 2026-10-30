@@ -6,6 +6,7 @@ export const navLinks = [
   { to: '/tranare', key: 'nav.coaches' },
   { to: '/prova-pa', key: 'nav.trial' },
   { to: '/fragor', key: 'nav.faq' },
+  { to: '/resultat', key: 'nav.results' },
   { to: '/kontakt', key: 'nav.contact' },
 ]
 

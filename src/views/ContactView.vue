@@ -30,7 +30,7 @@ const mapUrl = computed(() => {
             <template v-if="club.street">{{ club.street }}<br /></template>
             {{ club.city }}
           </address>
-          <a :href="mapUrl" target="_blank" rel="noopener">{{ t('contact.openMap') }} ↗</a>
+          <a :href="mapUrl" target="_blank" rel="noopener noreferrer">{{ t('contact.openMap') }} ↗</a>
         </template>
         <p v-else class="muted">{{ t('contact.missing') }}</p>
       </section>

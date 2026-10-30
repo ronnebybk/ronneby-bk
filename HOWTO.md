@@ -12,8 +12,8 @@ Visitors → website on GitHub Pages → reads the published Google Sheet (CSV) 
 Editors  → /#/admin on the website → the same Google Sheet, embedded
 ```
 
-Schedule, classes, prices, coaches, seasons, notices, news, contact details, social links, the FAQ and
-the text of the *Prova på* page live in the Google Sheet. Changing them never
+Schedule, classes, prices, coaches, seasons, notices, news, contact details, social links, the FAQ,
+competition results and the text of the *Prova på* page live in the Google Sheet. Changing them never
 needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITATIONS.md](LIMITATIONS.md).
 
 ---
@@ -24,7 +24,7 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 **ronnebybk.github.io/ronneby-bk/#/admin**. Tips: lägg till sidan på hemskärmen i mobilen.
 Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
-**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument.
+**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Resultat.
 
 | Vill du… | Gör så här |
 | --- | --- |
@@ -44,6 +44,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Ändra texten på Prova på-sidan | Fliken **Prova på**: en rad per avsnitt, med *Rubrik* och *Text* (och gärna *Rubrik (EN)* / *Text (EN)*). Raderna visas i samma ordning som i arket. Finns minst en ifylld rad ersätter fliken standardtexten helt. |
 | Lägga till en fråga | Ny rad i **Frågor**: skriv frågan i *Fråga* och svaret i *Svar*. *Fråga (EN)* och *Svar (EN)* är valfria – saknas de visas den svenska texten även på engelska. Radordningen i arket är ordningen på sidan, så flytta en rad för att ändra ordningen. |
 | Lägga upp ett dokument | 1) Ladda upp PDF:en till klubbens Drive-mapp (**Dokument** – mappen ägs av klubbens Google-konto, se 4.1; ladda inte upp i din egen Drive, då försvinner filen när du lämnar klubben) → högerklicka → *Dela* → *Alla med länken kan visa* → kopiera länken. 2) Ny rad i **Dokument**: *Kategori* (t.ex. Regler, Föreningen), *Titel*, valfri *Beskrivning*, *Datum* (`ÅÅÅÅ-MM-DD`) och *Länk*. *Kategori (EN)*, *Titel (EN)* och *Beskrivning (EN)* är valfria. Dokumentet syns på sidan Dokument inom ca 5 minuter. |
+| Lägga till ett resultat | Ny rad i **Resultat**: *Datum* (`ÅÅÅÅ-MM-DD`), *Tävling*, *Ort*, *Namn*, *Junior/Senior* (rullista), *Klass* och *Placering* (rullista: `Guld`, `Silver` och `Brons` ger medalj; annan text, t.ex. `Kvartsfinal`, visas som den skrivs). *Tävling (EN)*, *Klass (EN)*, *Placering (EN)* och *Länk* är valfria. **Samtycke först:** lägg bara upp resultat för någon som gett sitt samtycke (för juniorer: en vårdnadshavare). Resultatet syns på sidan Resultat inom ca 5 minuter, nyaste först. |
+| Ta bort ett resultat | Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är resultatet borta från sidan (men kan finnas kvar i veckans säkerhetskopia i upp till 90 dagar). Den som redan har sidan öppen eller sparad i webbläsaren ser ändringen nästa gång sidan laddas. |
 
 **Viktigt**
 
@@ -71,6 +73,7 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 - **Frågor:** en rad per fråga. En rad utan fråga eller svar visas inte.
 - **Dokument:** en rad per dokument. Rader utan titel eller utan en `https://`-länk visas inte. Tom *Kategori* eller *Övrigt* hamnar sist under ”Övrigt” (på engelska ”Other”. Ett datum som inte går att läsa gör att bara datumet hoppas över. **Ersätta:** i Drive, högerklicka på filen → *Hantera versioner* → ladda upp den nya PDF:en; länken är oförändrad så raden i arket behöver inte ändras (annars klistra in den nya länken i *Länk*). **Ta bort:** ta bort raden i arket och ta även bort filen i Drive eller sluta dela den – bara att ta bort raden lämnar PDF:en offentlig för alla som har länken.
 - **Dokument – metadata:** innan du laddar upp en PDF, kontrollera att den inte innehåller personliga uppgifter i metadata eller innehåll: författarnamn, signaturer, personnummer, adresser, privata telefonnummer. Ta bort eller anonymisera sådant (t.ex. i Word: *Arkiv → Info → Kontrollera om det finns problem → Ta bort personlig information*). Årsmötesprotokoll: ta bort eventuella personuppgifter om medlemmar innan du publicerar. Kontrollera också PDF:ens egenskaper innan du laddar upp den (i en PDF-läsare: *Arkiv → Egenskaper* – författare, titel, nyckelord); innehåller de ett namn, exportera om filen eller ”skriv ut till PDF”. Skannade protokoll kan dessutom innehålla handskrivna signaturer som bara syns i bilden.
+- **Resultat:** samtycke krävs innan du lägger upp en rad. För juniorer (allt utom *Senior* i *Junior/Senior*) visas bara förnamnet på hemsidan, även om hela namnet skrivits in. En rad utan datum, tävling, namn eller placering visas inte.
 - **Formatering i celler:** i *Svar* (Frågor) och *Bli medlem* (Klubbinfo) ger en radbrytning
   (Alt+Enter i Excel, Ctrl+Enter eller Cmd+Enter i Google Sheets) ett nytt stycke, och rader som
   börjar med `-`, `–` eller `•` blir en punktlista. Länkar blir klickbara.
@@ -207,6 +210,7 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 | The text of the *Prova på* page | The *Prova på* tab in the sheet (no code) |
 | FAQ questions and answers | The *Frågor* tab in the sheet (no code) |
 | Official documents (rules, statutes, minutes) | The *Dokument* tab in the sheet; the PDFs in the club's Drive folder (no code) |
+| Competition results | The *Resultat* tab in the sheet (no code) |
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
@@ -254,7 +258,7 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 
 | What | How it's backed up | Restore |
 | --- | --- | --- |
-| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor* and *Dokument* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument* and *Resultat* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
 | Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
 | Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
 | The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
@@ -295,6 +299,7 @@ create the DNS records GitHub shows. No code changes are needed. Afterwards, sen
 | Contact details or a social link don't show | The *Klubbinfo* row's *Fält* is misspelt, *Värde* is empty, or the value didn't pass the check (Facebook must be a `https://www.facebook.com/…` address, e-mail needs an `@`, phone needs a digit). Or `gids.club` in `src/config.js` is empty. |
 | The *Prova på* page shows the built-in text | The *Prova på* tab has no row with a Swedish *Rubrik* or *Text* (an English-only row is skipped), or `gids.trial` in `src/config.js` is empty. |
 | A question doesn't show | *Fråga* or *Svar* is empty in that row, or `gids.faq` in `src/config.js` is empty. |
+| A result doesn't show | *Datum* can't be read (use `YYYY-MM-DD`), or *Tävling*, *Namn* or *Placering* is empty in that row, or `gids.results` in `src/config.js` is empty. If consent is missing, the row should be deleted. |
 | Banner "Kunde inte hämta senaste schemat…" | Google couldn't be reached. The visitor sees their last saved copy. Check that the sheet is still published (*File → Share → Publish to web*). |
 | Banner "Exempeldata visas…" | `publishedId` in `src/config.js` is empty. |
 | Admin page blank | Browser blocks the embedded sheet (common on iPhone/Safari). Use **Öppna i Google Sheets**. |
@@ -318,6 +323,8 @@ Use the club's Google account, not a personal one. The board keeps the login det
    *Grupp* in *Schema* is plain text on purpose, so a session can list several groups (`Motionsboxning, Nybörjare`).
    Check the date validation in *Anslag* too: select `C2:D1000` → **Data → Data validation → Is valid date**,
    and the *Typ* dropdown: `E2:E1000` → **Dropdown** with the options `Anslag` and `Nyhet`.
+   In *Resultat*, check the *Placering* dropdown: `I2:I300` → **Dropdown** with the options `Guld`, `Silver`,
+   `Brons`, `Kvartsfinal`, `Deltog`, set to *Show a warning* (not *Reject the input*), so free text still works.
    In *Klubbinfo*, check the *Fält* dropdown: `A2:A50` → **Dropdown** with the options `Lokal`, `Gatuadress`,
    `Ort`, `E-post`, `Telefon`, `Bli medlem`, `Facebook`, `Instagram`, `Behold`, `Affisch märke`,
    `Affisch prova på`. Every one of those eleven
@@ -326,9 +333,12 @@ Use the club's Google account, not a personal one. The board keeps the login det
    Also check that *Klubbinfo* columns B:C are **Format → Number → Plain text**. Otherwise Sheets turns a phone
    number like `+46 70…` into a number and drops the `+` and leading zeros. Do the same for *Prova på*
    columns A:D, so a text like `8–12` stays as typed.
+   In *Resultat*, check the *Junior/Senior* dropdown: `F2:F300` → **Dropdown** with the options `Junior` and
+   `Senior`.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
-   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`, `Dokument!1:1`.
+   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`,
+   `Dokument!1:1`, `Resultat!1:1`.
    Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
    Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since
    the owner's account is never blocked.

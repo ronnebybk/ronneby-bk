@@ -44,6 +44,15 @@ const email = computed(() => state.club.email)
       <p>Tränarbilder kan laddas från Google Drive. Google kan då se din IP-adress, enligt Googles integritetspolicy.</p>
       <p>Namn, bild och kontaktuppgifter till tränare publiceras endast med deras samtycke.</p>
 
+      <h2>Resultat</h2>
+      <p>
+        Tävlingsresultat publiceras på sidan Resultat endast med samtycke från den tävlande (för juniorer
+        från en vårdnadshavare), vilket är den rättsliga grunden. För juniorer visas bara förnamnet, även om
+        hela namnet råkat skrivas in i kalkylarket. Vill du att ett resultat ska tas bort? Mejla oss, så tar
+        vi bort raden ur kalkylarket. Tänk på att det kan dröja upp till ca 5 minuter innan Google publicerar
+        om, och att en borttagen rad kan finnas kvar i veckovisa säkerhetskopior i upp till 90 dagar.
+      </p>
+
       <h2>Kontakt</h2>
       <p v-if="email">
         Frågor om dina uppgifter? Mejla <a :href="`mailto:${email}`">{{ email }}</a>.
@@ -80,6 +89,15 @@ const email = computed(() => state.club.email)
       <h2>Coaches</h2>
       <p>Coach photos may be loaded from Google Drive. Google may see your IP address, according to Google's privacy policy.</p>
       <p>Coaches' names, photos and contact details are only published with their consent.</p>
+
+      <h2>Results</h2>
+      <p>
+        Competition results are published on the Results page only with the consent of the competitor (for
+        juniors, of a guardian), which is the legal basis. For juniors only the first name is shown, even if
+        the full name was typed into the spreadsheet by mistake. Want a result removed? Email us and we will
+        delete the row from the spreadsheet. Note that it can take up to about 5 minutes before Google
+        republishes, and that a deleted row may remain in weekly backups for up to 90 days.
+      </p>
 
       <h2>Contact</h2>
       <p v-if="email">

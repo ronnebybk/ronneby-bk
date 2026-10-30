@@ -67,7 +67,7 @@ watch(
 
     <div v-else-if="isFacebookGroup" class="group">
       <p>{{ t('social.groupText') }}</p>
-      <a :href="profileUrl" target="_blank" rel="noopener" class="btn btn-primary">{{ t('social.groupButton') }} ↗</a>
+      <a :href="profileUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">{{ t('social.groupButton') }} ↗</a>
     </div>
 
     <!-- Both feeds share one square window, sized by the card rather than by Facebook or by the
@@ -92,7 +92,7 @@ watch(
     </div>
 
     <p v-if="profileUrl && !isFacebookGroup">
-      <a :href="profileUrl" target="_blank" rel="noopener">{{ t('social.openOn', { service: name }) }} ↗</a>
+      <a :href="profileUrl" target="_blank" rel="noopener noreferrer">{{ t('social.openOn', { service: name }) }} ↗</a>
     </p>
   </div>
 </template>

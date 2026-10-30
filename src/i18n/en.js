@@ -5,6 +5,7 @@ export default {
     groups: 'Classes & prices',
     coaches: 'Coaches',
     faq: 'FAQ',
+    results: 'Results',
     contact: 'Contact',
     trial: 'Try boxing',
     documents: 'Documents',
@@ -30,9 +31,9 @@ export default {
     coach: 'Coach',
     age: 'Age',
     comingSoon: 'Coming soon',
-    demoData: 'Showing example data – the schedule is not connected to the Google Sheet yet.',
-    offline: 'Could not fetch the latest schedule. Showing the last saved version.',
-    loadError: 'The schedule could not be loaded right now. Please try again shortly.',
+    demoData: 'Showing example data – the site is not connected to the Google Sheet yet.',
+    offline: 'Could not fetch the latest content. Showing the last saved version.',
+    loadError: 'The content could not be loaded right now. Please try again shortly.',
   },
   notices: {
     label: 'Notices',
@@ -125,6 +126,16 @@ export default {
     empty: 'No questions yet.',
     emptyLink: 'Contact us',
   },
+  results: {
+    title: 'Results',
+    empty: 'No results published yet.',
+    link: 'Full results',
+    medals: {
+      gold: 'Gold',
+      silver: 'Silver',
+      bronze: 'Bronze',
+    },
+  },
   contact: {
     title: 'Contact',
     whereTitle: 'Where we train',
@@ -161,7 +172,6 @@ export default {
     coachesLabel: 'Show coaches',
     legend: 'Classes',
     trialTitle: 'Try it!',
-    loadError: 'The content could not be loaded right now. Please try again shortly.',
     link: 'Print poster',
   },
   privacy: {
@@ -191,6 +201,7 @@ export default {
       trial: 'Try boxing',
       faq: 'FAQ',
       documents: 'Documents',
+      results: 'Results',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',

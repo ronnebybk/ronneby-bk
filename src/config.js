@@ -16,6 +16,7 @@ export default {
       trial: '573508208', // Prova på
       faq: '1972595536', // Frågor
       documents: '609606696', // Dokument
+      results: '494604732', // Resultat
       seasons: '956987468',
       groups: '1580659590',
       schedule: '1346523284',

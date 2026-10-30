@@ -415,3 +415,51 @@ export function parseDocuments(rows) {
   }
   return categories
 }
+
+// The Resultat tab: one row per result. A row missing a required value or with an unreadable date
+// is skipped, so a typo never breaks the page.
+
+const MEDALS = {
+  guld: 'gold', gold: 'gold', '1': 'gold',
+  silver: 'silver', '2': 'silver',
+  brons: 'bronze', bronze: 'bronze', '3': 'bronze',
+}
+
+// "GULD", "1:a", "2.", "3rd" all count; anything else is shown as typed, not as a medal.
+function medalOf(placement) {
+  const key = clean(placement).toLowerCase().replace(/\.$/, '').replace(/:(a|st|nd|rd)$/, '').replace(/^([123])(st|nd|rd)$/, '$1')
+  return MEDALS[key] ?? null
+}
+
+// Only a Senior row may show more than the first name, so a junior is never shown in full even when
+// the editor types the whole name by mistake. Done here, so the full name never reaches the view.
+function resultName(name, juniorSenior) {
+  const full = name.replace(/\s+/g, ' ')
+  return juniorSenior.toLowerCase() === 'senior' ? full : full.split(' ')[0]
+}
+
+export function parseResults(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => {
+      const placement = field(row, 'Placering')
+      const link = field(row, 'Länk')
+      return {
+        date: parseDate(field(row, 'Datum')),
+        competition: field(row, 'Tävling'),
+        competitionEn: field(row, 'Tävling (EN)'),
+        place: field(row, 'Ort'),
+        name: resultName(field(row, 'Namn'), field(row, 'Junior/Senior')),
+        class: field(row, 'Klass'),
+        classEn: field(row, 'Klass (EN)'),
+        medal: medalOf(placement),
+        placement,
+        placementEn: field(row, 'Placering (EN)'),
+        // A link cell that isn't a web address is dropped, but the row still shows.
+        link: /^https?:\/\/\S+$/.test(link) ? link : '',
+      }
+    })
+    .filter((result) => result.date && result.competition && result.name && result.placement)
+    // Stable sort, so results on the same date keep their sheet order.
+    .sort((a, b) => b.date.localeCompare(a.date))
+}

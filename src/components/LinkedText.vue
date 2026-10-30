@@ -14,7 +14,7 @@ const { t } = useI18n()
 <template>
   <template v-for="(part, index) in linkParts(text)" :key="index">
     <RouterLink v-if="part.to" :to="part.to">{{ t(part.navKey) }}</RouterLink>
-    <a v-else-if="part.href" :href="part.href" target="_blank" rel="noopener">{{ part.text }}</a>
+    <a v-else-if="part.href" :href="part.href" target="_blank" rel="noopener noreferrer">{{ part.text }}</a>
     <template v-else>{{ part.text }}</template>
   </template>
 </template>
