@@ -191,6 +191,7 @@ export default {
       club: 'Klubbinfo',
       trial: 'Prova på',
       faq: 'Frågor',
+      documents: 'Dokument',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',
