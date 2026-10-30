@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch } from 'vue'
-
 import { state } from '../data/store.js'
 import { checkImages } from '../data/images.js'
 import { useI18n } from '../i18n/index.js'
@@ -8,34 +7,33 @@ import { useI18n } from '../i18n/index.js'
 const { t } = useI18n()
 
 const failing = ref([])
-const checking = ref(false)
 
-// Re-check when the data changes (cached copy → live copy), keyed by the URLs so a re-render
-// doesn't trigger a new round of image requests.
+// Re-check when the data changes (cached copy → live copy), keyed by name and raw value so a
+// re-render doesn't trigger a new round of image requests. onCleanup guards against a slow,
+// stale check overwriting the result of a newer one.
 watch(
-  () => state.coaches.map((c) => c.image).join('|'),
-  async () => {
-    const coaches = state.coaches.filter((c) => c.imageValue)
-    if (!coaches.length) {
-      failing.value = []
-      return
-    }
-    checking.value = true
-    failing.value = await checkImages(coaches)
-    checking.value = false
+  () => state.coaches.map((c) => `${c.name}\u0000${c.imageValue}`).join('|'),
+  async (_, __, onCleanup) => {
+    let stale = false
+    onCleanup(() => (stale = true))
+    const result = await checkImages(state.coaches)
+    if (!stale) failing.value = result
   },
   { immediate: true },
 )
 </script>
 
 <template>
-  <div v-if="failing.length" class="image-warnings" role="status">
-    <p class="title">{{ t('admin.imageWarnings.title') }}</p>
-    <ul>
-      <li v-for="coach in failing" :key="coach.name">
-        <strong>{{ coach.name }}</strong> — {{ t('admin.imageWarnings.reason') }}
-      </li>
-    </ul>
+  <!-- Always rendered so the live region exists before its content arrives. -->
+  <div role="status" :class="{ 'image-warnings': failing.length }">
+    <template v-if="failing.length">
+      <p class="title">{{ t('admin.imageWarnings.title') }}</p>
+      <ul>
+        <li v-for="item in failing" :key="item.coach.name">
+          <strong>{{ item.coach.name }}</strong> — {{ t(`admin.imageWarnings.${item.reason}`) }}
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 

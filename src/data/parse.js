@@ -333,9 +333,18 @@ export function imageUrl(value, folder) {
       return ''
     }
     if (!DRIVE_HOSTS.includes(url.hostname)) return text
-    // /d/ as a whole path segment, so a folder link (/drive/folders/…) isn't taken for a file.
+    // A folder link is never an image, whichever parameter carries the ID.
+    if (url.pathname.includes('/folders/')) return ''
+    // On docs.google.com only the uc?id= download form is an image; anything else there
+    // (spreadsheets, documents, …) must never end up in an <img src> on the public page —
+    // e.g. the club sheet's own edit link, if pasted by mistake.
+    if (url.hostname === 'docs.google.com' && !url.pathname.startsWith('/uc')) return ''
+    // /d/ as a whole path segment, so only a real file path yields an ID.
     const id = url.pathname.match(/\/d\/([\w-]{10,})/)?.[1] ?? url.searchParams.get('id')
-    return id && /^[\w-]{10,}$/.test(id) ? `https://drive.google.com/thumbnail?id=${id}&sz=w800` : ''
+    if (!id || !/^[\w-]{10,}$/.test(id)) return ''
+    // Files covered by Google's 2021 link-sharing update also need resourcekey in the URL.
+    const resourcekey = url.searchParams.get('resourcekey')
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w800${resourcekey ? `&resourcekey=${encodeURIComponent(resourcekey)}` : ''}`
   }
   // Only something that looks like a filename, so "foto kommer" means no image rather than a broken one.
   return /^[^\s/\\:]+\.\w+$/.test(text) ? `./${folder}/${text}` : ''
@@ -344,16 +353,19 @@ export function imageUrl(value, folder) {
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
-    .map((row) => ({
-      name: field(row, 'Namn'),
-      role: field(row, 'Roll'),
-      roleEn: field(row, 'Roll (EN)'),
-      groups: field(row, 'Grupper').split(',').map(clean).filter(Boolean),
-      phone: field(row, 'Telefon'),
-      email: field(row, 'E-post'),
-      image: imageUrl(field(row, 'Bild'), 'coaches'),
-      // The cell as typed, so the admin page can point out a value that gave no image.
-      imageValue: field(row, 'Bild'),
-    }))
+    .map((row) => {
+      const bild = field(row, 'Bild')
+      return {
+        name: field(row, 'Namn'),
+        role: field(row, 'Roll'),
+        roleEn: field(row, 'Roll (EN)'),
+        groups: field(row, 'Grupper').split(',').map(clean).filter(Boolean),
+        phone: field(row, 'Telefon'),
+        email: field(row, 'E-post'),
+        image: imageUrl(bild, 'coaches'),
+        // The cell as typed, so the admin page can point out a value that gave no image.
+        imageValue: bild,
+      }
+    })
     .filter((coach) => coach.name)
 }

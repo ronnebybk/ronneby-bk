@@ -7,7 +7,10 @@ function loadImage(url) {
   return new Promise((resolve) => {
     const img = new Image()
     img.referrerPolicy = 'no-referrer'
-    const timer = setTimeout(() => resolve(false), TIMEOUT_MS)
+    const timer = setTimeout(() => {
+      img.src = '' // don't leave a hanging request behind
+      resolve(false)
+    }, TIMEOUT_MS)
     img.onload = () => {
       clearTimeout(timer)
       resolve(img.naturalWidth > 0)
@@ -20,11 +23,15 @@ function loadImage(url) {
   })
 }
 
-// Resolves to the coaches whose Bild value gave no image, or whose image failed to load.
+// Resolves to the coaches whose Bild value gave no image ({ reason: 'unrecognised' }) or whose
+// image failed to load ({ reason: 'failed' }).
 export async function checkImages(coaches) {
   const checks = coaches
     .filter((coach) => coach.imageValue)
-    .map(async (coach) => ({ coach, ok: coach.image ? await loadImage(coach.image) : false }))
+    .map(async (coach) => {
+      if (!coach.image) return { coach, reason: 'unrecognised' }
+      return (await loadImage(coach.image)) ? null : { coach, reason: 'failed' }
+    })
   const results = await Promise.all(checks)
-  return results.filter((r) => !r.ok).map((r) => r.coach)
+  return results.filter(Boolean)
 }

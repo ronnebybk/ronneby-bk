@@ -147,10 +147,11 @@ Så kan du som redigerare lägga till, byta eller ta bort en bild själv:
 
 1. Ladda upp bilden till klubbens bildmapp på Drive (kräver ett Google-konto; använd klubbens konto så att
    filen ägs av klubben, inte av en privatperson).
-2. Högerklicka på filen → **Dela** → ändra till **Alla med länken → Läsare** (viktigt, annars kan hemsidan
+2. Högerklicka på filen → **Dela** → ändra till **Alla som har länken → Läsare** (viktigt, annars kan hemsidan
    inte visa bilden).
 3. Klicka på **Kopiera länk**.
-4. Klistra in länken i kolumnen *Bild* på tränarens rad i fliken **Tränare**.
+4. Klistra in länken i kolumnen *Bild* på tränarens rad i fliken **Tränare**. Klistra **aldrig** in länken till
+   klubbens eget kalkylark — bara länkar till bildfiler på Drive.
 
 Bilden syns på hemsidan inom ca 5 minuter. Saknas bilden eller länken är fel visas tränarens initialer istället.
 
@@ -213,11 +214,14 @@ Editors do this themselves via Google Drive (see the Swedish section *Bilder* ab
 the developer fallback when a file must live in the repo:
 
 1. Get the coach's OK to publish it.
-2. Resize to about 800 px wide JPG and put it in `public/coaches/`, e.g. `anna.jpg`. Push.
+2. Resize to about 800 px wide JPG and put it in `public/coaches/`, e.g. `anna.jpg` (filename without
+   spaces). Push.
 3. Write `anna.jpg` in the *Bild* column of the coach's row in the sheet.
 
-The default is a Drive share link pasted into *Bild*; `public/coaches/` is only for files that can't go
-to Drive. Without a photo, the card shows the coach's initials.
+Without a photo, the card shows the coach's initials.
+
+One-time setup: create the club's image folder on Drive and share the **folder** itself as *Anyone with the
+link → Viewer*. New uploads then inherit the sharing, so editors can skip step 2 in the Swedish guide.
 
 ### Instagram feed and Facebook Page
 

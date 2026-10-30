@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ImageWarnings from '../components/ImageWarnings.vue'
-
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import { load, save, remove } from '../data/storage.js'

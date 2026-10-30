@@ -192,7 +192,8 @@ export default {
     noAccessText: 'Du behöver admin-länken för att redigera. Be styrelsen eller webbansvarig om den.',
     imageWarnings: {
       title: 'Bilder som inte laddas',
-      reason: 'kontrollera att filen är delad som *Alla med länken* och att den fortfarande finns kvar',
+      failed: 'kontrollera att filen är delad som ”Alla som har länken” och att den fortfarande finns kvar',
+      unrecognised: 'värdet är inte en länk eller ett filnamn som webbplatsen förstår',
     },
   },
   notFound: {
