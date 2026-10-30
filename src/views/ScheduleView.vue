@@ -12,17 +12,22 @@ const route = useRoute()
 const selectedName = ref(null)
 const chosenGroup = ref('')
 
-// Follow the current season until the visitor picks another one.
+// The season the visitor picked, else ?sasong=, else the current one.
 const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 
 // A filter whose group is no longer in the season (renamed in the sheet, or another season picked)
 // shows all groups, so the visitor is never stuck on an empty week.
 const groupFilter = computed(() => (groupsInSeason.value.some((g) => g.name === chosenGroup.value) ? chosenGroup.value : ''))
 
-// /#/schema?grupp=<name> (the QR code on a one-group poster) opens filtered. A repeated grupp
-// arrives as an array: the first one counts. The cached copy may predate the group, so the name
-// waits for the live data; it is dropped once it matches, once the data is final, or on a click.
-let wanted = [route.query.grupp].flat()[0]
+// A repeated query parameter arrives as an array: the first one counts.
+const queryValue = (key) => [route.query[key]].flat()[0] ?? null
+
+// The QR code on a poster links to /#/schema?sasong=<name>&grupp=<name>. Both are read when the page
+// opens and again when the address changes (e.g. the header's Schema link), but clicks never rewrite
+// the address. An unknown season falls back to the current one. The cached copy may predate the
+// group, so its name waits for the live data; it is dropped once it matches, once the data is final,
+// or on a click.
+let wanted = null
 function applyWanted() {
   if (!wanted) return
   if (groupsInSeason.value.some((g) => g.name === wanted)) {
@@ -32,6 +37,14 @@ function applyWanted() {
     wanted = null
   }
 }
+function readQuery() {
+  selectedName.value = queryValue('sasong')
+  chosenGroup.value = ''
+  wanted = queryValue('grupp')
+  applyWanted()
+}
+readQuery()
+watch(() => [route.query.sasong, route.query.grupp], readQuery)
 watch(groupsInSeason, applyWanted, { immediate: true })
 
 function pickGroup(name) {

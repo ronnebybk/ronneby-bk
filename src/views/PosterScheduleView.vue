@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, hasData, visibleSeasons, useSeasonSchedule, groupStyle, groupName, timeRange } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, groupStyle, groupName, timeRange } from '../data/store.js'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -38,7 +38,13 @@ const size = computed(() => {
   return busiest.value <= 2 && days.value.length <= 5 ? 'roomy' : ''
 })
 
-const qrTo = computed(() => ({ name: 'schedule', query: activeGroup.value ? { grupp: activeGroup.value } : {} }))
+// The season only when it isn't the current one, so the link stays right when seasons roll over.
+const qrTo = computed(() => {
+  const query = {}
+  if (season.value && season.value.name !== currentSeason.value?.name) query.sasong = season.value.name
+  if (activeGroup.value) query.grupp = activeGroup.value
+  return { name: 'schedule', query }
+})
 </script>
 
 <template>
