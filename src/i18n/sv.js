@@ -190,6 +190,10 @@ export default {
     forgetConfirm: 'Vill du ta bort admin-åtkomsten från den här enheten?',
     noAccessTitle: 'Ingen åtkomst',
     noAccessText: 'Du behöver admin-länken för att redigera. Be styrelsen eller webbansvarig om den.',
+    imageWarnings: {
+      title: 'Bilder som inte laddas',
+      reason: 'kontrollera att filen är delad som *Alla med länken* och att den fortfarande finns kvar',
+    },
   },
   notFound: {
     title: 'Sidan finns inte',
