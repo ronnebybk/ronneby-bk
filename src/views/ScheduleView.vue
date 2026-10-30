@@ -1,9 +1,10 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, weekday, groupStyle } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, groupStyle } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
@@ -19,8 +20,6 @@ const { season, sessions, groupsInSeason } = useSeasonSchedule(selectedName)
 // shows all groups, so the visitor is never stuck on an empty week.
 const groupFilter = computed(() => (groupsInSeason.value.some((g) => g.name === chosenGroup.value) ? chosenGroup.value : ''))
 
-// A repeated query parameter arrives as an array: the first one counts.
-const queryValue = (key) => [route.query[key]].flat()[0] ?? null
 
 // The QR code on a poster links to /#/schema?sasong=<name>&grupp=<name>. Both are read when the page
 // opens and again when the address changes (e.g. the header's Schema link), but clicks never rewrite
@@ -38,9 +37,9 @@ function applyWanted() {
   }
 }
 function readQuery() {
-  selectedName.value = queryValue('sasong')
+  selectedName.value = firstQuery(route.query, 'sasong')
   chosenGroup.value = ''
-  wanted = queryValue('grupp')
+  wanted = firstQuery(route.query, 'grupp')
   applyWanted()
 }
 readQuery()
@@ -128,7 +127,7 @@ const days = computed(() =>
       </div>
 
       <p class="print-link">
-        <RouterLink to="/affisch/schema">{{ t('poster.link') }}</RouterLink>
+        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
       </p>
     </template>
   </div>

@@ -18,6 +18,9 @@ const routes = [
   { path: '/:pathMatch(.*)*', name: 'notFound', component: () => import('./views/NotFoundView.vue') },
 ]
 
+// A repeated query parameter arrives as an array: the first one counts.
+export const firstQuery = (query, key) => [query[key]].flat()[0] ?? null
+
 export default createRouter({
   history: createWebHashHistory(),
   routes,

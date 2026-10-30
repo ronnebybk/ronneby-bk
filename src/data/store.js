@@ -184,6 +184,15 @@ export const posterTrial = computed(() => localized(state.club.posterTrial, stat
 
 export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
 
+// Query for a link to the schedule page or its poster: the season only when it isn't the current one,
+// so a link stays right when the seasons roll over.
+export function scheduleQuery(season, group) {
+  const query = {}
+  if (season && season.name !== currentSeason.value?.name) query.sasong = season.name
+  if (group) query.grupp = group
+  return query
+}
+
 export function findGroup(name) {
   return state.groups.find((g) => g.name === name)
 }

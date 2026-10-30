@@ -1,16 +1,29 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { firstQuery } from '../router.js'
 import PosterToolbar from '../components/PosterToolbar.vue'
 import PosterFrame from '../components/PosterFrame.vue'
 import TextBlocks from '../components/TextBlocks.vue'
 import { useI18n } from '../i18n/index.js'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, posterTrial, groupStyle, groupName, timeRange } from '../data/store.js'
+import { state, hasData, visibleSeasons, useSeasonSchedule, scheduleQuery, posterTrial, groupStyle, groupName, timeRange } from '../data/store.js'
 
 const { t, localized, formatDate } = useI18n()
 
+const route = useRoute()
 const seasonName = ref(null)
 const group = ref('')
 const showCoaches = ref(true)
+
+// The schedule page's print link passes its season and group (?sasong=, ?grupp=). An unknown name
+// falls back to the current season / all groups; a group missing from the cached copy is picked up
+// when the live data arrives, since only the name is kept.
+function readQuery() {
+  seasonName.value = firstQuery(route.query, 'sasong')
+  group.value = firstQuery(route.query, 'grupp') ?? ''
+}
+readQuery()
+watch(() => [route.query.sasong, route.query.grupp], readQuery)
 
 const { season, sessions, groupsInSeason } = useSeasonSchedule(seasonName)
 // The selects follow what the poster shows, so they never start blank. A group chosen for another
@@ -39,13 +52,7 @@ const size = computed(() => {
   return busiest.value <= 2 && days.value.length <= 5 ? 'roomy' : ''
 })
 
-// The season only when it isn't the current one, so the link stays right when seasons roll over.
-const qrTo = computed(() => {
-  const query = {}
-  if (season.value && season.value.name !== currentSeason.value?.name) query.sasong = season.value.name
-  if (activeGroup.value) query.grupp = activeGroup.value
-  return { name: 'schedule', query }
-})
+const qrTo = computed(() => ({ name: 'schedule', query: scheduleQuery(season.value, activeGroup.value) }))
 </script>
 
 <template>
