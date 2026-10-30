@@ -178,10 +178,10 @@ export function useSeasonSchedule(nameRef) {
   return { season, sessions, groupsInSeason }
 }
 
-// The "how to join" text from Klubbinfo, or the built-in one; shared by the contact page and the groups poster.
 // The posters' Prova på box (Klubbinfo "Affisch prova på"); empty means no box.
 export const posterTrial = computed(() => localized(state.club.posterTrial, state.club.posterTrialEn))
 
+// The "how to join" text from Klubbinfo, or the built-in one; shared by the contact page and the groups poster.
 export const joinText = computed(() => localized(state.club.join, state.club.joinEn) || t('contact.joinText'))
 
 // Query for a link to the schedule page or its poster: the season only when it isn't the current one,
