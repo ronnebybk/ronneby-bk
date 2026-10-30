@@ -29,7 +29,7 @@ watch(
     <template v-if="failing.length">
       <p class="title">{{ t('admin.imageWarnings.title') }}</p>
       <ul>
-        <li v-for="item in failing" :key="item.coach.name">
+        <li v-for="(item, i) in failing" :key="i">
           <strong>{{ item.coach.name }}</strong> — {{ t(`admin.imageWarnings.${item.reason}`) }}
         </li>
       </ul>

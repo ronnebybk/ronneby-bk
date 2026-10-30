@@ -43,6 +43,11 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
   `imageUrl` in `src/data/parse.js` needs updating. Uploading needs a Google account. Files in the repo
   (`public/coaches/`) still work as a fallback.
 
+  Only `docs.google.com` links are checked for being an image (the `/uc` form); a
+  `drive.google.com/open?id=…`, `drive.google.com/file/d/…` or
+  `drive.usercontent.google.com/download?id=…` link with a non-image ID still becomes a thumbnail request. The ID alone can't tell an image from a document, so this is accepted as a low risk —
+  Drive's *Copy link* for a sheet gives a `docs.google.com/spreadsheets/…` link, which is rejected.
+
 ## Visibility
 
 - **Search engines** mainly index the start page. The schedule is loaded by JavaScript and the pages
