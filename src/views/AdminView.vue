@@ -77,7 +77,7 @@ function forget() {
       <iframe :key="embedUrl" :src="embedUrl" :title="t('admin.title')" class="sheet"></iframe>
 
       <div class="container links">
-        <a :href="fullUrl" target="_blank" rel="noopener">{{ t('admin.openInSheets') }} ↗</a>
+        <a :href="fullUrl" target="_blank" rel="noopener noreferrer">{{ t('admin.openInSheets') }} ↗</a>
         <RouterLink to="/">{{ t('admin.viewSite') }}</RouterLink>
         <RouterLink to="/affisch/schema">{{ t('poster.link') }}: {{ t('nav.schedule') }}</RouterLink>
         <RouterLink to="/affisch/grupper">{{ t('poster.link') }}: {{ t('nav.groups') }}</RouterLink>
