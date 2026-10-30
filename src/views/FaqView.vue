@@ -29,8 +29,11 @@ const questions = computed(() => {
 
     <p v-if="state.status === 'loading' && !questions.length" class="muted">{{ t('common.loading') }}</p>
     <p v-else-if="!questions.length" class="muted">
-      {{ t('faq.empty') }}
-      <RouterLink to="/kontakt">{{ t('faq.emptyLink') }}</RouterLink>
+      <template v-if="state.status === 'error'">{{ t('common.loadError') }}</template>
+      <template v-else>
+        {{ t('faq.empty') }}
+        <RouterLink to="/kontakt">{{ t('faq.emptyLink') }}</RouterLink>
+      </template>
     </p>
 
     <!-- Native details/summary: keyboard and screen readers work without extra JavaScript. -->
