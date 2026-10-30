@@ -247,8 +247,8 @@ h1 {
   color: var(--red-strong);
 }
 
-/* The sheet is the page: the @page margin replaces its on-screen padding. Slightly under the page
-   size so rounding never adds an empty second page. */
+/* The sheet is the page, and its padding is the margin (@page has none). Slightly under the page
+   height so rounding never adds an empty second page. */
 @media print {
   .stage {
     padding: 0;
@@ -257,19 +257,16 @@ h1 {
   }
 
   .poster {
-    padding: 0;
     margin: 0;
     box-shadow: none;
   }
 
   .poster.landscape {
-    width: 277mm;
-    min-height: 189mm;
+    min-height: 209mm;
   }
 
   .poster.portrait {
-    width: 190mm;
-    min-height: 276mm;
+    min-height: 296mm;
   }
 }
 </style>

@@ -90,8 +90,9 @@ och **Grupper & priser** (stående). Inget behöver skrivas om för hand.
   eller en sparad kopia visas, vänta och ladda om sidan innan du skriver ut.
 - QR-koden leder till motsvarande sida på hemsidan, där inställda pass och senaste ändringar syns.
   På en affisch för en enda grupp leder den till schemat filtrerat på den gruppen.
-- Använd utskriftens standardinställningar: A4, skala 100 %, standardmarginaler. Rubriker och sidfötter från
-  webbläsaren (adress, datum) kan du stänga av i utskriftsrutan.
+- Använd utskriftens standardinställningar: A4, skala 100 %, standardmarginaler. Affischen har egna
+  marginaler, så webbläsarens rubriker och sidfötter (adress, datum) kommer inte med. I Firefox kan de
+  behöva stängas av i utskriftsrutan.
 - Gruppernas färger skrivs ut, men gruppens namn står alltid bredvid, så affischen fungerar även i svartvitt.
 - Affischen ska rymmas på **en sida**. Är en dag väldigt full (fler än fem pass med tränare och noteringar),
   eller är beskrivningarna mycket långa, kan det bli en andra sida. Då hjälper det att dölja tränarna, välja
