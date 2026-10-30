@@ -339,6 +339,7 @@ export function parseCoaches(rows) {
 // Rows without a title or with a link that isn't https:// are skipped (D2); an unreadable
 // date drops only the date, not the row (D5). Empty category comes last as "Övrigt" (D4).
 // Categories match ignoring case and extra spaces; the heading uses the first row's spelling (D9).
+// Each category carries its normalized `key` so the view can use it as a stable, unique :key.
 
 export function parseDocuments(rows) {
   const categories = []
@@ -346,17 +347,22 @@ export function parseDocuments(rows) {
   for (const row of rows.map(normalizeRow)) {
     const title = field(row, 'Titel')
     const url = field(row, 'Länk')
-    if (!title || !/^https:\/\//.test(url)) continue
+    if (!title || !/^https:\/\//i.test(url)) continue
     const categoryRaw = field(row, 'Kategori')
-    const key = categoryRaw.toLowerCase().replace(/\s+/g, ' ').trim()
+    // An explicit "Övrigt" and an empty category are the same section, so both end up under one heading.
+    let key = categoryRaw.toLowerCase().replace(/\s+/g, ' ').trim()
+    if (key === 'övrigt') key = ''
     let category = byKey.get(key)
     if (!category) {
-      category = { name: categoryRaw, nameEn: field(row, 'Kategori (EN)'), items: [] }
+      // The empty category always shows the translated "Övrigt"/"Other", never the raw cell text.
+      category = key === ''
+        ? { key, name: '', nameEn: '', items: [] }
+        : { key, name: categoryRaw, nameEn: field(row, 'Kategori (EN)'), items: [] }
       byKey.set(key, category)
       categories.push(category)
     }
     // The English heading comes from the first row in that category with Kategori (EN).
-    if (!category.nameEn && field(row, 'Kategori (EN)')) category.nameEn = field(row, 'Kategori (EN)')
+    if (key && !category.nameEn && field(row, 'Kategori (EN)')) category.nameEn = field(row, 'Kategori (EN)')
     category.items.push({
       title,
       titleEn: field(row, 'Titel (EN)'),

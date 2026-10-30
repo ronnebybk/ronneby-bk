@@ -259,8 +259,9 @@ export const faq = [
   { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
 ]
 
-// Example documents: 3 categories, one empty-category row, one row with empty English title,
-// one unreadable date, plus broken rows (no title / no link / http:// link) that must be skipped.
+// Example documents: 2 named categories plus one empty-category row (3 headings on the page),
+// one row with empty English title, one unreadable date, plus broken rows (no title / no link /
+// http:// link) that must be skipped.
 
 export const documents = [
   {
