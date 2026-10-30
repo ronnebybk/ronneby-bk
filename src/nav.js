@@ -8,3 +8,7 @@ export const navLinks = [
   { to: '/fragor', key: 'nav.faq' },
   { to: '/kontakt', key: 'nav.contact' },
 ]
+
+// In-app link targets: the header pages plus footer-only pages like /dokument, so sheet text
+// can link to them without the header changing.
+export const linkTargets = [...navLinks, { to: '/dokument', key: 'nav.documents' }]

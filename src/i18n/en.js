@@ -7,6 +7,7 @@ export default {
     faq: 'FAQ',
     contact: 'Contact',
     trial: 'Try boxing',
+    documents: 'Documents',
     menu: 'Menu',
     close: 'Close',
   },

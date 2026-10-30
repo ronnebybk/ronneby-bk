@@ -2,7 +2,7 @@
 // Editors type into the sheet by hand, so everything here is forgiving:
 // rows that can't be understood are skipped instead of breaking the page.
 
-import { navLinks } from '../nav.js'
+import { linkTargets } from '../nav.js'
 
 const DAY_NAMES = {
   måndag: 1, mån: 1, monday: 1, mon: 1,
@@ -196,7 +196,7 @@ export function linkParts(value) {
     // Trailing punctuation usually belongs to the sentence, not the address.
     const url = token.startsWith('#') ? token : token.replace(/[.,;:!?)]+$/, '')
     const route = url.startsWith('#') ? url.slice(1) : ownRoute(url)
-    const page = route ? navLinks.find((link) => link.to === route) : undefined
+    const page = route ? linkTargets.find((link) => link.to === route) : undefined
     if (page) parts.push({ to: page.to, navKey: page.key })
     else if (token.startsWith('#')) parts.push({ text: token })
     else parts.push({ text: url, href: url })

@@ -7,6 +7,7 @@ export default {
     faq: 'Frågor',
     contact: 'Kontakt',
     trial: 'Prova på',
+    documents: 'Dokument',
     menu: 'Meny',
     close: 'Stäng',
   },

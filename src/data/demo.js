@@ -203,8 +203,8 @@ export const trial = [
   {
     'Rubrik': 'Vad kostar det?',
     'Rubrik (EN)': 'What does it cost?',
-    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper.',
-    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper.',
+    'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper. Officiella dokument som regler och stadgar finns på #/dokument.',
+    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper. Official documents like rules and statutes are under #/dokument.',
   },
   {
     'Rubrik': 'Hur tar jag mig dit?',
