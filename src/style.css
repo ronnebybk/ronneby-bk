@@ -16,6 +16,7 @@
   --line: #cdc3b8;
   --highlight: #ecd3cd;
   --link: #a8141a;
+  --logo-tile: var(--surface);
 
   /* Medal icons on the results page; the dark stroke keeps them readable on both themes. */
   --gold: #d9a419;
@@ -57,6 +58,7 @@
     --gold: #e8bd45;
     --silver: #d0d5da;
     --bronze: #cd8b58;
+    --logo-tile: #fff; /* logos are mostly made for white */
     color-scheme: dark;
   }
 }
@@ -222,12 +224,12 @@ button {
   margin-top: 48px;
 }
 
-/* Logos are mostly made for white, so they sit on a white tile in dark mode too. */
+/* Light mode matches the cards; dark mode keeps a white tile (see --logo-tile). */
 .sponsor-tile {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--logo-tile);
   border-radius: 6px;
   padding: 10px 14px;
   color: var(--ink);
