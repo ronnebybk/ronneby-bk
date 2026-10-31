@@ -111,10 +111,10 @@ const days = computed(() =>
 
       <div class="week">
         <section v-for="d in days" :key="d.day" class="day" :class="{ today: d.isToday, empty: !d.sessions.length }">
-          <h3>
+          <h2>
             {{ t('days')[d.day - 1] }}
             <span v-if="d.isToday" class="today-badge">{{ t('common.today') }}</span>
-          </h3>
+          </h2>
           <div class="list">
             <SessionItem v-for="(session, i) in d.sessions" :key="i" :session="session" />
             <p v-if="!d.sessions.length" class="none">{{ t('schedule.noSessions') }}</p>
@@ -218,7 +218,7 @@ const days = computed(() =>
   font-size: 0.95rem;
 }
 
-.day h3 {
+.day h2 {
   font-size: 1rem;
   margin-bottom: 10px;
   display: flex;
@@ -267,7 +267,7 @@ const days = computed(() =>
     padding: 8px 12px;
   }
 
-  .day.empty h3 {
+  .day.empty h2 {
     margin: 0;
   }
 }
