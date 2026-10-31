@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { state } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import SponsorLogo from './SponsorLogo.vue'
+import NewTabNote from './NewTabNote.vue'
 
 // Kept low on purpose so sponsors don't take over the home page; the rest are on /sponsorer.
 const HOME_LIMIT = 4
@@ -19,6 +20,7 @@ const hasMore = computed(() => state.sponsors.length > HOME_LIMIT)
       <li v-for="(sponsor, i) in shown" :key="i">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="sponsor-tile">
           <SponsorLogo :sponsor="sponsor" :height="44" />
+          <NewTabNote />
         </a>
         <span v-else class="sponsor-tile">
           <SponsorLogo :sponsor="sponsor" :height="44" />

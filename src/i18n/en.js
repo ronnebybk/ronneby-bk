@@ -35,6 +35,7 @@ export default {
     offline: 'Could not fetch the latest content. Showing the last saved version.',
     loadError: 'The content could not be loaded right now. Please try again shortly.',
     skipToContent: 'Skip to content',
+    newTab: 'opens in a new tab',
   },
   notices: {
     label: 'Notices',
@@ -186,7 +187,6 @@ export default {
     emptyLink: 'Contact us',
     other: 'Other',
     pdf: 'PDF',
-    opensNewTab: '(opens in a new tab)',
   },
   sponsors: {
     title: 'Sponsors',
@@ -196,6 +196,7 @@ export default {
     visit: 'Visit website',
   },
   footer: {
+    navLabel: 'Footer',
     documents: 'Documents',
     privacy: 'Privacy policy',
     sponsorsLink: 'Sponsors',

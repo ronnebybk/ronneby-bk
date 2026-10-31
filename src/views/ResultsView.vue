@@ -7,6 +7,7 @@ import DataNotice from '../components/DataNotice.vue'
 import { state, resultsByYear, medalCount } from '../data/store.js'
 
 import { useI18n } from '../i18n/index.js'
+import NewTabNote from '../components/NewTabNote.vue'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -57,7 +58,7 @@ function entryDetails(result) {
             <strong class="name">{{ result.name }}</strong>
             <span class="muted details">{{ entryDetails(result) }}</span>
             <a v-if="result.link" :href="result.link" target="_blank" rel="noopener noreferrer">
-              {{ t('results.link') }} ↗<span class="visually-hidden"> – {{ localized(result.competition, result.competitionEn) }} {{ result.date.slice(0, 4) }}</span>
+              {{ t('results.link') }} ↗<span class="visually-hidden"> – {{ localized(result.competition, result.competitionEn) }} {{ result.date.slice(0, 4) }}</span><NewTabNote />
             </a>
           </li>
         </ul>

@@ -3,6 +3,7 @@ import { computed, nextTick, watch } from 'vue'
 import { consent, giveConsent } from '../data/consent.js'
 import { useI18n } from '../i18n/index.js'
 import { state } from '../data/store.js'
+import NewTabNote from './NewTabNote.vue'
 
 // Facebook and Instagram set tracking cookies, so nothing is loaded from them
 // until the visitor clicks "show" (GDPR). The choice is remembered on the device.
@@ -67,7 +68,7 @@ watch(
 
     <div v-else-if="isFacebookGroup" class="group">
       <p>{{ t('social.groupText') }}</p>
-      <a :href="profileUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">{{ t('social.groupButton') }} ↗</a>
+      <a :href="profileUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">{{ t('social.groupButton') }} ↗<NewTabNote /></a>
     </div>
 
     <!-- Both feeds share one square window, sized by the card rather than by Facebook or by the
@@ -92,7 +93,7 @@ watch(
     </div>
 
     <p v-if="profileUrl && !isFacebookGroup">
-      <a :href="profileUrl" target="_blank" rel="noopener noreferrer">{{ t('social.openOn', { service: name }) }} ↗</a>
+      <a :href="profileUrl" target="_blank" rel="noopener noreferrer">{{ t('social.openOn', { service: name }) }} ↗<NewTabNote /></a>
     </p>
   </div>
 </template>
