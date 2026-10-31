@@ -33,10 +33,12 @@ const cover = computed(() => props.card.images.find((img) => img.image)?.image ?
 // A cover that fails to load falls back to the branded date tile, like a card with no image.
 const failedCovers = reactive(new Set())
 
-const hasMedals = computed(() => ['gold', 'silver', 'bronze'].some((m) => props.card.medals[m] > 0))
+const showMedalBadge = computed(
+  () => !props.card.upcoming && props.card.type === 'competition' && ['gold', 'silver', 'bronze'].some((m) => props.card.medals[m] > 0),
+)
 
 // On the fallback tile the big date and type label are already shown, so the corner date block
-// would only overlap them; the medal badge moves to the opposite corner instead.
+// is hidden there and the medal badge sits inline in the tile's top row instead of overlapping.
 const showFallback = computed(() => !cover.value || failedCovers.has(cover.value))
 
 function openCard() {
@@ -64,19 +66,24 @@ function openCard() {
           @error="failedCovers.add(cover)"
         />
         <span v-else class="cover-fallback" aria-hidden="true">
-          <span class="fallback-date">{{ dateBlock ? dateBlock.day : '?' }}</span>
-          <span v-if="dateBlock" class="fallback-month">{{ dateBlock.month }}</span>
+          <span class="fallback-top">
+            <span class="fallback-date-wrap">
+              <span class="fallback-date">{{ dateBlock ? dateBlock.day : '?' }}</span>
+              <span v-if="dateBlock" class="fallback-month">{{ dateBlock.month }}</span>
+            </span>
+            <span v-if="showMedalBadge" class="medal-badge inline">
+              <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
+                <MedalIcon :medal="m" />{{ card.medals[m] }}
+              </span>
+            </span>
+          </span>
           <span class="fallback-type">{{ typeLabel }}</span>
         </span>
         <span v-if="!showFallback" class="date-block" aria-hidden="true">
           <template v-if="dateBlock"><span class="day">{{ dateBlock.day }}</span><span class="month">{{ dateBlock.month }}</span></template>
           <span v-else class="day">?</span>
         </span>
-        <span
-          v-if="!card.upcoming && card.type === 'competition' && hasMedals"
-          class="medal-badge"
-          :class="{ 'on-fallback': showFallback }"
-        >
+        <span v-if="!showFallback && showMedalBadge" class="medal-badge">
           <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
             <MedalIcon :medal="m" />{{ card.medals[m] }}
           </span>
@@ -145,6 +152,23 @@ function openCard() {
   line-height: 1.1;
 }
 
+/* Date on the left, medal badge inline on the right: no absolute overlay, so nothing overlaps. */
+.fallback-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 10px 0;
+  align-self: stretch;
+}
+
+.fallback-date-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .fallback-date {
   font-family: var(--font-display);
   font-size: 2.6rem;
@@ -208,11 +232,9 @@ function openCard() {
   border: 1px solid var(--line);
 }
 
-.medal-badge.on-fallback {
-  left: auto;
-  right: 10px;
-  top: 10px;
-  bottom: auto;
+.medal-badge.inline {
+  position: static;
+  flex: none;
 }
 
 .medal-count {
@@ -277,6 +299,32 @@ function openCard() {
 }
 
 .past .meta {
+  font-size: 0.8rem;
+}
+
+.past .fallback-date {
+  font-size: 1.9rem;
+}
+
+.past .fallback-month {
+  font-size: 0.8rem;
+}
+
+.past .fallback-type {
+  font-size: 0.65rem;
+  padding: 1px 8px;
+}
+
+.past .fallback-top {
+  padding: 8px 8px 0;
+}
+
+.past .medal-badge {
+  padding: 2px 8px;
+  gap: 6px;
+}
+
+.past .medal-count {
   font-size: 0.8rem;
 }
 </style>
