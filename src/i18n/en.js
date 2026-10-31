@@ -208,6 +208,7 @@ export default {
       faq: 'FAQ',
       documents: 'Documents',
       results: 'Results',
+      sponsors: 'Sponsors',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',
@@ -221,6 +222,10 @@ export default {
       title: 'Images that don\'t load',
       failed: 'check that the file is shared as "Anyone with the link" and that it still exists',
       unrecognised: 'the value is not a link or filename the site understands',
+      kinds: {
+        coach: 'coach',
+        sponsor: 'sponsor',
+      },
     },
   },
   notFound: {

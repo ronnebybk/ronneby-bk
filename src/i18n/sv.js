@@ -209,6 +209,7 @@ export default {
       faq: 'Frågor',
       documents: 'Dokument',
       results: 'Resultat',
+      sponsors: 'Sponsorer',
     },
     help:
       'Ändringar sparas automatiskt och syns på hemsidan inom ca 5 minuter. Ändra inte rubrikerna på första raden.',
@@ -222,6 +223,10 @@ export default {
       title: 'Bilder som inte laddas',
       failed: 'kontrollera att filen är delad som ”Alla som har länken” och att den fortfarande finns kvar',
       unrecognised: 'värdet är inte en länk eller ett filnamn som webbplatsen förstår',
+      kinds: {
+        coach: 'tränare',
+        sponsor: 'sponsor',
+      },
     },
   },
   notFound: {
