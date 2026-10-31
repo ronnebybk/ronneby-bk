@@ -35,6 +35,10 @@ const failedCovers = reactive(new Set())
 
 const hasMedals = computed(() => ['gold', 'silver', 'bronze'].some((m) => props.card.medals[m] > 0))
 
+// On the fallback tile the big date and type label are already shown, so the corner date block
+// would only overlap them; the medal badge moves to the opposite corner instead.
+const showFallback = computed(() => !cover.value || failedCovers.has(cover.value))
+
 function openCard() {
   emit('toggle', props.card, true)
 }
@@ -52,7 +56,7 @@ function openCard() {
     >
       <span class="cover">
         <img
-          v-if="cover && !failedCovers.has(cover)"
+          v-if="!showFallback"
           :src="cover"
           alt=""
           loading="lazy"
@@ -64,11 +68,15 @@ function openCard() {
           <span v-if="dateBlock" class="fallback-month">{{ dateBlock.month }}</span>
           <span class="fallback-type">{{ typeLabel }}</span>
         </span>
-        <span class="date-block" aria-hidden="true">
+        <span v-if="!showFallback" class="date-block" aria-hidden="true">
           <template v-if="dateBlock"><span class="day">{{ dateBlock.day }}</span><span class="month">{{ dateBlock.month }}</span></template>
           <span v-else class="day">?</span>
         </span>
-        <span v-if="!card.upcoming && card.type === 'competition' && hasMedals" class="medal-badge">
+        <span
+          v-if="!card.upcoming && card.type === 'competition' && hasMedals"
+          class="medal-badge"
+          :class="{ 'on-fallback': showFallback }"
+        >
           <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
             <MedalIcon :medal="m" />{{ card.medals[m] }}
           </span>
@@ -198,6 +206,13 @@ function openCard() {
   border-radius: 999px;
   background: var(--surface);
   border: 1px solid var(--line);
+}
+
+.medal-badge.on-fallback {
+  left: auto;
+  right: 10px;
+  top: 10px;
+  bottom: auto;
 }
 
 .medal-count {
