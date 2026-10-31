@@ -222,6 +222,17 @@ button {
   margin-top: 48px;
 }
 
+/* Logos are mostly made for white, so they sit on a white tile in dark mode too. */
+.sponsor-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--ink);
+}
+
 .tag {
   display: inline-block;
   font-size: 0.8rem;

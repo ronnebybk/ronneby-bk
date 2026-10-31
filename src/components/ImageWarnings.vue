@@ -8,15 +8,21 @@ const { t } = useI18n()
 
 const failing = ref([])
 
+// Coaches and sponsors share one list, each labelled with its kind (C1).
+const items = () => [
+  ...state.coaches.map((c) => ({ ...c, kind: 'coach' })),
+  ...state.sponsors.map((s) => ({ ...s, kind: 'sponsor', image: s.logo, imageValue: s.logoValue })),
+]
+
 // Re-check when the data changes (cached copy → live copy), keyed by name and raw value so a
 // re-render doesn't trigger a new round of image requests. onCleanup guards against a slow,
 // stale check overwriting the result of a newer one.
 watch(
-  () => state.coaches.map((c) => `${c.name}\u0000${c.imageValue}`).join('|'),
+  () => items().map((c) => `${c.kind}\u0000${c.name}\u0000${c.imageValue}`).join('|'),
   async (_, __, onCleanup) => {
     let stale = false
     onCleanup(() => (stale = true))
-    const result = await checkImages(state.coaches)
+    const result = await checkImages(items())
     if (!stale) failing.value = result
   },
   { immediate: true },
@@ -30,7 +36,7 @@ watch(
       <p class="title">{{ t('admin.imageWarnings.title') }}</p>
       <ul>
         <li v-for="(item, i) in failing" :key="i">
-          <strong>{{ item.coach.name }}</strong> — {{ t(`admin.imageWarnings.${item.reason}`) }}
+          <strong>{{ item.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${item.kind}`) }}) — {{ t(`admin.imageWarnings.${item.reason}`) }}
         </li>
       </ul>
     </template>

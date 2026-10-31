@@ -350,6 +350,25 @@ export function imageUrl(value, folder) {
   return /^[^\s/\\:]+\.\w+$/.test(text) ? `./${folder}/${text}` : ''
 }
 
+// The Sponsorer tab: one sponsor per row, shown in row order. Rows without a name are skipped.
+export function parseSponsors(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => {
+      const logoValue = field(row, 'Logga')
+      const link = field(row, 'Länk')
+      return {
+        name: field(row, 'Namn'),
+        logo: imageUrl(logoValue, 'sponsors'),
+        logoValue,
+        url: /^https:\/\//.test(link) ? link : '',
+        description: field(row, 'Beskrivning'),
+        descriptionEn: field(row, 'Beskrivning (EN)'),
+      }
+    })
+    .filter((sponsor) => sponsor.name)
+}
+
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
