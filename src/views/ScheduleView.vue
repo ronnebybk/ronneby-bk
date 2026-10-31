@@ -73,7 +73,7 @@ const days = computed(() =>
 
     <template v-else>
       <div class="season-bar">
-        <div v-if="visibleSeasons.length > 1" class="seasons" :aria-label="t('schedule.season')">
+        <div v-if="visibleSeasons.length > 1" class="seasons" role="group" :aria-label="t('schedule.season')">
           <button
             v-for="s in visibleSeasons"
             :key="s.name"
