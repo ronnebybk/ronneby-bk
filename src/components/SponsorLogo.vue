@@ -42,6 +42,8 @@ const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px
 <style scoped>
 img {
   object-fit: contain;
+  /* A white background baked into a logo takes the tile's colour instead of showing as a box. */
+  mix-blend-mode: multiply;
 }
 
 .sponsor-name {
