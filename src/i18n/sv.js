@@ -186,6 +186,10 @@ export default {
     pdf: 'PDF',
     opensNewTab: '(öppnas i ny flik)',
   },
+  sponsors: {
+    title: 'Sponsorer',
+    become: 'Vill du bli sponsor? Kontakta oss!',
+  },
   footer: {
     documents: 'Dokument',
     privacy: 'Integritetspolicy',

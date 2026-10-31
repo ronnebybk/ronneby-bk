@@ -1,0 +1,101 @@
+<script setup>
+import { computed } from 'vue'
+import { state } from '../data/store.js'
+import { useI18n } from '../i18n/index.js'
+import SponsorLogo from '../components/SponsorLogo.vue'
+
+const { t, localized } = useI18n()
+
+// Sponsors in sheet order; the description falls back to Swedish when the English cell is empty.
+const sponsors = computed(() =>
+  state.sponsors.map((s) => ({
+    ...s,
+    description: localized(s.description, s.descriptionEn),
+  })),
+)
+</script>
+
+<template>
+  <div class="container page">
+    <h1>{{ t('sponsors.title') }}</h1>
+
+    <ul v-if="sponsors.length" class="grid">
+      <li v-for="sponsor in sponsors" :key="sponsor.name" class="card">
+        <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="card-link">
+          <span class="logo-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" />
+          </span>
+          <span class="name">{{ sponsor.name }}</span>
+          <span v-if="sponsor.description" class="description">{{ sponsor.description }}</span>
+        </a>
+        <template v-else>
+          <span class="logo-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" />
+          </span>
+          <span class="name">{{ sponsor.name }}</span>
+          <span v-if="sponsor.description" class="description">{{ sponsor.description }}</span>
+        </template>
+      </li>
+    </ul>
+
+    <p v-if="state.club.email" class="become">
+      {{ t('sponsors.become') }}
+      <a :href="`mailto:${state.club.email}`">{{ state.club.email }}</a>
+    </p>
+  </div>
+</template>
+
+<style scoped>
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.card-link {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--ink);
+  min-width: 100px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.become {
+  margin-top: 8px;
+}
+</style>

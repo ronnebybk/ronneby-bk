@@ -185,6 +185,10 @@ export default {
     pdf: 'PDF',
     opensNewTab: '(opens in a new tab)',
   },
+  sponsors: {
+    title: 'Sponsors',
+    become: 'Want to become a sponsor? Contact us!',
+  },
   footer: {
     documents: 'Documents',
     privacy: 'Privacy policy',

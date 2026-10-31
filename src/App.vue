@@ -18,6 +18,7 @@ const titleKeys = {
   results: 'results.title',
   privacy: 'privacy.title',
   documents: 'documents.title',
+  sponsors: 'sponsors.title',
   admin: 'admin.title',
   posterSchedule: 'poster.scheduleTitle',
   posterGroups: 'poster.groupsTitle',
