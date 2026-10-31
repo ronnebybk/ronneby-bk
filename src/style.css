@@ -9,13 +9,13 @@
   --on-ink-muted: #b8afab;
 
   /* Content areas */
-  --paper: #f6f3f0;
-  --surface: #ffffff;
-  --text: #1d1a1a;
-  --muted: #5f5856;
-  --line: #e3ddd8;
-  --highlight: #fde8e8;
-  --link: #b5161c;
+  --paper: #e4ddd4; /* dimmed warm grey: white glared */
+  --surface: #ede7e0;
+  --text: #2a2624; /* softer than near-black; still 12:1 */
+  --muted: #5a524e;
+  --line: #cdc3b8;
+  --highlight: #ecd3cd;
+  --link: #a8141a;
 
   /* Medal icons on the results page; the dark stroke keeps them readable on both themes. */
   --gold: #d9a419;
@@ -38,7 +38,7 @@
   --group-5-ink: #000;
 
   --radius: 10px;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 16px rgb(0 0 0 / 0.06);
+  --shadow: 0 1px 2px rgb(30 29 28 / 0.08), 0 4px 16px rgb(30 29 28 / 0.08);
   --font-display: 'Oswald', 'Arial Narrow', sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
