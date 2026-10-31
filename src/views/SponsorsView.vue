@@ -22,15 +22,15 @@ const sponsors = computed(() =>
     <ul v-if="sponsors.length" class="grid">
       <li v-for="sponsor in sponsors" :key="sponsor.name" class="card">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="card-link">
-          <span class="logo-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" />
+          <span v-if="sponsor.logo" class="logo-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
           <span v-if="sponsor.description" class="description">{{ sponsor.description }}</span>
         </a>
         <template v-else>
-          <span class="logo-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" />
+          <span v-if="sponsor.logo" class="logo-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
           <span v-if="sponsor.description" class="description">{{ sponsor.description }}</span>

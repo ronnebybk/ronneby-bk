@@ -13,10 +13,10 @@ const year = new Date().getFullYear()
     <ul v-if="state.sponsors.length" class="sponsor-strip" :aria-label="t('footer.sponsors')">
       <li v-for="sponsor in state.sponsors" :key="sponsor.name">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="sponsor-tile">
-          <SponsorLogo :sponsor="sponsor" :height="32" />
+          <SponsorLogo :sponsor="sponsor" :height="28" />
         </a>
         <span v-else class="sponsor-tile">
-          <SponsorLogo :sponsor="sponsor" :height="32" />
+          <SponsorLogo :sponsor="sponsor" :height="28" />
         </span>
       </li>
     </ul>
