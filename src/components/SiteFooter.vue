@@ -81,7 +81,9 @@ a {
   justify-content: center;
   background: #fff;
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 6px 12px;
+  min-height: 44px;
   color: var(--ink);
+  font-size: 0.85rem;
 }
 </style>

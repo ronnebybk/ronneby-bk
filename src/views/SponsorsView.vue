@@ -51,7 +51,7 @@ const sponsors = computed(() =>
   padding: 0;
   margin: 24px 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
   gap: 16px;
 }
 
@@ -93,6 +93,11 @@ const sponsors = computed(() =>
 .description {
   font-size: 0.9rem;
   color: var(--muted);
+  /* Editors sometimes paste long multi-line text; clamp it so cards stay compact. */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .become {
