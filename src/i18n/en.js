@@ -159,6 +159,7 @@ export default {
     previous: 'Previous image',
     next: 'Next image',
     goToSlide: 'Show image {n} of {total}',
+    close: 'Close',
     types: {
       competition: 'Competition',
       camp: 'Camp',

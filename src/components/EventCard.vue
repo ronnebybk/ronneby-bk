@@ -1,13 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 
 import MedalIcon from './MedalIcon.vue'
-
-import TextBlocks from './TextBlocks.vue'
-
-import EventSlideshow from './EventSlideshow.vue'
-
-import NewTabNote from './NewTabNote.vue'
 
 import { useI18n } from '../i18n/index.js'
 
@@ -17,104 +11,84 @@ const props = defineProps({
 })
 const emit = defineEmits(['toggle'])
 
-const { t, localized, formatShortDate, formatDateRange, formatDate } = useI18n()
+const { t, localized, formatShortDate, formatDateRange } = useI18n()
 
 const title = computed(() => localized(props.card.title, props.card.titleEn))
 const dateBlock = computed(() => (props.card.date ? formatShortDate(props.card.date) : null))
 const place = computed(() => localized(props.card.place, props.card.placeEn))
+const typeLabel = computed(() => t(`events.types.${props.card.type}`))
 
-// Type plus place, the date range for multi-day events, or the date text for undated ones (B1).
+// Place, the date range for multi-day events, or the date text for undated ones (B1).
 const meta = computed(() => {
-  const parts = [t(`events.types.${props.card.type}`)]
-  if (props.card.date && props.card.end && props.card.end !== props.card.date) parts.push(formatDateRange(props.card.date, props.card.end))
-  else if (place.value) parts.push(place.value)
-  else if (!props.card.date) parts.push(props.card.dateText || t('events.dateAnnounced'))
-  return parts.join(' · ')
+  if (props.card.date && props.card.end && props.card.end !== props.card.date)
+    return formatDateRange(props.card.date, props.card.end)
+  if (place.value) return place.value
+  if (!props.card.date) return props.card.dateText || t('events.dateAnnounced')
+  return ''
 })
 
-const images = computed(() => props.card.images.filter((img) => img.image))
+// The cover is the first usable image; the slideshow in the pop-up shows them all.
+const cover = computed(() => props.card.images.find((img) => img.image)?.image ?? null)
+
+// A cover that fails to load falls back to the branded date tile, like a card with no image.
+const failedCovers = reactive(new Set())
+
 const hasMedals = computed(() => ['gold', 'silver', 'bronze'].some((m) => props.card.medals[m] > 0))
 
-const mapUrl = computed(() =>
-  place.value ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.value)}` : '',
-)
-
-// The button reads "Anmälan & info" before/during the event and "Bilder & info" after (D3).
-const linkLabel = computed(() => (props.card.upcoming ? t('events.signup') : t('events.photos')))
-
-function placementText(result) {
-  return result.medal ? t(`results.medals.${result.medal}`) : localized(result.placement, result.placementEn)
-}
-
-function onToggle(event) {
-  emit('toggle', props.card, event.target.open)
+function openCard() {
+  emit('toggle', props.card, true)
 }
 </script>
 
 <template>
-  <details :id="`event-${card.id}`" class="event-card card" :class="{ past: !card.upcoming }" :open="open" @toggle="onToggle">
-    <summary>
-      <span class="date-block" aria-hidden="true">
-        <template v-if="dateBlock"><span class="day">{{ dateBlock.day }}</span><span class="month">{{ dateBlock.month }}</span></template>
-        <span v-else class="day">?</span>
-      </span>
-      <span class="head">
-        <strong class="title">{{ title }}</strong>
-        <span class="meta muted">{{ meta }}</span>
-      </span>
-      <span v-if="!card.upcoming && card.type === 'competition' && hasMedals" class="medals">
-        <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
-          <MedalIcon :medal="m" />{{ card.medals[m] }}
+  <article :id="`event-${card.id}`" class="event-card card" :class="{ past: !card.upcoming }">
+    <button
+      type="button"
+      class="card-button"
+      :aria-expanded="open"
+      aria-haspopup="dialog"
+      :aria-labelledby="`event-title-${card.id}`"
+      @click="openCard"
+    >
+      <span class="cover">
+        <img
+          v-if="cover && !failedCovers.has(cover)"
+          :src="cover"
+          alt=""
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          @error="failedCovers.add(cover)"
+        />
+        <span v-else class="cover-fallback" aria-hidden="true">
+          <span class="fallback-date">{{ dateBlock ? dateBlock.day : '?' }}</span>
+          <span v-if="dateBlock" class="fallback-month">{{ dateBlock.month }}</span>
+          <span class="fallback-type">{{ typeLabel }}</span>
+        </span>
+        <span class="date-block" aria-hidden="true">
+          <template v-if="dateBlock"><span class="day">{{ dateBlock.day }}</span><span class="month">{{ dateBlock.month }}</span></template>
+          <span v-else class="day">?</span>
+        </span>
+        <span v-if="!card.upcoming && card.type === 'competition' && hasMedals" class="medal-badge">
+          <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
+            <MedalIcon :medal="m" />{{ card.medals[m] }}
+          </span>
         </span>
       </span>
-      <span class="chevron" aria-hidden="true"></span>
-    </summary>
-
-    <div v-if="open" class="body">
-      <EventSlideshow v-if="images.length" :images="images" :title="title" />
-
-      <p v-if="localized(card.time, card.timeEn)" class="time">🕘 {{ localized(card.time, card.timeEn) }}</p>
-
-      <p v-if="place" class="place">
-        📍 {{ place }}
-        <a :href="mapUrl" target="_blank" rel="noopener noreferrer">
-          {{ t('events.viewMap') }}<NewTabNote />
-        </a>
-      </p>
-
-      <TextBlocks v-if="localized(card.description, card.descriptionEn)" :text="localized(card.description, card.descriptionEn)" />
-
-      <p v-if="card.link">
-        <a :href="card.link" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          {{ linkLabel }} ↗<NewTabNote />
-        </a>
-      </p>
-
-      <section v-if="card.results.length" class="results" aria-labelledby="`results-${card.id}`">
-        <h3 :id="`results-${card.id}`">{{ t('events.results') }}</h3>
-        <ul>
-          <li v-for="(result, i) in card.results" :key="i">
-            <span class="placement">
-              <MedalIcon v-if="result.medal" :medal="result.medal" />
-              {{ placementText(result) }}
-            </span>
-            <strong class="name">{{ result.name }}</strong>
-            <span class="muted details">
-              {{ [localized(result.class, result.classEn), formatDate(result.date)].filter(Boolean).join(' · ') }}
-            </span>
-            <a v-if="result.link" :href="result.link" target="_blank" rel="noopener noreferrer">
-              {{ t('results.link') }} ↗<NewTabNote />
-            </a>
-          </li>
-        </ul>
-      </section>
-    </div>
-  </details>
+      <span class="card-body">
+        <strong class="title" :id="`event-title-${card.id}`">{{ title }}</strong>
+        <span class="meta-line">
+          <span class="tag">{{ typeLabel }}</span>
+          <span v-if="meta" class="meta muted">{{ meta }}</span>
+        </span>
+      </span>
+    </button>
+  </article>
 </template>
 
 <style scoped>
 .event-card {
   padding: 0;
+  overflow: hidden;
   scroll-margin-top: 90px;
 }
 
@@ -122,29 +96,83 @@ function onToggle(event) {
   background: var(--paper);
 }
 
-summary {
+.card-button {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px 20px;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
   cursor: pointer;
-  list-style: none;
 }
 
-summary::-webkit-details-marker {
-  display: none;
+.cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  background: var(--ink);
+  overflow: hidden;
 }
 
-.date-block {
-  flex: none;
+.cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  gap: 2px;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.fallback-date {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--red-on-ink);
+}
+
+.fallback-month {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--red-on-ink);
+}
+
+.fallback-type {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--red-on-ink);
+  color: var(--red-on-ink);
+}
+
+.date-block {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
   border-radius: 8px;
-  background: var(--highlight);
+  background: var(--surface);
   border: 1px solid var(--line);
   font-family: var(--font-display);
   text-transform: uppercase;
@@ -152,36 +180,24 @@ summary::-webkit-details-marker {
 }
 
 .date-block .day {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
 .date-block .month {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
-.head {
-  min-width: 0;
-  flex: 1;
-}
-
-.title {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.meta {
-  display: block;
-  font-size: 0.95rem;
-}
-
-.medals {
+.medal-badge {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
   display: inline-flex;
-  gap: 10px;
-  flex: none;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 
 .medal-count {
@@ -189,90 +205,63 @@ summary::-webkit-details-marker {
   align-items: center;
   gap: 4px;
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.chevron {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid var(--muted);
-  border-bottom: 2px solid var(--muted);
-  transform: rotate(45deg);
-  transition: transform 0.15s;
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px 16px;
 }
 
-details[open] .chevron {
-  transform: rotate(225deg);
+.title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
-.body {
-  padding: 4px 20px 20px;
-  border-top: 1px solid var(--line);
-}
-
-.time,
-.place {
-  margin: 12px 0 0;
-}
-
-.place a {
-  margin-left: 8px;
-  white-space: nowrap;
-}
-
-.body .btn {
-  margin-top: 16px;
-}
-
-.results {
-  margin-top: 20px;
-}
-
-.results ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--line);
-}
-
-.results li {
+.meta-line {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.placement {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-width: 7ch;
-  font-weight: 600;
+  gap: 8px;
 }
 
-.details {
+.meta {
+  font-size: 0.9rem;
+}
+
+/* Past-year grids use smaller cards (compact variant). */
+.past .cover {
+  aspect-ratio: 16 / 10;
+}
+
+.past .card-body {
+  padding: 10px 12px 12px;
+}
+
+.past .title {
   font-size: 0.95rem;
 }
 
-@media (max-width: 480px) {
-  summary {
-    gap: 10px;
-    padding: 14px 14px;
-  }
+.past .date-block {
+  width: 42px;
+  height: 42px;
+  top: 8px;
+  left: 8px;
+}
 
-  .date-block {
-    width: 48px;
-    height: 48px;
-  }
+.past .date-block .day {
+  font-size: 1rem;
+}
 
-  .body {
-    padding: 4px 14px 16px;
-  }
+.past .date-block .month {
+  font-size: 0.65rem;
+}
 
-  .medals {
-    display: none;
-  }
+.past .meta {
+  font-size: 0.8rem;
 }
 </style>
