@@ -286,7 +286,7 @@ Snapshots are deliberately **not committed** to the repo: coach contact details 
 ### Custom domain (optional)
 
 Register the domain in the club's name, then add it under **Settings → Pages → Custom domain** and
-create the DNS records GitHub shows. No code changes are needed. Afterwards, send editors the new admin link.
+create the DNS records GitHub shows. Then update the two absolute share-preview URLs in `index.html` (`og:url` and `og:image`) to the new domain, and push. Afterwards, send editors the new admin link.
 
 ---
 
