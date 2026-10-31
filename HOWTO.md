@@ -24,7 +24,7 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 **ronnebybk.github.io/ronneby-bk/#/admin**. Tips: lägg till sidan på hemskärmen i mobilen.
 Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
-**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Resultat.
+**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Resultat · Sponsorer.
 
 | Vill du… | Gör så här |
 | --- | --- |
@@ -46,6 +46,8 @@ Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 | Lägga upp ett dokument | 1) Ladda upp PDF:en till klubbens Drive-mapp (**Dokument** – mappen ägs av klubbens Google-konto, se 4.1; ladda inte upp i din egen Drive, då försvinner filen när du lämnar klubben) → högerklicka → *Dela* → *Alla med länken kan visa* → kopiera länken. 2) Ny rad i **Dokument**: *Kategori* (t.ex. Regler, Föreningen), *Titel*, valfri *Beskrivning*, *Datum* (`ÅÅÅÅ-MM-DD`) och *Länk*. *Kategori (EN)*, *Titel (EN)* och *Beskrivning (EN)* är valfria. Dokumentet syns på sidan Dokument inom ca 5 minuter. |
 | Lägga till ett resultat | Ny rad i **Resultat**: *Datum* (`ÅÅÅÅ-MM-DD`), *Tävling*, *Ort*, *Namn*, *Junior/Senior* (rullista), *Klass* och *Placering* (rullista: `Guld`, `Silver` och `Brons` ger medalj; annan text, t.ex. `Kvartsfinal`, visas som den skrivs). *Tävling (EN)*, *Klass (EN)*, *Placering (EN)* och *Länk* är valfria. **Samtycke först:** lägg bara upp resultat för någon som gett sitt samtycke (för juniorer: en vårdnadshavare). Resultatet syns på sidan Resultat inom ca 5 minuter, nyaste först. |
 | Ta bort ett resultat | Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är resultatet borta från sidan (men kan finnas kvar i veckans säkerhetskopia i upp till 90 dagar). Den som redan har sidan öppen eller sparad i webbläsaren ser ändringen nästa gång sidan laddas. |
+| Lägga till en sponsor | Ny rad i **Sponsorer**: *Namn* (visas som text om ingen logga finns), valfri *Logga* (se [Bilder](#bilder)), valfri *Länk* till sponsorens webbplats (måste börja med `https://`), valfri *Beskrivning* (t.ex. "Huvudsponsor") och *Beskrivning (EN)*. Sponsorn syns i sidfoten på alla sidor och på sidan *Sponsorer* inom ca 5 minuter, i samma ordning som raderna i arket. |
+| Ta bort en sponsor | Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är sponsorn borta från sidan. |
 
 **Viktigt**
 
@@ -148,7 +150,7 @@ annan webbläsare. Länkarna under flödet fungerar alltid.
 
 ### Bilder
 
-Tränarbilder (och senare även sponsorlogotyper) ligger i en mapp på klubbens Google Drive, inte i kodförrådet.
+Tränarbilder och sponsorlogotyper ligger i en mapp på klubbens Google Drive, inte i kodförrådet.
 Så kan du som redigerare lägga till, byta eller ta bort en bild själv:
 
 1. Ladda upp bilden till klubbens bildmapp på Drive (kräver ett Google-konto; använd klubbens konto så att
@@ -156,10 +158,12 @@ Så kan du som redigerare lägga till, byta eller ta bort en bild själv:
 2. Högerklicka på filen → **Dela** → ändra till **Alla som har länken → Läsare** (viktigt, annars kan hemsidan
    inte visa bilden).
 3. Klicka på **Kopiera länk**.
-4. Klistra in länken i kolumnen *Bild* på tränarens rad i fliken **Tränare**. Klistra **aldrig** in länken till
+4. Klistra in länken i kolumnen *Bild* på tränarens rad i fliken **Tränare**, eller i kolumnen *Logga* på
+   sponsorens rad i fliken **Sponsorer**. Klistra **aldrig** in länken till
    klubbens eget kalkylark — bara länkar till bildfiler på Drive.
 
-Bilden syns på hemsidan inom ca 5 minuter. Saknas bilden eller länken är fel visas tränarens initialer istället.
+Bilden syns på hemsidan inom ca 5 minuter. Saknas bilden eller länken är fel visas tränarens initialer
+eller sponsorns namn som text istället.
 
 - **Byta bild:** ladda upp en ny fil och klistra in den nya länken, eller använd *Hantera versioner → Ladda upp
   ny version* på samma fil (samma länk, men Google kan visa den gamla bilden en stund på grund av cache).
@@ -258,7 +262,7 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 
 | What | How it's backed up | Restore |
 | --- | --- | --- |
-| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument* and *Resultat* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Resultat* and *Sponsorer* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
 | Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
 | Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
 | The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
@@ -338,7 +342,7 @@ Use the club's Google account, not a personal one. The board keeps the login det
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
    Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`,
-   `Dokument!1:1`, `Resultat!1:1`.
+   `Dokument!1:1`, `Resultat!1:1`, `Sponsorer!1:1`.
    Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
    Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since
    the owner's account is never blocked.
