@@ -11,6 +11,13 @@ import logo from '../assets/logo.svg'
 const { t } = useI18n()
 const route = useRoute()
 const open = ref(false)
+const menuBtn = ref(null)
+
+function onEscape() {
+  if (!open.value) return
+  open.value = false
+  menuBtn.value?.focus()
+}
 
 watch(() => route.fullPath, () => (open.value = false))
 
@@ -21,7 +28,7 @@ const links = computed(() =>
 </script>
 
 <template>
-  <header class="header">
+  <header class="header" @keydown.esc="onEscape">
     <div class="container bar">
       <RouterLink to="/" class="brand">
         <img :src="logo" :alt="config.clubName" width="697" height="545" />
@@ -34,6 +41,7 @@ const links = computed(() =>
       <div class="actions">
         <LangToggle />
         <button
+          ref="menuBtn"
           type="button"
           class="menu-btn"
           :aria-expanded="open"
