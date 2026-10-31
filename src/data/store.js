@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors } from './parse.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -26,6 +26,8 @@ export const state = reactive({
   club: {},
   // Sections for the Prova på page; empty means the page's built-in text.
   trial: [],
+  // Sponsors from the Sponsorer tab; empty hides the footer strip and the sponsors page link.
+  sponsors: [],
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',
 })
@@ -46,6 +48,7 @@ function apply(raw) {
   state.faq = parseFaq(raw.faq ?? [])
   state.documents = parseDocuments(raw.documents ?? [])
   state.results = parseResults(raw.results ?? [])
+  state.sponsors = parseSponsors(raw.sponsors ?? [])
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -109,9 +112,10 @@ export function loadData() {
     fetchOptional('faq', cached),
     fetchOptional('documents', cached),
     fetchOptional('results', cached),
+    fetchOptional('sponsors', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, sponsors]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, sponsors }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
