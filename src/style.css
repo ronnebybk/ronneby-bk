@@ -16,6 +16,8 @@
   --line: #cdc3b8;
   --highlight: #ecd3cd;
   --link: #a8141a;
+  /* Focus ring: >= 3:1 on every background in both themes (dark header included). */
+  --focus: #de2429;
   --logo-tile: var(--surface);
 
   /* Medal icons on the results page; the dark stroke keeps them readable on both themes. */
@@ -145,7 +147,7 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--red);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
