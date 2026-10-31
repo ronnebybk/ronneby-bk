@@ -26,7 +26,7 @@ export const state = reactive({
   club: {},
   // Sections for the Prova på page; empty means the page's built-in text.
   trial: [],
-  // Sponsors from the Sponsorer tab; empty hides the footer strip and the sponsors page link.
+  // Sponsors from the Sponsorer tab; empty hides the home page section and the footer link.
   sponsors: [],
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',

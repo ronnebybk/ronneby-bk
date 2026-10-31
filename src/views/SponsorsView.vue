@@ -1,10 +1,10 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { state } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 import SponsorLogo from '../components/SponsorLogo.vue'
 
-const { t, locale, localized } = useI18n()
+const { t, localized } = useI18n()
 
 // Sponsors in sheet order; the description falls back to Swedish when the English cell is empty.
 const sponsors = computed(() =>
@@ -15,10 +15,10 @@ const sponsors = computed(() =>
 )
 
 // A description the line clamp actually cuts off gets a "Visa mer" button (D21). Measured in the
-// browser after render; the observer on the grid re-measures on resize and language switch.
+// browser after render; the observer on the grid re-measures on resize, and the watch on
+// `sponsors` re-measures on a language switch.
 const cutOff = ref(new Set())
 const grid = ref(null)
-let observer
 
 function measure() {
   const next = new Set()
@@ -28,13 +28,20 @@ function measure() {
   cutOff.value = next
 }
 
-onMounted(() => {
-  observer = new ResizeObserver(measure)
-  if (grid.value) observer.observe(grid.value)
-  nextTick(measure)
-})
-watch(locale, () => nextTick(measure))
-onBeforeUnmount(() => observer?.disconnect())
+const observer = new ResizeObserver(measure)
+
+// Logos that failed to load; their tile wrapper is hidden so no empty white box remains.
+const failedLogos = reactive(new Set())
+
+// The grid has v-if="sponsors.length", so on a direct visit with no cache it only appears once the
+// data arrives; watch the ref instead of checking it once on mount.
+watch(grid, (el, old) => {
+  if (old) observer.unobserve(old)
+  if (el) observer.observe(el)
+}, { flush: 'post' })
+// Live data can replace the cache after mount with different descriptions or order.
+watch(sponsors, () => nextTick(measure), { flush: 'post' })
+onBeforeUnmount(() => observer.disconnect())
 
 // One pop-up for the page; the browser's <dialog> gives Esc, backdrop and focus return for free (G1).
 const dialog = ref(null)
@@ -60,16 +67,16 @@ function onDialogClick(event) {
     <h1>{{ t('sponsors.title') }}</h1>
 
     <ul v-if="sponsors.length" ref="grid" class="grid">
-      <li v-for="(sponsor, i) in sponsors" :key="sponsor.name" class="card">
+      <li v-for="(sponsor, i) in sponsors" :key="i" class="card">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="card-link">
-          <span v-if="sponsor.logo" class="sponsor-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" />
+          <span v-if="sponsor.logo && !failedLogos.has(sponsor.logo)" class="sponsor-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
         </a>
         <template v-else>
-          <span v-if="sponsor.logo" class="sponsor-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" />
+          <span v-if="sponsor.logo && !failedLogos.has(sponsor.logo)" class="sponsor-tile">
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
         </template>
@@ -93,8 +100,8 @@ function onDialogClick(event) {
     <dialog ref="dialog" class="sponsor-dialog" @click="onDialogClick">
       <template v-if="selected">
         <button type="button" class="close" :aria-label="t('sponsors.close')" @click="close">×</button>
-        <span v-if="selected.logo" class="sponsor-tile">
-          <SponsorLogo :sponsor="selected" :height="64" :fallback-text="false" />
+        <span v-if="selected.logo && !failedLogos.has(selected.logo)" class="sponsor-tile">
+          <SponsorLogo :sponsor="selected" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
         </span>
         <h2 class="dialog-name">{{ selected.name }}</h2>
         <p v-if="selected.description" class="dialog-description">{{ selected.description }}</p>

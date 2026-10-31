@@ -9,11 +9,18 @@ const props = defineProps({
   fallbackText: { type: Boolean, default: true },
 })
 
-// URLs that failed to load, so the image hides and the fallback shows instead.
+// URLs that failed to load, so the image hides and the fallback shows instead. The parent hears
+// about it via the error event, so it can hide a wrapper (e.g. the white tile) as well.
+const emit = defineEmits(['error'])
 const failedImages = reactive(new Set())
 watch(() => props.sponsor.logo, () => {
   if (props.sponsor.logo) failedImages.delete(props.sponsor.logo)
 })
+
+function onError() {
+  failedImages.add(props.sponsor.logo)
+  emit('error', props.sponsor.logo)
+}
 
 // Wide logos (e.g. 2.4:1) need room; cap at 3× the height so they don't dominate the row.
 const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px' }
@@ -27,7 +34,7 @@ const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px
     loading="lazy"
     referrerpolicy="no-referrer"
     :style="imgStyle"
-    @error="failedImages.add(sponsor.logo)"
+    @error="onError"
   />
   <span v-else-if="fallbackText" class="sponsor-name" :style="{ maxWidth: height * 3 + 'px' }">{{ sponsor.name }}</span>
 </template>

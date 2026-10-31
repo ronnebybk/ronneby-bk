@@ -16,7 +16,7 @@ const hasMore = computed(() => state.sponsors.length > HOME_LIMIT)
   <section v-if="shown.length">
     <h2 class="section-title">{{ t('home.sponsorsTitle') }}</h2>
     <ul class="sponsors">
-      <li v-for="sponsor in shown" :key="sponsor.name">
+      <li v-for="(sponsor, i) in shown" :key="i">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="sponsor-tile">
           <SponsorLogo :sponsor="sponsor" :height="44" />
         </a>
