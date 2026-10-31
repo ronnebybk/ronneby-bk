@@ -73,13 +73,12 @@ const days = computed(() =>
 
     <template v-else>
       <div class="season-bar">
-        <div v-if="visibleSeasons.length > 1" class="seasons" role="tablist" :aria-label="t('schedule.season')">
+        <div v-if="visibleSeasons.length > 1" class="seasons" :aria-label="t('schedule.season')">
           <button
             v-for="s in visibleSeasons"
             :key="s.name"
             type="button"
-            role="tab"
-            :aria-selected="s === season"
+            :aria-pressed="s === season"
             :class="{ active: s === season }"
             @click="selectedName = s.name"
           >
@@ -94,13 +93,14 @@ const days = computed(() =>
       </div>
 
       <div v-if="groupsInSeason.length > 1" class="filters" :aria-label="t('schedule.filter')" role="group">
-        <button type="button" :class="{ active: !groupFilter }" @click="pickGroup('')">
+        <button type="button" :aria-pressed="!groupFilter" :class="{ active: !groupFilter }" @click="pickGroup('')">
           {{ t('schedule.allGroups') }}
         </button>
         <button
           v-for="group in groupsInSeason"
           :key="group.name"
           type="button"
+          :aria-pressed="groupFilter === group.name"
           :class="{ active: groupFilter === group.name }"
           :style="groupStyle(group.name)"
           @click="pickGroup(groupFilter === group.name ? '' : group.name)"
