@@ -4,8 +4,8 @@ import { reactive, watch } from 'vue'
 const props = defineProps({
   sponsor: { type: Object, required: true },
   height: { type: Number, default: 40 },
-  // Footer shows the name as text when the logo is missing/broken; the sponsors page has the
-  // name below the tile, so it passes false to avoid showing it twice.
+  // The home page shows the name as text when the logo is missing/broken; the sponsors page has
+  // the name below the tile, so it passes false to avoid showing it twice.
   fallbackText: { type: Boolean, default: true },
 })
 
@@ -15,7 +15,7 @@ watch(() => props.sponsor.logo, () => {
   if (props.sponsor.logo) failedImages.delete(props.sponsor.logo)
 })
 
-// Wide logos (e.g. 2.4:1) need room; cap at 3× the height so footer logos stay small.
+// Wide logos (e.g. 2.4:1) need room; cap at 3× the height so they don't dominate the row.
 const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px' }
 </script>
 
@@ -29,7 +29,7 @@ const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px
     :style="imgStyle"
     @error="failedImages.add(sponsor.logo)"
   />
-  <span v-else-if="fallbackText" class="sponsor-name" :style="{ lineHeight: height + 'px', maxWidth: height * 3 + 'px' }">{{ sponsor.name }}</span>
+  <span v-else-if="fallbackText" class="sponsor-name" :style="{ maxWidth: height * 3 + 'px' }">{{ sponsor.name }}</span>
 </template>
 
 <style scoped>
@@ -38,10 +38,12 @@ img {
 }
 
 .sponsor-name {
-  display: inline-block;
+  /* Long names wrap to two lines rather than being cut off mid-word. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-align: center;
   font-weight: 600;
 }
 </style>

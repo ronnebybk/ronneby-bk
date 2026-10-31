@@ -58,6 +58,8 @@ export default {
     exploreContact: 'Find us',
     exploreContactText: 'Address, contact details and how to join.',
     followTitle: 'Follow us',
+    sponsorsTitle: 'Our sponsors',
+    sponsorsAll: 'See all sponsors',
   },
   schedule: {
     title: 'Training schedule',
@@ -192,7 +194,6 @@ export default {
   footer: {
     documents: 'Documents',
     privacy: 'Privacy policy',
-    sponsors: 'Sponsors',
     sponsorsLink: 'Sponsors',
   },
   admin: {

@@ -58,6 +58,8 @@ export default {
     exploreContact: 'Hitta hit',
     exploreContactText: 'Adress, kontakt och hur du blir medlem.',
     followTitle: 'Följ oss',
+    sponsorsTitle: 'Våra sponsorer',
+    sponsorsAll: 'Visa alla sponsorer',
   },
   schedule: {
     title: 'Träningsschema',
@@ -193,7 +195,6 @@ export default {
   footer: {
     documents: 'Dokument',
     privacy: 'Integritetspolicy',
-    sponsors: 'Sponsorer',
     sponsorsLink: 'Sponsorer',
   },
   admin: {
