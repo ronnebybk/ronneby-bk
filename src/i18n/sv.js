@@ -160,6 +160,7 @@ export default {
     previous: 'Föregående bild',
     next: 'Nästa bild',
     goToSlide: 'Visa bild {n} av {total}',
+    enlarge: 'Förstora bild {n} av {total}',
     close: 'Stäng',
     types: {
       competition: 'Tävling',

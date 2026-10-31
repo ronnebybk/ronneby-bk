@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
@@ -102,20 +102,55 @@ watch(
 const dialog = ref(null)
 const openCard = computed(() => eventCards.value.find((c) => c.id === openId.value) ?? null)
 
+// showModal() blocks interaction but not scrolling: Chrome still scrolls the document under the
+// backdrop, so the root element is locked while the dialog is open.
+function lockScroll(lock) {
+  const value = lock ? 'hidden' : ''
+  document.documentElement.style.overflow = value
+  document.body.style.overflow = value
+}
+
 watch(openCard, async (card) => {
   await nextTick()
   if (!dialog.value) return
-  if (card && !dialog.value.open) dialog.value.showModal()
-  else if (!card && dialog.value.open) dialog.value.close()
-})
+  if (card && !dialog.value.open) {
+    dialog.value.showModal()
+    lockScroll(true)
+  } else if (!card && dialog.value.open) {
+    dialog.value.close()
+    lockScroll(false)
+  }
+}, { immediate: true })
+
+onBeforeUnmount(() => lockScroll(false))
+
+// Left/Right move focus between the cards, Home/End jump to the first/last of the same list.
+// The handler sits on each <ul> (upcoming plus one per past year), so wrapping stays within one
+// group. Up/Down are left alone: the cards are multi-column grids, so they scroll the page.
+function onCardsKeydown(event) {
+  const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End']
+  if (!keys.includes(event.key)) return
+  const buttons = [...event.currentTarget.querySelectorAll('.card-button')]
+  const current = buttons.indexOf(document.activeElement)
+  if (current === -1) return
+  event.preventDefault()
+  let next = current
+  if (event.key === 'ArrowRight') next = (current + 1) % buttons.length
+  else if (event.key === 'ArrowLeft') next = (current - 1 + buttons.length) % buttons.length
+  else if (event.key === 'Home') next = 0
+  else if (event.key === 'End') next = buttons.length - 1
+  buttons[next]?.focus()
+}
 
 function closeDialog() {
   dialog.value?.close()
 }
 
 // The dialog's close event also fires on Esc and backdrop; route the state through onToggle so
-// the URL loses the visa id exactly once.
+// the URL loses the visa id exactly once. The scroll lock is released here because on the Esc
+// path the browser has already closed the dialog, so the watch below sees dialog.open === false.
 function onDialogClose() {
+  lockScroll(false)
   if (openCard.value) onToggle(openCard.value, false)
 }
 
@@ -185,16 +220,16 @@ function placementText(result) {
 
       <section v-if="upcoming.length" aria-labelledby="upcoming-heading">
         <h2 id="upcoming-heading">{{ t('events.upcoming') }}</h2>
-        <ul class="cards upcoming">
+        <ul class="cards upcoming" @keydown="onCardsKeydown">
           <li v-for="card in upcoming" :key="card.id">
             <EventCard :card="card" :open="openId === card.id" @toggle="onToggle" />
           </li>
         </ul>
       </section>
 
-      <section v-for="group in pastByYear" :key="group.year" aria-labelledby="`past-${group.year}`">
+      <section v-for="group in pastByYear" :key="group.year" :aria-labelledby="`past-${group.year}`">
         <h2 :id="`past-${group.year}`">{{ group.year }}</h2>
-        <ul class="cards past">
+        <ul class="cards past" @keydown="onCardsKeydown">
           <li v-for="card in group.cards" :key="card.id">
             <EventCard :card="card" :open="openId === card.id" @toggle="onToggle" />
           </li>
@@ -299,6 +334,12 @@ function placementText(result) {
   gap: 16px;
 }
 
+/* Stretch each card to the row height so cards with shorter content (e.g. no place line)
+   aren't visibly smaller than their siblings in the same row. */
+.cards li {
+  display: grid;
+}
+
 /* Big cards for Kommande: one column at 390 px, wider columns on desktop. */
 .cards.upcoming {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
@@ -314,8 +355,8 @@ function placementText(result) {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 0;
-  width: min(92vw, 640px);
-  max-height: 85vh;
+  width: min(94vw, 720px);
+  max-height: 90vh;
   background: var(--paper);
   color: var(--text);
   display: flex;
@@ -348,6 +389,8 @@ function placementText(result) {
 
 .dialog-scroll {
   overflow: auto;
+  /* Keep a scroll that reaches the end of the dialog from chaining to the page behind it. */
+  overscroll-behavior: contain;
   padding: 20px 24px 24px;
 }
 
@@ -388,7 +431,9 @@ function placementText(result) {
 .results li {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  /* Center, not baseline: the placement's first flex item is the medal SVG, whose baseline is
+     its bottom edge, so baseline alignment drops the icon below the text line. */
+  align-items: center;
   gap: 4px 12px;
   padding: 10px 0;
   border-bottom: 1px solid var(--line);

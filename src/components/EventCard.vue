@@ -83,7 +83,7 @@ function openCard() {
           <template v-if="dateBlock"><span class="day">{{ dateBlock.day }}</span><span class="month">{{ dateBlock.month }}</span></template>
           <span v-else class="day">?</span>
         </span>
-        <span v-if="!showFallback && showMedalBadge" class="medal-badge">
+        <span v-if="!showFallback && showMedalBadge" class="medal-badge bottom">
           <span v-for="m in ['gold', 'silver', 'bronze']" v-show="card.medals[m]" :key="m" class="medal-count">
             <MedalIcon :medal="m" />{{ card.medals[m] }}
           </span>
@@ -102,6 +102,8 @@ function openCard() {
 
 <style scoped>
 .event-card {
+  display: flex;
+  flex-direction: column;
   padding: 0;
   overflow: hidden;
   scroll-margin-top: 90px;
@@ -114,6 +116,7 @@ function openCard() {
 .card-button {
   display: flex;
   flex-direction: column;
+  flex: 1;
   width: 100%;
   padding: 0;
   border: none;
@@ -122,6 +125,13 @@ function openCard() {
   color: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+/* The card clips its content (overflow: hidden), which would cut off the global focus outline
+   drawn outside the button, so the outline is drawn just inside the card edge instead. */
+.card-button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
 }
 
 .cover {
@@ -221,9 +231,6 @@ function openCard() {
 }
 
 .medal-badge {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
   display: inline-flex;
   gap: 8px;
   padding: 4px 10px;
@@ -237,6 +244,13 @@ function openCard() {
   flex: none;
 }
 
+/* On image cards the top row belongs to the date block, so the badge sits at the bottom-left. */
+.medal-badge.bottom {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}
+
 .medal-count {
   display: inline-flex;
   align-items: center;
@@ -248,6 +262,7 @@ function openCard() {
 .card-body {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 6px;
   padding: 14px 16px 16px;
 }
@@ -317,6 +332,11 @@ function openCard() {
 
 .past .fallback-top {
   padding: 8px 8px 0;
+}
+
+.past .medal-badge.bottom {
+  left: 8px;
+  bottom: 8px;
 }
 
 .past .medal-badge {
