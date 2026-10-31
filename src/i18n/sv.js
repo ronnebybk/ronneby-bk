@@ -191,6 +191,9 @@ export default {
   sponsors: {
     title: 'Sponsorer',
     become: 'Vill du bli sponsor? Kontakta oss!',
+    showMore: 'Visa mer',
+    close: 'Stäng',
+    visit: 'Besök webbplats',
   },
   footer: {
     documents: 'Dokument',

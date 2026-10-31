@@ -360,8 +360,8 @@ export const results = [
 ]
 
 // Example sponsors: one linked with a local logo, one with an http:// link (shown but not clickable),
-// one with no logo (name as text), one with a "kommer" logo cell, one with a missing file, and one
-// nameless row that must be skipped.
+// one with a long description (gets the "Visa mer" pop-up), one with no logo (name as text), one
+// with a "kommer" logo cell, one with a missing file, and one nameless row that must be skipped.
 export const sponsors = [
   {
     'Namn': 'Ronneby Bygg AB',
@@ -381,8 +381,11 @@ export const sponsors = [
     'Namn': 'Ronneby Sparbank',
     'Logga': '',
     'Länk': 'https://example.com/sparbank',
-    'Beskrivning': 'Stolt partner sedan 2010',
-    'Beskrivning (EN)': 'Proud partner since 2010',
+    // Long on purpose: this card gets the "Visa mer" pop-up (AC13).
+    'Beskrivning':
+      'Ronneby Sparbank har stöttat Ronneby Boxing Team sedan 2010. Banken finns i centrala Ronneby och hjälper föreningen med allt från konton till rådgivning.\n\nVi sponsrar klubbens ungdomsverksamhet och ser till att alla barn och unga får möjlighet att prova på boxning, oavsett ekonomisk bakgrund.\n\nBesök oss på Kungsgatan 12 i Ronneby.',
+    'Beskrivning (EN)':
+      'Ronneby Sparbank has supported Ronneby Boxing Team since 2010. The bank is in central Ronneby and helps the club with everything from accounts to advice.\n\nWe sponsor the club\'s youth activities and make sure every child gets the chance to try boxing, regardless of financial background.\n\nVisit us at Kungsgatan 12 in Ronneby.',
   },
   {
     'Namn': 'Café Ekbacken',

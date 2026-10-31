@@ -190,6 +190,9 @@ export default {
   sponsors: {
     title: 'Sponsors',
     become: 'Want to become a sponsor? Contact us!',
+    showMore: 'Show more',
+    close: 'Close',
+    visit: 'Visit website',
   },
   footer: {
     documents: 'Documents',
