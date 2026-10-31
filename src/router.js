@@ -13,6 +13,7 @@ const routes = [
   { path: '/kontakt', name: 'contact', component: () => import('./views/ContactView.vue') },
   { path: '/integritet', name: 'privacy', component: () => import('./views/PrivacyView.vue') },
   { path: '/dokument', name: 'documents', component: () => import('./views/DocumentsView.vue') },
+  { path: '/sponsorer', name: 'sponsors', component: () => import('./views/SponsorsView.vue') },
   // Print posters: no site header or footer around them.
   { path: '/affisch/schema', name: 'posterSchedule', component: () => import('./views/PosterScheduleView.vue'), meta: { bare: true } },
   { path: '/affisch/grupper', name: 'posterGroups', component: () => import('./views/PosterGroupsView.vue'), meta: { bare: true } },

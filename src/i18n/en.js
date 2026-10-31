@@ -58,6 +58,8 @@ export default {
     exploreContact: 'Find us',
     exploreContactText: 'Address, contact details and how to join.',
     followTitle: 'Follow us',
+    sponsorsTitle: 'Our sponsors',
+    sponsorsAll: 'See all sponsors',
   },
   schedule: {
     title: 'Training schedule',
@@ -185,9 +187,17 @@ export default {
     pdf: 'PDF',
     opensNewTab: '(opens in a new tab)',
   },
+  sponsors: {
+    title: 'Sponsors',
+    become: 'Want to become a sponsor? Contact us!',
+    showMore: 'Show more',
+    close: 'Close',
+    visit: 'Visit website',
+  },
   footer: {
     documents: 'Documents',
     privacy: 'Privacy policy',
+    sponsorsLink: 'Sponsors',
   },
   admin: {
     title: 'Edit the website',
@@ -202,6 +212,7 @@ export default {
       faq: 'FAQ',
       documents: 'Documents',
       results: 'Results',
+      sponsors: 'Sponsors',
     },
     help:
       'Changes are saved automatically and appear on the website within about 5 minutes. Do not change the headings in the first row.',
@@ -215,6 +226,10 @@ export default {
       title: 'Images that don\'t load',
       failed: 'check that the file is shared as "Anyone with the link" and that it still exists',
       unrecognised: 'the value is not a link or filename the site understands',
+      kinds: {
+        coach: 'coach',
+        sponsor: 'sponsor',
+      },
     },
   },
   notFound: {

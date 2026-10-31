@@ -1,5 +1,6 @@
-// Test-loads each coach's image in the browser, so the admin page can point out the ones that
+// Test-loads each item's image in the browser, so the admin page can point out the ones that
 // don't work. Kept out of parse.js because it touches the network.
+// Works for anything with { name, image, imageValue } — coaches and sponsors alike.
 
 const TIMEOUT_MS = 15000
 
@@ -23,14 +24,15 @@ function loadImage(url) {
   })
 }
 
-// Resolves to the coaches whose Bild value gave no image ({ reason: 'unrecognised' }) or whose
-// image failed to load ({ reason: 'failed' }).
-export async function checkImages(coaches) {
-  const checks = coaches
-    .filter((coach) => coach.imageValue)
-    .map(async (coach) => {
-      if (!coach.image) return { coach, reason: 'unrecognised' }
-      return (await loadImage(coach.image)) ? null : { coach, reason: 'failed' }
+// Resolves to the items whose image cell gave no image ({ reason: 'unrecognised' }) or whose
+// image failed to load ({ reason: 'failed' }). Each entry carries `kind` so the admin page can
+// label it, e.g. "(sponsor)".
+export async function checkImages(items) {
+  const checks = items
+    .filter((item) => item.imageValue)
+    .map(async (item) => {
+      if (!item.image) return { ...item, reason: 'unrecognised' }
+      return (await loadImage(item.image)) ? null : { ...item, reason: 'failed' }
     })
   const results = await Promise.all(checks)
   return results.filter(Boolean)

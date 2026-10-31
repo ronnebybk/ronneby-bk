@@ -6,7 +6,7 @@ Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, co
 - **Stack:** Vue 3 + Vite, hosted on GitHub Pages, deployed by GitHub Actions on every push to `main`
 - **Content:** a Google Sheet (schedule, notices and news, classes, prices, coaches, seasons, FAQ, competition results, contact
   details, social links and the trial page text), read by the site on every visit.
-  Tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument* and *Resultat*.
+  Tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Resultat* and *Sponsorer*.
   Editors change it through the hidden admin page, with no account needed.
 - **Languages:** Swedish (default) and English, switched with the flags in the header.
 

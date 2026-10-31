@@ -12,6 +12,7 @@ export const columns = {
   faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
   documents: ['Kategori', 'Kategori (EN)', 'Titel', 'Titel (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Datum', 'Länk'],
   results: ['Datum', 'Tävling', 'Tävling (EN)', 'Ort', 'Namn', 'Junior/Senior', 'Klass', 'Klass (EN)', 'Placering', 'Placering (EN)', 'Länk'],
+  sponsors: ['Namn', 'Logga', 'Länk', 'Beskrivning', 'Beskrivning (EN)'],
 }
 
 export const seasons = [
@@ -356,4 +357,50 @@ export const results = [
   { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': '', 'Placering': 'Guld' },
   // Skipped: no competition.
   { 'Datum': '2026-01-10', 'Tävling': '', 'Namn': 'Sara Exempel', 'Placering': 'Guld' },
+]
+
+// Example sponsors: one linked with a local logo, one with an http:// link (shown but not clickable),
+// one with a long description (gets the "Visa mer" pop-up), one with no logo (name as text), one
+// with a "kommer" logo cell, one with a missing file, and one nameless row that must be skipped.
+export const sponsors = [
+  {
+    'Namn': 'Ronneby Bygg AB',
+    'Logga': 'ronneby-bygg.svg',
+    'Länk': 'https://example.com/ronneby-bygg',
+    'Beskrivning': 'Huvudsponsor',
+    'Beskrivning (EN)': 'Main sponsor',
+  },
+  {
+    'Namn': 'Sportbutiken',
+    'Logga': 'sportbutiken.svg',
+    'Länk': 'http://example.com/sportbutiken',
+    'Beskrivning': '',
+    'Beskrivning (EN)': '',
+  },
+  {
+    'Namn': 'Ronneby Sparbank',
+    'Logga': '',
+    'Länk': 'https://example.com/sparbank',
+    // Long on purpose: this card gets the "Visa mer" pop-up (AC13).
+    'Beskrivning':
+      'Ronneby Sparbank har stöttat Ronneby Boxing Team sedan 2010. Banken finns i centrala Ronneby och hjälper föreningen med allt från konton till rådgivning.\n\nVi sponsrar klubbens ungdomsverksamhet och ser till att alla barn och unga får möjlighet att prova på boxning, oavsett ekonomisk bakgrund.\n\nBesök oss på Kungsgatan 12 i Ronneby.',
+    'Beskrivning (EN)':
+      'Ronneby Sparbank has supported Ronneby Boxing Team since 2010. The bank is in central Ronneby and helps the club with everything from accounts to advice.\n\nWe sponsor the club\'s youth activities and make sure every child gets the chance to try boxing, regardless of financial background.\n\nVisit us at Kungsgatan 12 in Ronneby.',
+  },
+  {
+    'Namn': 'Café Ekbacken',
+    'Logga': 'kommer',
+    'Länk': '',
+    'Beskrivning': '',
+    'Beskrivning (EN)': '',
+  },
+  {
+    'Namn': 'Bilfirman',
+    'Logga': 'saknas.svg',
+    'Länk': 'https://example.com/bilfirman',
+    'Beskrivning': '',
+    'Beskrivning (EN)': '',
+  },
+  // Skipped: no name.
+  { 'Namn': '', 'Logga': 'ignoreras.svg', 'Länk': 'https://example.com', 'Beskrivning': '', 'Beskrivning (EN)': '' },
 ]
