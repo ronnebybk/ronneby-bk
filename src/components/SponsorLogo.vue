@@ -7,6 +7,8 @@ const props = defineProps({
   // The home page shows the name as text when the logo is missing/broken; the sponsors page has
   // the name below the tile, so it passes false to avoid showing it twice.
   fallbackText: { type: Boolean, default: true },
+  // true when the sponsor's name is printed right next to the logo: alt="" so it is read once (D9).
+  decorative: { type: Boolean, default: false },
 })
 
 // URLs that failed to load, so the image hides and the fallback shows instead. The parent hears
@@ -30,7 +32,7 @@ const imgStyle = { height: props.height + 'px', maxWidth: props.height * 3 + 'px
   <img
     v-if="sponsor.logo && !failedImages.has(sponsor.logo)"
     :src="sponsor.logo"
-    :alt="sponsor.name"
+    :alt="decorative ? '' : sponsor.name"
     loading="lazy"
     referrerpolicy="no-referrer"
     :style="imgStyle"
