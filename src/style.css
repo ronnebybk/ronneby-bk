@@ -93,6 +93,17 @@ main {
   flex: 1;
 }
 
+/* Programmatically focused (skip link, route change): announced, not outlined — not interactive. */
+main:focus,
+h1[tabindex='-1']:focus {
+  outline: none;
+}
+
+main,
+h1 {
+  scroll-margin-top: 90px;
+}
+
 h1,
 h2,
 h3 {
