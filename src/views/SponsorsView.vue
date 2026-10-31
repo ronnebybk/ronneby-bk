@@ -177,7 +177,7 @@ function onDialogClick(event) {
   max-height: 85vh;
   overflow: auto;
   background: var(--paper);
-  color: var(--ink);
+  color: var(--text);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -214,7 +214,7 @@ function onDialogClick(event) {
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: var(--ink);
+  color: var(--text);
   padding: 4px 8px;
 }
 </style>
