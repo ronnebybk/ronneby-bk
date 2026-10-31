@@ -33,11 +33,14 @@ const urlFilter = computed(() => {
 })
 
 const openId = ref(firstQuery(route.query, 'visa'))
+// A deep link opened from the URL forces the filter to Alla (AC7); opening a card by clicking
+// keeps the chosen filter, so the card stays visible in its own category.
+const deepLink = ref(Boolean(firstQuery(route.query, 'visa')))
 
-// A deep link opens the page with the filter on Alla, whatever typ says (AC7).
-const filter = computed(() => (openId.value && eventCards.value.some((c) => c.id === openId.value) ? 'alla' : urlFilter.value))
+const filter = computed(() => (deepLink.value && openId.value ? 'alla' : urlFilter.value))
 
 function setFilter(value) {
+  deepLink.value = false
   const query = { ...route.query }
   if (value === 'alla') delete query.typ
   else query.typ = value
@@ -68,6 +71,7 @@ function onToggle(card, isOpen) {
     router.replace({ query: { ...route.query, visa: card.id } })
   } else {
     openId.value = null
+    deepLink.value = false
     const query = { ...route.query }
     delete query.visa
     router.replace({ query })
@@ -76,10 +80,11 @@ function onToggle(card, isOpen) {
 
 // A link opened in a new tab: open the card and scroll it into view once the data is there.
 watch(
-  () => route.query.visa,
-  async (visa) => {
+  [() => route.query.visa, eventCards],
+  async ([visa]) => {
     openId.value = visa ?? null
-    if (!visa) return
+    if (visa) deepLink.value = true
+    if (!visa || !eventCards.value.some((c) => c.id === visa)) return
     await nextTick()
     document.getElementById(`event-${visa}`)?.scrollIntoView()
   },
