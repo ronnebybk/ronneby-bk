@@ -143,7 +143,7 @@ function onKeydown(event) {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 10px;
+  margin: 10px 0 4px;
 }
 
 .dot {

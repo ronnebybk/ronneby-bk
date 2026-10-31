@@ -352,7 +352,7 @@ function placementText(result) {
 }
 
 .dialog-title {
-  margin: 0 0 4px;
+  margin: 16px 0 4px;
 }
 
 .meta {
