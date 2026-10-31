@@ -38,11 +38,11 @@ const hasMore = computed(() => state.sponsors.length > HOME_LIMIT)
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 12px;
 }
 
-/* 4 per row on desktop, 2 × 2 on phones; centring keeps 1–3 sponsors from leaving gaps. */
+/* 4 per row on desktop, 2 × 2 on phones; left-aligned so the tiles start under the heading. */
 li {
   flex: 0 1 calc(25% - 9px);
   display: flex;
