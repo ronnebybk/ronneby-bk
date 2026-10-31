@@ -295,6 +295,17 @@ button {
   margin: 0;
 }
 
+/* System asks for less motion: transitions and smooth scrolling become instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Site-wide on purpose: the full-height flex layout can stretch a printed page or add a blank one. */
 @media print {
   body,
