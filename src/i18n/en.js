@@ -188,6 +188,8 @@ export default {
   footer: {
     documents: 'Documents',
     privacy: 'Privacy policy',
+    sponsors: 'Sponsors',
+    sponsorsLink: 'Sponsors',
   },
   admin: {
     title: 'Edit the website',

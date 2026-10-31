@@ -189,6 +189,8 @@ export default {
   footer: {
     documents: 'Dokument',
     privacy: 'Integritetspolicy',
+    sponsors: 'Sponsorer',
+    sponsorsLink: 'Sponsorer',
   },
   admin: {
     title: 'Redigera hemsidan',
