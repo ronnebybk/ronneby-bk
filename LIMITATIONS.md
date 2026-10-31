@@ -48,6 +48,19 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
   `drive.usercontent.google.com/download?id=…` link with a non-image ID still becomes a thumbnail request. The ID alone can't tell an image from a document, so this is accepted as a low risk —
   Drive's *Copy link* for a sheet gives a `docs.google.com/spreadsheets/…` link, which is rejected.
 
+## Accessibility
+
+The public pages passed an axe check (no serious or critical issues on any page, light and dark
+mode) and were walked through with NVDA in Swedish and English (issue #38). Remaining known gaps:
+
+- **The admin page (`/#/admin`) is not covered** — its keyboard use and tab bar were out of scope.
+- **Third-party embeds after consent** (Facebook, Instagram/Behold) are not under our control and
+  are not audited.
+- **External PDFs** linked from *Dokument* are not audited.
+- **VoiceOver (macOS/iOS) is untested**; only NVDA on Windows was checked.
+- **Editor-written content** (free text, heading structure inside sheet text, image choice) can still
+  introduce issues the site can't fix automatically.
+
 ## Visibility
 
 - **Search engines** mainly index the start page. The schedule is loaded by JavaScript and the pages

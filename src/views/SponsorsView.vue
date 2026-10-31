@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { state } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
+import NewTabNote from '../components/NewTabNote.vue'
 import SponsorLogo from '../components/SponsorLogo.vue'
 
 const { t, localized } = useI18n()
@@ -70,13 +71,14 @@ function onDialogClick(event) {
       <li v-for="(sponsor, i) in sponsors" :key="i" class="card">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="card-link">
           <span v-if="sponsor.logo && !failedLogos.has(sponsor.logo)" class="sponsor-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" decorative @error="url => failedLogos.add(url)" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
+          <NewTabNote />
         </a>
         <template v-else>
           <span v-if="sponsor.logo && !failedLogos.has(sponsor.logo)" class="sponsor-tile">
-            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
+            <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" decorative @error="url => failedLogos.add(url)" />
           </span>
           <span class="name">{{ sponsor.name }}</span>
         </template>
@@ -101,12 +103,12 @@ function onDialogClick(event) {
       <template v-if="selected">
         <button type="button" class="close" :aria-label="t('sponsors.close')" @click="close">×</button>
         <span v-if="selected.logo && !failedLogos.has(selected.logo)" class="sponsor-tile">
-          <SponsorLogo :sponsor="selected" :height="64" :fallback-text="false" @error="url => failedLogos.add(url)" />
+          <SponsorLogo :sponsor="selected" :height="64" :fallback-text="false" decorative @error="url => failedLogos.add(url)" />
         </span>
         <h2 class="dialog-name">{{ selected.name }}</h2>
         <p v-if="selected.description" class="dialog-description">{{ selected.description }}</p>
         <p v-if="selected.url" class="dialog-link">
-          <a :href="selected.url" target="_blank" rel="noopener noreferrer">{{ t('sponsors.visit') }} ↗</a>
+          <a :href="selected.url" target="_blank" rel="noopener noreferrer">{{ t('sponsors.visit') }} ↗<NewTabNote /></a>
         </p>
       </template>
     </dialog>

@@ -73,13 +73,12 @@ const days = computed(() =>
 
     <template v-else>
       <div class="season-bar">
-        <div v-if="visibleSeasons.length > 1" class="seasons" role="tablist" :aria-label="t('schedule.season')">
+        <div v-if="visibleSeasons.length > 1" class="seasons" role="group" :aria-label="t('schedule.season')">
           <button
             v-for="s in visibleSeasons"
             :key="s.name"
             type="button"
-            role="tab"
-            :aria-selected="s === season"
+            :aria-pressed="s === season"
             :class="{ active: s === season }"
             @click="selectedName = s.name"
           >
@@ -94,13 +93,14 @@ const days = computed(() =>
       </div>
 
       <div v-if="groupsInSeason.length > 1" class="filters" :aria-label="t('schedule.filter')" role="group">
-        <button type="button" :class="{ active: !groupFilter }" @click="pickGroup('')">
+        <button type="button" :aria-pressed="!groupFilter" :class="{ active: !groupFilter }" @click="pickGroup('')">
           {{ t('schedule.allGroups') }}
         </button>
         <button
           v-for="group in groupsInSeason"
           :key="group.name"
           type="button"
+          :aria-pressed="groupFilter === group.name"
           :class="{ active: groupFilter === group.name }"
           :style="groupStyle(group.name)"
           @click="pickGroup(groupFilter === group.name ? '' : group.name)"
@@ -111,10 +111,10 @@ const days = computed(() =>
 
       <div class="week">
         <section v-for="d in days" :key="d.day" class="day" :class="{ today: d.isToday, empty: !d.sessions.length }">
-          <h3>
+          <h2>
             {{ t('days')[d.day - 1] }}
             <span v-if="d.isToday" class="today-badge">{{ t('common.today') }}</span>
-          </h3>
+          </h2>
           <div class="list">
             <SessionItem v-for="(session, i) in d.sessions" :key="i" :session="session" />
             <p v-if="!d.sessions.length" class="none">{{ t('schedule.noSessions') }}</p>
@@ -218,7 +218,7 @@ const days = computed(() =>
   font-size: 0.95rem;
 }
 
-.day h3 {
+.day h2 {
   font-size: 1rem;
   margin-bottom: 10px;
   display: flex;
@@ -267,7 +267,7 @@ const days = computed(() =>
     padding: 8px 12px;
   }
 
-  .day.empty h3 {
+  .day.empty h2 {
     margin: 0;
   }
 }

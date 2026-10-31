@@ -34,6 +34,8 @@ export default {
     demoData: 'Exempeldata visas – webbplatsen är inte kopplad till Google Sheet ännu.',
     offline: 'Kunde inte hämta senaste innehållet. Visar senast sparade versionen.',
     loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
+    skipToContent: 'Hoppa till innehåll',
+    newTab: 'öppnas i ny flik',
   },
   notices: {
     label: 'Meddelanden',
@@ -186,7 +188,6 @@ export default {
     emptyLink: 'Kontakta oss',
     other: 'Övrigt',
     pdf: 'PDF',
-    opensNewTab: '(öppnas i ny flik)',
   },
   sponsors: {
     title: 'Sponsorer',
@@ -196,6 +197,7 @@ export default {
     visit: 'Besök webbplats',
   },
   footer: {
+    navLabel: 'Sidfot',
     documents: 'Dokument',
     privacy: 'Integritetspolicy',
     sponsorsLink: 'Sponsorer',

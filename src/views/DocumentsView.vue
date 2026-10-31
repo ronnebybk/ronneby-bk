@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { state } from '../data/store.js'
 
 import { useI18n } from '../i18n/index.js'
+import NewTabNote from '../components/NewTabNote.vue'
 
 const { t, localized, formatDate } = useI18n()
 
@@ -48,7 +49,7 @@ const categories = computed(() =>
             <p v-if="item.description" class="description">{{ item.description }}</p>
             <a :href="item.url" target="_blank" rel="noopener" class="pdf-link">
               {{ t('documents.pdf') }}
-              <span class="visually-hidden">{{ item.title }} {{ t('documents.opensNewTab') }}</span>
+              <span class="visually-hidden"> {{ item.title }}</span><NewTabNote />
             </a>
           </li>
         </ul>

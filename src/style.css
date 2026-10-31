@@ -16,6 +16,8 @@
   --line: #cdc3b8;
   --highlight: #ecd3cd;
   --link: #a8141a;
+  /* Focus ring: >= 3:1 on every background in both themes (dark header included). */
+  --focus: #de2429;
   --logo-tile: var(--surface);
 
   /* Medal icons on the results page; the dark stroke keeps them readable on both themes. */
@@ -93,6 +95,17 @@ main {
   flex: 1;
 }
 
+/* Programmatically focused (skip link, route change): announced, not outlined — not interactive. */
+main:focus,
+h1[tabindex='-1']:focus {
+  outline: none;
+}
+
+main,
+h1 {
+  scroll-margin-top: 90px;
+}
+
 h1,
 h2,
 h3 {
@@ -134,8 +147,25 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--red);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
+}
+
+/* Off-screen until focused, then above the sticky header (z-index 10). */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  z-index: 20;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: var(--radius);
+  transition: top 0.15s;
+}
+
+.skip-link:focus-visible {
+  top: 8px;
 }
 
 .container {
@@ -265,6 +295,17 @@ button {
 @page poster-portrait {
   size: A4 portrait;
   margin: 0;
+}
+
+/* System asks for less motion: transitions and smooth scrolling become instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Site-wide on purpose: the full-height flex layout can stretch a printed page or add a blank one. */

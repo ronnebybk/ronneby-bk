@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import TextBlocks from '../components/TextBlocks.vue'
 import SocialSection from '../components/SocialSection.vue'
 import { useI18n } from '../i18n/index.js'
+import NewTabNote from '../components/NewTabNote.vue'
 import { state, joinText } from '../data/store.js'
 import { telHref } from '../data/parse.js'
 
@@ -30,7 +31,7 @@ const mapUrl = computed(() => {
             <template v-if="club.street">{{ club.street }}<br /></template>
             {{ club.city }}
           </address>
-          <a :href="mapUrl" target="_blank" rel="noopener noreferrer">{{ t('contact.openMap') }} ↗</a>
+          <a :href="mapUrl" target="_blank" rel="noopener noreferrer">{{ t('contact.openMap') }} ↗<NewTabNote /></a>
         </template>
         <p v-else class="muted">{{ t('contact.missing') }}</p>
       </section>

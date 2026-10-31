@@ -33,7 +33,8 @@ function initials(name) {
     <div v-else class="grid">
       <article v-for="(coach, i) in state.coaches" :key="i" class="card coach">
         <div class="photo">
-          <img v-if="coach.image && !failedImages.has(coach.image)" :src="coach.image" :alt="coach.name" loading="lazy" referrerpolicy="no-referrer" @error="failedImages.add(coach.image)" />
+          <!-- alt="": the coach's name is the <h2> right below (D9). -->
+          <img v-if="coach.image && !failedImages.has(coach.image)" :src="coach.image" alt="" loading="lazy" referrerpolicy="no-referrer" @error="failedImages.add(coach.image)" />
           <span v-else class="initials" aria-hidden="true">{{ initials(coach.name) }}</span>
         </div>
         <div class="body">
