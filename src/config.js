@@ -17,6 +17,7 @@ export default {
       faq: '1972595536', // Frågor
       documents: '609606696', // Dokument
       results: '494604732', // Resultat
+      events: '146285957', // Evenemang
       sponsors: '1868573772', // Sponsorer
       seasons: '956987468',
       groups: '1580659590',

@@ -6,7 +6,7 @@ export const navLinks = [
   { to: '/tranare', key: 'nav.coaches' },
   { to: '/prova-pa', key: 'nav.trial' },
   { to: '/fragor', key: 'nav.faq' },
-  { to: '/resultat', key: 'nav.results' },
+  { to: '/evenemang', key: 'nav.events' },
   { to: '/kontakt', key: 'nav.contact' },
 ]
 
@@ -14,6 +14,8 @@ export const navLinks = [
 // so sheet text can link to them without the header changing.
 export const linkTargets = [
   ...navLinks,
+  // The old results route redirects to /evenemang, but sheet text may still link to it.
+  { to: '/resultat', key: 'nav.events' },
   { to: '/dokument', key: 'nav.documents' },
   { to: '/integritet', key: 'privacy.title' },
 ]

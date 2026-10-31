@@ -12,6 +12,7 @@ export const columns = {
   faq: ['Fråga', 'Fråga (EN)', 'Svar', 'Svar (EN)'],
   documents: ['Kategori', 'Kategori (EN)', 'Titel', 'Titel (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Datum', 'Länk'],
   results: ['Datum', 'Tävling', 'Tävling (EN)', 'Ort', 'Namn', 'Junior/Senior', 'Klass', 'Klass (EN)', 'Placering', 'Placering (EN)', 'Länk'],
+  events: ['Typ', 'Rubrik', 'Rubrik (EN)', 'Datum', 'Slutdatum', 'Tid', 'Tid (EN)', 'Plats', 'Plats (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Bild', 'Länk'],
   sponsors: ['Namn', 'Logga', 'Länk', 'Beskrivning', 'Beskrivning (EN)'],
 }
 
@@ -340,6 +341,109 @@ export const documents = [
 // Results for the Resultat page, deliberately out of order: two years, each medal in several spellings, a
 // non-medal placement, a Junior row and an empty Junior/Senior cell with full names typed (only the
 // first name may show), a valid and an invalid link, and rows the parser must skip.
+// Dates relative to today, so the example events never go stale.
+const pad = (n) => String(n).padStart(2, '0')
+const isoDays = (offset) => {
+  const d = new Date()
+  d.setDate(d.getDate() + offset)
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+const isoDate = (year, month, day) => `${year}-${pad(month)}-${pad(day)}`
+const thisYear = new Date().getFullYear()
+
+export const events = [
+  // Multi-day camp in progress: Kommande, and eligible as "Nästa evenemang".
+  {
+    'Typ': 'Läger',
+    'Rubrik': 'Vinterläger',
+    'Rubrik (EN)': 'Winter camp',
+    'Datum': isoDays(-1),
+    'Slutdatum': isoDays(2),
+    'Tid': '09:00–15:00',
+    'Tid (EN)': '09:00–15:00',
+    'Plats': 'Ronnebyhallen',
+    'Plats (EN)': 'Ronnebyhallen',
+    'Beskrivning': 'Tre dagars läger för alla grupper. Ta med sovsäck och vattenflaska.\n- Sovsäck\n- Vattenflaska',
+    'Beskrivning (EN)': 'Three-day camp for all groups. Bring a sleeping bag and a water bottle.\n- Sleeping bag\n- Water bottle',
+    'Bild': 'https://drive.google.com/file/d/1ExampleImageId0001/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0002/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0003/view?usp=sharing',
+    'Länk': 'https://example.com/anmalan-vinterlager',
+  },
+  // Upcoming competition next month, one image, sign-up link, English variants.
+  {
+    'Typ': 'Tävling',
+    'Rubrik': 'Ronneby Box Cup',
+    'Rubrik (EN)': 'Ronneby Box Cup',
+    'Datum': isoDays(30),
+    'Tid': '10:00–16:00',
+    'Tid (EN)': '10:00–16:00',
+    'Plats': 'Ronnebyhallen',
+    'Beskrivning': 'Anmälan senast två veckor innan. Se #/kontakt för kontaktuppgifter.',
+    'Beskrivning (EN)': 'Sign up at the latest two weeks before. See #/contact for contact details.',
+    'Bild': 'https://drive.google.com/file/d/1ExampleImageId0004/view?usp=sharing',
+    'Länk': 'https://example.com/anmalan-box-cup',
+  },
+  // Undated: sits last in Kommande with "Datum meddelas senare" and an admin warning.
+  {
+    'Typ': 'Läger',
+    'Rubrik': 'Sommarläger',
+    'Rubrik (EN)': 'Summer camp',
+    'Datum': '',
+    'Plats': 'Ronneby',
+    'Beskrivning': 'Mer information kommer.',
+    'Beskrivning (EN)': 'More information coming soon.',
+    'Bild': '',
+    'Länk': '',
+  },
+  // Unreadable Datum: undated, shows the typed text, admin warning.
+  {
+    'Typ': 'Träff',
+    'Rubrik': 'Vårträff',
+    'Rubrik (EN)': 'Spring get-together',
+    'Datum': 'mitten av mars',
+    'Datum (EN)': 'mid-March',
+    'Plats': 'Klubblokalen',
+  },
+  // Unreadable Slutdatum: ignored, admin warning.
+  {
+    'Typ': 'Gala',
+    'Rubrik': 'Vintergala',
+    'Rubrik (EN)': 'Winter gala',
+    'Datum': isoDays(60),
+    'Slutdatum': 'i övermorgon',
+    'Tid': '19:00',
+    'Plats': 'Ronnebyhallen',
+    // One junk line and one folder link: no usable image, admin warnings.
+    'Bild': 'foto kommer\nhttps://drive.google.com/drive/folders/1FolderExample0001',
+    'Länk': 'https://example.com/vintergala',
+  },
+  // Slutdatum before Datum: ignored, admin warning. Länk without https:// gives no button.
+  {
+    'Typ': 'Tävling',
+    'Rubrik': 'Felstavat slutdatum',
+    'Datum': isoDays(15),
+    'Slutdatum': isoDays(10),
+    'Plats': 'Karlskrona',
+    'Länk': 'anmalan@example.com',
+  },
+  // Past competition with matched results: medal count on the closed card.
+  {
+    'Typ': 'Tävling',
+    'Rubrik': 'Blekinge Open',
+    'Rubrik (EN)': 'Blekinge Open',
+    'Datum': isoDays(-10),
+    'Plats': 'Karlskrona',
+    'Plats (EN)': 'Karlskrona',
+    'Beskrivning': 'Invigning 09:00.',
+    'Bild': '',
+    'Länk': 'https://example.com/blekinge-open-2026',
+  },
+  // The same Rubrik in two years: each year's results go to that year's event.
+  { 'Typ': 'Tävling', 'Rubrik': 'Påskcupen', 'Datum': isoDate(thisYear, 4, 10), 'Plats': 'Växjö', 'Bild': '', 'Länk': '' },
+  { 'Typ': 'Tävling', 'Rubrik': 'Påskcupen', 'Datum': isoDate(thisYear - 1, 4, 10), 'Plats': 'Växjö', 'Bild': '', 'Länk': '' },
+  // Skipped: no Rubrik.
+  { 'Typ': 'Läger', 'Datum': isoDays(20), 'Plats': 'Okänt läger' },
+]
+
 export const results = [
   { 'Datum': '2026-09-19', 'Tävling': 'DM', 'Tävling (EN)': 'District championship', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Klass (EN)': 'Women -60 kg', 'Placering': 'Guld', 'Länk': 'https://example.com/dm-2026-resultat' },
   { 'Datum': '2025-10-04', 'Tävling': 'SM', 'Tävling (EN)': 'Swedish championship', 'Ort': 'Stockholm', 'Namn': 'Erik Exempelsson', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Klass (EN)': 'Men -75 kg', 'Placering': 'Silver', 'Länk': '' },
@@ -349,6 +453,15 @@ export const results = [
   { 'Datum': '2026-03-15', 'Tävling': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Kvartsfinal', 'Placering (EN)': 'Quarterfinal', 'Länk': '' },
   { 'Datum': '2025-05-25', 'Tävling': 'Sommarpokalen', 'Ort': 'Växjö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Gold', 'Länk': '' },
   { 'Datum': '2025-03-08', 'Tävling': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Erik Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Placering': '3.', 'Länk': '' },
+  // Matched to the Blekinge Open event (same Rubrik, same year).
+  { 'Datum': isoDays(-10), 'Tävling': 'Blekinge Open', 'Tävling (EN)': 'Blekinge Open', 'Ort': 'Karlskrona', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Klass (EN)': 'Women -60 kg', 'Placering': 'Guld', 'Placering (EN)': 'Gold', 'Länk': 'https://example.com/blekinge-open-2026' },
+  { 'Datum': isoDays(-10), 'Tävling': 'Blekinge Open', 'Ort': 'Karlskrona', 'Namn': 'Anna Karin Svensson', 'Junior/Senior': 'Junior', 'Klass': 'Flickor -57 kg', 'Placering': 'Brons', 'Placering (EN)': 'Bronze', 'Länk': '' },
+  // Påskcupen exists as an event in two different years; each result goes to its own year.
+  { 'Datum': isoDate(thisYear, 4, 10), 'Tävling': 'Påskcupen', 'Tävling (EN)': 'Easter Cup', 'Ort': 'Växjö', 'Namn': 'Anna-Karin Svensson', 'Junior/Senior': 'Junior', 'Klass': 'Flickor -57 kg', 'Placering': 'Silver', 'Placering (EN)': 'Silver', 'Länk': '' },
+  { 'Datum': isoDate(thisYear - 1, 4, 10), 'Tävling': 'Påskcupen', 'Ort': 'Växjö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Guld', 'Placering (EN)': 'Gold', 'Länk': '' },
+  // No event row for Box Cup: two fallback competition cards (one per year) and admin warnings.
+  { 'Datum': isoDate(thisYear, 5, 15), 'Tävling': 'Box Cup', 'Tävling (EN)': 'Box Cup', 'Ort': 'Malmö', 'Namn': 'Erik Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Placering': 'Guld', 'Länk': '' },
+  { 'Datum': isoDate(thisYear - 1, 5, 15), 'Tävling': 'Box Cup', 'Ort': 'Malmö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Silver', 'Länk': '' },
   // Skipped: no placement.
   { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Placering': '' },
   // Skipped: the date can't be read.

@@ -5,6 +5,8 @@ import SocialSection from '../components/SocialSection.vue'
 import DataNotice from '../components/DataNotice.vue'
 import NoticeBanner from '../components/NoticeBanner.vue'
 import NewsList from '../components/NewsList.vue'
+
+import NextEvent from '../components/NextEvent.vue'
 import HomeSponsors from '../components/HomeSponsors.vue'
 import { state, hasData, todayInfo, groupNames } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
@@ -67,6 +69,8 @@ const explore = [
     </div>
 
     <NewsList />
+
+    <NextEvent />
 
     <h2 class="section-title">{{ t('home.exploreTitle') }}</h2>
     <div class="grid">

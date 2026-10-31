@@ -4,7 +4,8 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
+import { buildEvents, splitEvents } from './events.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -21,6 +22,8 @@ export const state = reactive({
   documents: [],
   // Results from the Resultat tab; empty hides the page's nav link.
   results: [],
+  // Events from the Evenemang tab; empty until the tab exists in the sheet.
+  events: [],
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
@@ -48,6 +51,7 @@ function apply(raw) {
   state.faq = parseFaq(raw.faq ?? [])
   state.documents = parseDocuments(raw.documents ?? [])
   state.results = parseResults(raw.results ?? [])
+  state.events = parseEvents(raw.events ?? [])
   state.sponsors = parseSponsors(raw.sponsors ?? [])
 }
 
@@ -112,10 +116,11 @@ export function loadData() {
     fetchOptional('faq', cached),
     fetchOptional('documents', cached),
     fetchOptional('results', cached),
+    fetchOptional('events', cached),
     fetchOptional('sponsors', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, sponsors]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, sponsors }
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
@@ -155,15 +160,31 @@ export const activeNews = computed(() => {
     .sort((a, b) => (b.from ?? '').localeCompare(a.from ?? ''))
 })
 
-// Results grouped by year, newest year first; within a year they are already newest first.
-export const resultsByYear = computed(() => {
-  const byYear = new Map()
-  for (const result of state.results) {
-    const year = result.date.slice(0, 4)
-    if (!byYear.has(year)) byYear.set(year, [])
-    byYear.get(year).push(result)
+// Event cards with results attached; undated events are always upcoming (D9).
+export const eventCards = computed(() => buildEvents(state.events, state.results, todayIso()))
+
+// Kommande (dated soonest first, undated last) and Tidigare grouped by year.
+export const eventSplit = computed(() => splitEvents(eventCards.value))
+
+// The next dated upcoming event for the home page; undated events are never used (AC9).
+export const nextEvent = computed(() => eventSplit.value.upcoming.find((card) => card.date) ?? null)
+
+// Admin warnings (AC10): event rows with date problems, and results whose Tävling matches no event.
+export const eventWarnings = computed(() => {
+  const warnings = []
+  for (const event of state.events) {
+    for (const problem of event.problems) {
+      warnings.push({ kind: 'event', problem, title: event.title, titleEn: event.titleEn })
+    }
   }
-  return [...byYear.entries()].map(([year, results]) => ({ year, results }))
+  const matched = new Set(state.events.map((event) => event.title))
+  const seen = new Set()
+  for (const result of state.results) {
+    if (matched.has(result.competition) || seen.has(result.competition)) continue
+    seen.add(result.competition)
+    warnings.push({ kind: 'unmatched-result', competition: result.competition, competitionEn: result.competitionEn })
+  }
+  return warnings
 })
 
 // Medal counts for the current year, for the summary at the top of the results page.
