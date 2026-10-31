@@ -8,6 +8,12 @@ import config from './config.js'
 
 const route = useRoute()
 
+// A plain href="#main" would be read as a route by the hash router (and show the 404 page),
+// so the click focuses #main directly.
+function skipToContent() {
+  document.getElementById('main')?.focus()
+}
+
 const titleKeys = {
   schedule: 'nav.schedule',
   groups: 'nav.groups',
@@ -31,8 +37,9 @@ watchEffect(() => {
 </script>
 
 <template>
+  <a v-if="!route.meta.bare" href="#main" class="skip-link" @click.prevent="skipToContent">{{ t('common.skipToContent') }}</a>
   <SiteHeader v-if="!route.meta.bare" />
-  <main id="main">
+  <main id="main" tabindex="-1">
     <RouterView />
   </main>
   <SiteFooter v-if="route.name !== 'admin' && !route.meta.bare" />

@@ -34,6 +34,7 @@ export default {
     demoData: 'Showing example data – the site is not connected to the Google Sheet yet.',
     offline: 'Could not fetch the latest content. Showing the last saved version.',
     loadError: 'The content could not be loaded right now. Please try again shortly.',
+    skipToContent: 'Skip to content',
   },
   notices: {
     label: 'Notices',

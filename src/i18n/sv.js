@@ -34,6 +34,7 @@ export default {
     demoData: 'Exempeldata visas – webbplatsen är inte kopplad till Google Sheet ännu.',
     offline: 'Kunde inte hämta senaste innehållet. Visar senast sparade versionen.',
     loadError: 'Innehållet kunde inte laddas just nu. Försök igen om en stund.',
+    skipToContent: 'Hoppa till innehåll',
   },
   notices: {
     label: 'Meddelanden',
