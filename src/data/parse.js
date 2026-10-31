@@ -482,3 +482,60 @@ export function parseResults(rows) {
     // Stable sort, so results on the same date keep their sheet order.
     .sort((a, b) => b.date.localeCompare(a.date))
 }
+
+// The Evenemang tab: one row per event. A row without a Rubrik is skipped. A date never hides an
+// event (D9): an unreadable Datum makes the event undated with its text kept, and an unreadable
+// Slutdatum, or one before Datum, is ignored. The problems list feeds the admin page's warnings.
+
+const EVENT_TYPES = {
+  tävling: 'competition',
+  lager: 'camp',
+  läger: 'camp',
+  gala: 'gala',
+}
+
+export function parseEvents(rows) {
+  return rows
+    .map(normalizeRow)
+    .map((row) => {
+      const title = field(row, 'Rubrik')
+      if (!title) return null
+      const dateText = field(row, 'Datum')
+      const endText = field(row, 'Slutdatum')
+      const date = parseDate(dateText)
+      const end = parseDate(endText)
+      const problems = []
+      if (!dateText) problems.push('undated')
+      else if (!date) problems.push('date-unreadable')
+      if (endText && !end) problems.push('end-unreadable')
+      else if (date && end && end < date) problems.push('end-before')
+      const link = field(row, 'Länk')
+      // One image per line in Bild; each line keeps its raw text so the admin page can warn about it.
+      const images = field(row, 'Bild')
+        .split(/\r?\n/)
+        .map((line) => {
+          const imageValue = clean(line)
+          return { image: imageUrl(imageValue, 'events'), imageValue }
+        })
+        .filter((img) => img.imageValue)
+      return {
+        type: EVENT_TYPES[clean(field(row, 'Typ')).toLowerCase()] ?? 'other',
+        title,
+        titleEn: field(row, 'Rubrik (EN)'),
+        date,
+        end: date && end && end >= date ? end : null,
+        dateText,
+        time: field(row, 'Tid'),
+        timeEn: field(row, 'Tid (EN)'),
+        place: field(row, 'Plats'),
+        placeEn: field(row, 'Plats (EN)'),
+        description: field(row, 'Beskrivning'),
+        descriptionEn: field(row, 'Beskrivning (EN)'),
+        images,
+        // A link cell that isn't a web address gives no button.
+        link: /^https:\/\/\S+$/.test(link) ? link : '',
+        problems,
+      }
+    })
+    .filter(Boolean)
+}

@@ -21,9 +21,11 @@ function onEscape() {
 
 watch(() => route.fullPath, () => (open.value = false))
 
-// The FAQ and Resultat items appear only when their tab has rows, so an empty tab hides them.
+// The FAQ item appears only when its tab has rows; Evenemang shows when there are events or results.
 const links = computed(() =>
-  navLinks.filter((link) => (link.to !== '/fragor' || state.faq.length) && (link.to !== '/resultat' || state.results.length)),
+  navLinks.filter(
+    (link) => (link.to !== '/fragor' || state.faq.length) && (link.to !== '/evenemang' || state.events.length || state.results.length),
+  ),
 )
 </script>
 

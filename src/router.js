@@ -9,7 +9,9 @@ const routes = [
   { path: '/prova-pa', name: 'trial', component: () => import('./views/TrialView.vue') },
   { path: '/tranare', name: 'coaches', component: () => import('./views/CoachesView.vue') },
   { path: '/fragor', name: 'faq', component: () => import('./views/FaqView.vue') },
-  { path: '/resultat', name: 'results', component: () => import('./views/ResultsView.vue') },
+  { path: '/evenemang', name: 'events', component: () => import('./views/EventsView.vue') },
+  // Old links (also #/resultat in sheet text) land on the events page with competitions chosen.
+  { path: '/resultat', redirect: { path: '/evenemang', query: { typ: 'tavlingar' } } },
   { path: '/kontakt', name: 'contact', component: () => import('./views/ContactView.vue') },
   { path: '/integritet', name: 'privacy', component: () => import('./views/PrivacyView.vue') },
   { path: '/dokument', name: 'documents', component: () => import('./views/DocumentsView.vue') },
@@ -27,5 +29,6 @@ export const firstQuery = (query, key) => [query[key]].flat()[0] ?? null
 export default createRouter({
   history: createWebHashHistory(),
   routes,
-  scrollBehavior: () => ({ top: 0 }),
+  // Query-only changes (filters, opening a card) keep the scroll position.
+  scrollBehavior: (to, from) => (to.path === from.path ? false : { top: 0 }),
 })

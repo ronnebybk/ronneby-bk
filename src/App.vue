@@ -22,7 +22,7 @@ const titleKeys = {
   contact: 'nav.contact',
   trial: 'trial.title',
   faq: 'faq.title',
-  results: 'results.title',
+  events: 'events.title',
   privacy: 'privacy.title',
   documents: 'documents.title',
   sponsors: 'sponsors.title',

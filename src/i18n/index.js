@@ -58,6 +58,23 @@ export function formatWeekday(iso, withDate = false) {
   return new Date(year, month - 1, day).toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'sv-SE', options)
 }
 
+// '2026-11-16' → { day: '16', month: 'nov' } / { day: '16', month: 'Nov' } for the card's date block.
+export function formatShortDate(iso) {
+  const [year, month, day] = iso.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return {
+    day: String(day),
+    month: date.toLocaleDateString(locale.value === 'en' ? 'en-GB' : 'sv-SE', { month: 'short' }),
+  }
+}
+
+// '2026-12-12' + '2026-12-13' → '12–13 dec' / '12–13 Dec'; same month only, which multi-day events are.
+export function formatDateRange(from, to) {
+  const a = formatShortDate(from)
+  const b = formatShortDate(to)
+  return a.month === b.month ? `${a.day}–${b.day} ${a.month}` : `${a.day} ${a.month} – ${b.day} ${b.month}`
+}
+
 export function useI18n() {
-  return { t, locale, setLocale, localized, formatDate, formatWeekday }
+  return { t, locale, setLocale, localized, formatDate, formatWeekday, formatShortDate, formatDateRange }
 }

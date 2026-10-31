@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ImageWarnings from '../components/ImageWarnings.vue'
+import AdminWarnings from '../components/AdminWarnings.vue'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import { load, save, remove } from '../data/storage.js'
@@ -26,7 +26,7 @@ if (VALID_KEY.test(fromLink)) {
 const hasAccess = computed(() => VALID_KEY.test(key.value))
 
 // A tab without a gid is not in the sheet yet, so it is left out of the list.
-const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'trial', 'faq', 'documents', 'results', 'sponsors'].filter(
+const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors'].filter(
   (tab) => config.sheet.gids[tab],
 )
 const activeTab = ref('schedule')
@@ -72,7 +72,7 @@ function forget() {
           </button>
         </div>
         <p class="help">ℹ️ {{ t('admin.help') }}</p>
-        <ImageWarnings />
+        <AdminWarnings />
       </div>
 
       <!-- :key forces a reload when switching tab, so the sheet jumps to it. -->
