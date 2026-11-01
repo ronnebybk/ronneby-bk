@@ -111,6 +111,40 @@ async function fetchOptional(tab, cached, url) {
 let loading = null
 // Bumped on every preview start/refresh/end; a load that finishes after a newer one started is dropped.
 let generation = 0
+// The last preview that loaded successfully, so a tab that fails on refresh falls back to the
+// editor's unpublished rows instead of jumping back to older published content.
+let lastPreviewRaw = null
+
+// Published load, shared by loadData() and the preview fallback so the two can't drift apart.
+// The generation guard drops the result when a newer load started while this one was in flight.
+// Shows the cached copy immediately, then replaces it with fresh data from the sheet.
+function loadPublished(gen) {
+  const cached = loadJson(CACHE_KEY)
+  if (cached) apply(cached)
+  return Promise.all([
+    ...TABS.map((tab) => fetchTab(tab)),
+    fetchOptional('notices', cached),
+    fetchOptional('club', cached),
+    fetchOptional('trial', cached),
+    fetchOptional('faq', cached),
+    fetchOptional('documents', cached),
+    fetchOptional('results', cached),
+    fetchOptional('events', cached),
+    fetchOptional('sponsors', cached),
+  ])
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
+      if (gen !== generation) return
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
+      apply(raw)
+      saveJson(CACHE_KEY, raw)
+      state.status = 'live'
+    })
+    .catch((error) => {
+      if (gen !== generation) return
+      console.error('Could not load sheet data', error)
+      state.status = cached ? 'cache' : 'error'
+    })
+}
 
 // Preview load: reads every tab from the unpublished export URL. Never writes to the visitor cache.
 async function loadPreview() {
@@ -124,7 +158,13 @@ async function loadPreview() {
   const required = TABS.map((tab) => fetchTab(tab, exportUrl(tab)))
   const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors']
     .filter((tab) => config.sheet.gids[tab])
-    .map((tab) => ({ tab, promise: fetchTab(tab, exportUrl(tab)) }))
+    .map((tab) => {
+      const promise = fetchTab(tab, exportUrl(tab))
+      // Awaited below; the no-op keeps an early bail-out (failed required tab, superseded load)
+      // from surfacing an unhandled rejection.
+      promise.catch(() => {})
+      return { tab, promise }
+    })
 
   try {
     const requiredResults = await Promise.all(required)
@@ -139,7 +179,7 @@ async function loadPreview() {
           if (gen !== generation) return null
           preview.failedTabs.push(tab)
           // Fall back to the last preview's rows for this tab, else the published cache.
-          return { tab, rows: cached?.[tab] ?? [] }
+          return { tab, rows: lastPreviewRaw?.[tab] ?? cached?.[tab] ?? [] }
         }
       }),
     )
@@ -152,6 +192,7 @@ async function loadPreview() {
     }
     apply(raw)
     state.status = 'preview'
+    lastPreviewRaw = raw
     preview.loadedAt = new Date()
   } catch (error) {
     if (gen !== generation) return
@@ -160,32 +201,7 @@ async function loadPreview() {
     if (!preview.loadedAt) {
       // No preview has loaded yet: fall back to the published path so the page isn't empty.
       preview.fallback = true
-      const pubCached = loadJson(CACHE_KEY)
-      if (pubCached) apply(pubCached)
-      loading = Promise.all([
-        ...TABS.map((tab) => fetchTab(tab)),
-        fetchOptional('notices', pubCached),
-        fetchOptional('club', pubCached),
-        fetchOptional('trial', pubCached),
-        fetchOptional('faq', pubCached),
-        fetchOptional('documents', pubCached),
-        fetchOptional('results', pubCached),
-        fetchOptional('events', pubCached),
-        fetchOptional('sponsors', pubCached),
-      ])
-        .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
-          if (gen !== generation) return
-          const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
-          apply(raw)
-          saveJson(CACHE_KEY, raw)
-          state.status = 'live'
-        })
-        .catch((err) => {
-          if (gen !== generation) return
-          console.error('Could not load sheet data', err)
-          state.status = pubCached ? 'cache' : 'error'
-        })
-      loading.catch(() => {})
+      loading = loadPublished(gen)
     }
   } finally {
     // A superseded load leaves the flag to the newer one.
@@ -202,6 +218,7 @@ export function startPreview() {
   preview.error = false
   preview.failedTabs = []
   preview.fallback = false
+  lastPreviewRaw = null
   loading = null
   loadPreview()
 }
@@ -221,6 +238,7 @@ export function endPreview() {
   preview.error = false
   preview.failedTabs = []
   preview.fallback = false
+  lastPreviewRaw = null
   loading = null
   loadData()
 }
@@ -243,30 +261,8 @@ export function loadData() {
   }
 
   // Status stays 'loading' while the cached copy is shown; 'cache' means the refresh failed.
-  const cached = loadJson(CACHE_KEY)
-  if (cached) apply(cached)
-
-  loading = Promise.all([
-    ...TABS.map((tab) => fetchTab(tab)),
-    fetchOptional('notices', cached),
-    fetchOptional('club', cached),
-    fetchOptional('trial', cached),
-    fetchOptional('faq', cached),
-    fetchOptional('documents', cached),
-    fetchOptional('results', cached),
-    fetchOptional('events', cached),
-    fetchOptional('sponsors', cached),
-  ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
-      apply(raw)
-      saveJson(CACHE_KEY, raw)
-      state.status = 'live'
-    })
-    .catch((error) => {
-      console.error('Could not load sheet data', error)
-      state.status = cached ? 'cache' : 'error'
-    })
+  // The generation guard drops this load if a preview started while it was in flight.
+  loading = loadPublished(generation)
   return loading
 }
 
