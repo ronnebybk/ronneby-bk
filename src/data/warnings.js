@@ -92,3 +92,30 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
     ...groupCase,
   ]
 }
+
+// --- Season status -----------------------------------------------------------
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+// ISO strings parsed as UTC, so DST can't shift the day count.
+function daysBetween(fromIso, toIso) {
+  const [fy, fm, fd] = fromIso.split('-').map(Number)
+  const [ty, tm, td] = toIso.split('-').map(Number)
+  return Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(fy, fm - 1, fd)) / DAY_MS)
+}
+
+// AC6 (D2) and AC7 (D8). `today` is an ISO date string.
+export function seasonWarnings(seasons, today) {
+  const current = seasons.find((s) => s.from <= today && today <= s.to) ?? null
+  const warnings = []
+  // AC6: nothing covers today and no season starts after today — but a later season during a
+  // break is fine (D2), so this only fires when there is no current and no upcoming season.
+  if (!current && !seasons.some((s) => s.from > today)) {
+    warnings.push({ kind: 'no-season' })
+  }
+  // AC7 (D8): the current season ends within 21 days and no season starts after it.
+  if (current && daysBetween(today, current.to) <= 21 && !seasons.some((s) => s.from > current.from)) {
+    warnings.push({ kind: 'season-ending', name: current.name, nameEn: current.nameEn, to: current.to })
+  }
+  return warnings
+}
