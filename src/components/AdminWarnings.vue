@@ -11,7 +11,7 @@ import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate } = useI18n()
 
-const emit = defineEmits(['open-tab'])
+const emit = defineEmits(['open-tab', 'open-help'])
 
 const failing = ref([])
 
@@ -50,8 +50,8 @@ const canJump = (tab) => Boolean(config.sheet.gids[sheetKeyOf(tab)])
 const warnings = computed(() =>
   eventWarnings.value.map((w) =>
     w.kind === 'unmatched-result'
-      ? { tab: null, rows: null, text: t('admin.warnings.unmatchedResult', { competition: localized(w.competition, w.competitionEn) }) }
-      : { tab: 'Evenemang', rows: [w.row], text: t(`admin.warnings.${w.problem}`, { where: where('Evenemang', [w.row]), title: localized(w.title, w.titleEn) }) },
+      ? { tab: null, rows: null, text: t('admin.warnings.unmatchedResult', { competition: localized(w.competition, w.competitionEn) }), help: helpFor(w) }
+      : { tab: 'Evenemang', rows: [w.row], text: t(`admin.warnings.${w.problem}`, { where: where('Evenemang', [w.row]), title: localized(w.title, w.titleEn) }), help: helpFor(w) },
   ),
 )
 
@@ -82,23 +82,76 @@ function rowText(w) {
   return t(`admin.warnings.row.${key}`, { where: where(w.tab, w.rows), column: w.column, value: w.value })
 }
 
+// D4: the help entry each warning links to ("Hur fixar jag det?"). An id missing from
+// docs/editor-help.md only opens the dialog without jumping, so a renamed entry can't break this.
+const TAB_MAIN_ENTRY = {
+  Schema: 'lagga-till-ett-pass',
+  Säsonger: 'sommarschema',
+  Grupper: 'andra-pris',
+  Tränare: 'lagga-till-tranare',
+  Anslag: 'anslag',
+  Klubbinfo: 'klubbinfo',
+  'Prova på': 'prova-pa-text',
+  Frågor: 'fraga',
+  Dokument: 'dokument',
+  Evenemang: 'evenemang',
+  Resultat: 'lagga-till-resultat',
+  Sponsorer: 'sponsor',
+}
+
+const ROW_HELP = {
+  'price-no-amount': 'andra-pris',
+  'price-extra-digits': 'andra-pris',
+  'unknown-period': 'andra-pris',
+  'from-after-to': 'anslag-period',
+  'unknown-type': 'anslag-eller-nyhet',
+  'unknown-field': 'klubbinfo',
+  'club-invalid': 'klubbinfo',
+  'club-duplicate': 'klubbinfo',
+}
+
+function rowHelp(w) {
+  if (w.tab === 'Schema' && w.reason === 'unreadable') return w.column === 'Dag' ? 'pass-saknas' : 'andra-en-tid'
+  if (w.tab === 'Anslag' && w.reason === 'unreadable') return 'anslag-period'
+  return ROW_HELP[w.reason] ?? TAB_MAIN_ENTRY[w.tab] ?? null
+}
+
+function helpFor(w) {
+  if (w.kind === 'event') return 'evenemang-info'
+  if (w.kind === 'unmatched-result') return 'koppla-resultat'
+  switch (w.kind) {
+    case 'unknown-group':
+    case 'unknown-season':
+    case 'unknown-coach':
+    case 'group-case':
+      return 'byta-namn'
+    case 'no-season':
+      return 'sommarschema'
+    case 'season-ending':
+      return 'nasta-sasong'
+    case 'row':
+      return rowHelp(w)
+  }
+  return null
+}
+
 const dataTexts = computed(() =>
   dataWarnings.value.map((w) => {
-    if (w.kind === 'row') return { tab: w.tab, rows: w.rows, text: rowText(w) }
+    if (w.kind === 'row') return { tab: w.tab, rows: w.rows, text: rowText(w), help: helpFor(w) }
     switch (w.kind) {
       case 'unknown-group':
       case 'unknown-season':
       case 'unknown-coach': {
         const key = { 'unknown-group': 'unknownGroup', 'unknown-season': 'unknownSeason', 'unknown-coach': 'unknownCoach' }[w.kind]
         const text = t(`admin.warnings.${key}`, { where: where(w.tab, w.rows), name: w.name })
-        return { tab: w.tab, rows: w.rows, text: w.suggestion ? text + t('admin.warnings.didYouMean', { name: w.suggestion }) : text }
+        return { tab: w.tab, rows: w.rows, text: w.suggestion ? text + t('admin.warnings.didYouMean', { name: w.suggestion }) : text, help: helpFor(w) }
       }
       case 'group-case':
-        return { tab: null, rows: null, text: t('admin.warnings.groupCase', { list: w.spellings.map((s) => `"${s.name}" (${where('Grupper', s.rows)})`).join(', ') }) }
+        return { tab: null, rows: null, text: t('admin.warnings.groupCase', { list: w.spellings.map((s) => `"${s.name}" (${where('Grupper', s.rows)})`).join(', ') }), help: helpFor(w) }
       case 'no-season':
-        return { tab: null, rows: null, text: t('admin.warnings.noSeason') }
+        return { tab: null, rows: null, text: t('admin.warnings.noSeason'), help: helpFor(w) }
       case 'season-ending':
-        return { tab: null, rows: null, text: t('admin.warnings.seasonEnding', { name: localized(w.name, w.nameEn), date: formatDate(w.to) }) }
+        return { tab: null, rows: null, text: t('admin.warnings.seasonEnding', { name: localized(w.name, w.nameEn), date: formatDate(w.to) }), help: helpFor(w) }
     }
   }),
 )
@@ -122,9 +175,11 @@ const any = computed(() => failing.value.length + allWarnings.value.length)
             <button type="button" class="tab-link" @click="emit('open-tab', sheetKeyOf(w.tab))">{{ w.lead }}</button>{{ w.text.slice(w.lead.length) }}
           </template>
           <template v-else>{{ w.text }}</template>
+          <button v-if="w.help" type="button" class="help-link" @click="emit('open-help', w.help)">{{ t('admin.warnings.howToFix') }}</button>
         </li>
         <li v-for="(item, i) in failing" :key="`i-${i}`">
           <strong>{{ item.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${item.kind}`) }}) — {{ t(`admin.imageWarnings.${item.reason}`) }}
+          <button type="button" class="help-link" @click="emit('open-help', 'bilder')">{{ t('admin.warnings.howToFix') }}</button>
         </li>
       </ul>
     </template>
@@ -163,6 +218,16 @@ li {
   color: var(--link);
   font: inherit;
   font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.help-link {
+  background: none;
+  border: 0;
+  padding: 0 0 0 6px;
+  color: var(--link);
+  font: inherit;
   text-decoration: underline;
   cursor: pointer;
 }

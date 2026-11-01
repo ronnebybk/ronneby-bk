@@ -268,6 +268,7 @@ export default {
     },
     warnings: {
       title: 'Varningar',
+      howToFix: 'Hur fixar jag det?',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",
       undated: "{where}: '{title}' saknar datum",
       'date-unreadable': "{where}: datum på '{title}' går inte att läsa",
