@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '../i18n/index.js'
-import { preview } from '../data/preview.js'
+import { preview, previewTab } from '../data/preview.js'
 import { refreshPreview, endPreview } from '../data/store.js'
 
 const { t } = useI18n()
@@ -33,7 +33,8 @@ function update() {
 }
 
 function toAdmin() {
-  router.push('/admin')
+  const tab = previewTab()
+  router.push(tab ? { path: '/admin', query: { tab } } : '/admin')
 }
 
 function end() {

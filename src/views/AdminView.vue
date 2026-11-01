@@ -5,7 +5,7 @@ import AdminWarnings from '../components/AdminWarnings.vue'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import { load, save, remove } from '../data/storage.js'
-import { ADMIN_KEY_STORAGE, VALID_KEY, hasValidKey } from '../data/preview.js'
+import { ADMIN_KEY_STORAGE, VALID_KEY, hasValidKey, setPreviewTab } from '../data/preview.js'
 import { startPreview, endPreview } from '../data/store.js'
 
 const { t } = useI18n()
@@ -39,6 +39,7 @@ const tabRoutes = {
 }
 
 function preview() {
+  setPreviewTab(activeTab.value)
   startPreview()
   router.push(tabRoutes[activeTab.value] ?? '/')
 }
@@ -47,7 +48,9 @@ function preview() {
 const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors'].filter(
   (tab) => config.sheet.gids[tab],
 )
-const activeTab = ref('schedule')
+// "To admin" from the preview passes the tab as ?tab=; anything unknown starts on the default.
+const fromQuery = String(route.query.tab ?? '')
+const activeTab = ref(tabs.includes(fromQuery) ? fromQuery : 'schedule')
 
 function sheetUrl(minimal) {
   const gid = config.sheet.gids[activeTab.value]

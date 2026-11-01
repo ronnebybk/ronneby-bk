@@ -8,6 +8,7 @@ export const ADMIN_KEY_STORAGE = 'rbt-admin-key'
 export const VALID_KEY = /^[A-Za-z0-9_-]{20,}$/
 
 const PREVIEW_FLAG = 'rbt-preview'
+const PREVIEW_TAB = 'rbt-preview-tab'
 
 export function adminKey() {
   return load(ADMIN_KEY_STORAGE) ?? ''
@@ -33,6 +34,22 @@ export function setPreviewFlag(on) {
     if (on) sessionStorage.setItem(PREVIEW_FLAG, '1')
     else sessionStorage.removeItem(PREVIEW_FLAG)
   } catch {}
+}
+
+// The admin tab the editor previewed from, so "To admin" can return to it (#42).
+export function setPreviewTab(tab) {
+  try {
+    if (tab) sessionStorage.setItem(PREVIEW_TAB, tab)
+    else sessionStorage.removeItem(PREVIEW_TAB)
+  } catch {}
+}
+
+export function previewTab() {
+  try {
+    return sessionStorage.getItem(PREVIEW_TAB) ?? ''
+  } catch {
+    return ''
+  }
 }
 
 // Reactive preview state, read by the bar and App.vue for the frame/title prefix.

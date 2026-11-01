@@ -7,7 +7,7 @@ import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
-import { preview, isPreviewOn, setPreviewFlag, adminKey } from './preview.js'
+import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -232,6 +232,7 @@ export function refreshPreview() {
 export function endPreview() {
   generation++
   setPreviewFlag(false)
+  setPreviewTab('')
   preview.on = false
   preview.loadedAt = null
   preview.loading = false
