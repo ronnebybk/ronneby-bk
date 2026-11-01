@@ -71,7 +71,12 @@ async function fetchTab(tab) {
     const text = await response.text()
     // A sheet that isn't published returns an HTML login page instead of CSV.
     if (text.trimStart().startsWith('<')) throw new Error(`${tab}: not published as CSV`)
-    return Papa.parse(text, { header: true, skipEmptyLines: 'greedy' }).data
+    // Tag every row with its sheet row number (header = row 1) before dropping blank rows,
+    // so warnings can point at the real row even when blank rows shift the indices.
+    const parsed = Papa.parse(text, { header: true, skipEmptyLines: false }).data
+    return parsed
+      .map((row, i) => ({ ...row, _row: i + 2 }))
+      .filter((row) => Object.entries(row).some(([key, value]) => key !== '_row' && String(value ?? '').trim() !== ''))
   } catch (error) {
     if (error?.name === 'AbortError') throw new Error(`${tab}: timed out after ${FETCH_TIMEOUT_MS / 1000}s`)
     throw error

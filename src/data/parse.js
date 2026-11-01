@@ -88,25 +88,30 @@ function parsePrice(text) {
 // year). Each detail comes from the first row that has it, like in Klubbinfo; each row adds its price.
 export function parseGroups(rows) {
   const byName = new Map()
-  for (const row of rows.map(normalizeRow)) {
+  const rowsByName = new Map()
+  rows.map(normalizeRow).forEach((row, i) => {
     const name = field(row, 'Grupp')
-    if (!name) continue
+    if (!name) return
+    if (!rowsByName.has(name)) rowsByName.set(name, [])
+    rowsByName.get(name).push(Number(row._row ?? i + 2))
     if (!byName.has(name)) byName.set(name, { name, nameEn: '', ages: '', description: '', descriptionEn: '', prices: [] })
     const group = byName.get(name)
     for (const [key, column] of Object.entries(GROUP_FIELDS)) group[key] ||= field(row, column)
 
     const price = parsePrice(field(row, 'Pris (kr)'))
-    if (price === null) continue
+    if (price === null) return
     const period = field(row, 'Prisperiod').toLowerCase()
     const option = { price, period: PERIODS.includes(period) ? period : 'termin' }
     // A pasted copy of the same row shouldn't list the same price twice, and free is free whatever the period.
     if (!group.prices.some((p) => p.price === price && (price === 0 || p.period === option.period))) {
       group.prices.push(option)
     }
-  }
+  })
   // "Gratis · 800 kr / termin" contradicts itself, so a free row only counts when nothing costs money.
   for (const group of byName.values()) {
     if (group.prices.some((p) => p.price > 0)) group.prices = group.prices.filter((p) => p.price > 0)
+    // Sheet rows that carry this group's name, for admin warnings (AC5).
+    group.rows = rowsByName.get(group.name)
   }
   return [...byName.values()]
 }
@@ -114,7 +119,10 @@ export function parseGroups(rows) {
 export function parseSessions(rows) {
   return rows
     .map(normalizeRow)
-    .map((row) => ({
+    .map((row, i) => ({
+      // Sheet row number for admin warnings; demo data falls back to index + 2 (header = row 1).
+      // normalizeRow stringifies every cell, so _row comes back as a string — coerce it.
+      row: Number(row._row ?? i + 2),
       season: field(row, 'Säsong'),
       day: parseDay(field(row, 'Dag')),
       start: parseTime(field(row, 'Start')),
@@ -372,9 +380,10 @@ export function parseSponsors(rows) {
 export function parseCoaches(rows) {
   return rows
     .map(normalizeRow)
-    .map((row) => {
+    .map((row, i) => {
       const bild = field(row, 'Bild')
       return {
+        row: Number(row._row ?? i + 2),
         name: field(row, 'Namn'),
         role: field(row, 'Roll'),
         roleEn: field(row, 'Roll (EN)'),
