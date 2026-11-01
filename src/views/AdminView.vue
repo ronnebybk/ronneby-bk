@@ -42,6 +42,7 @@ const tabRoutes = {
   events: '/evenemang',
   results: '/evenemang?typ=tavlingar',
   sponsors: '/sponsorer',
+  exceptions: '/schema',
 }
 
 function preview() {
@@ -51,7 +52,7 @@ function preview() {
 }
 
 // A tab without a gid is not in the sheet yet, so it is left out of the list.
-const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors'].filter(
+const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'exceptions', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors'].filter(
   (tab) => config.sheet.gids[tab],
 )
 // "To admin" from the preview passes the tab as ?tab=; anything unknown starts on the default.

@@ -96,7 +96,7 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
 // --- Skipped-row warnings (#40) -------------------------------------------------
 
 // Sheet tab order for sorting row warnings (D10): new warnings first, in this order, then by row.
-const TAB_ORDER = ['Schema', 'Säsonger', 'Grupper', 'Tränare', 'Anslag', 'Klubbinfo', 'Prova på', 'Frågor', 'Dokument', 'Evenemang', 'Resultat', 'Sponsorer']
+const TAB_ORDER = ['Schema', 'Säsonger', 'Grupper', 'Tränare', 'Anslag', 'Undantag', 'Klubbinfo', 'Prova på', 'Frågor', 'Dokument', 'Evenemang', 'Resultat', 'Sponsorer']
 
 // Swedish tab name → sheet key (config.gids key), for the admin page's jump-to-tab (D9).
 export const TAB_SHEET_KEY = {
@@ -105,6 +105,7 @@ export const TAB_SHEET_KEY = {
   Grupper: 'groups',
   Tränare: 'coaches',
   Anslag: 'notices',
+  Undantag: 'exceptions',
   Klubbinfo: 'club',
   'Prova på': 'trial',
   Frågor: 'faq',

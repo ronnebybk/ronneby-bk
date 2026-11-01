@@ -27,6 +27,7 @@ export default {
   common: {
     loading: 'Laddar…',
     today: 'Idag',
+    cancelled: 'Inställd',
     free: 'Gratis',
     coach: 'Tränare',
     age: 'Ålder',
@@ -72,6 +73,7 @@ export default {
     allGroups: 'Alla grupper',
     filter: 'Visa grupp',
     noSessions: 'Inga pass',
+    exceptionsTitle: 'Inställda pass',
     empty: 'Det finns inget schema upplagt just nu.',
   },
   groups: {
@@ -238,6 +240,7 @@ export default {
       coaches: 'Tränare',
       seasons: 'Säsonger',
       notices: 'Anslag',
+      exceptions: 'Undantag',
       club: 'Klubbinfo',
       trial: 'Prova på',
       faq: 'Frågor',

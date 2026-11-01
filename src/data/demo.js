@@ -5,6 +5,7 @@ export const columns = {
   seasons: ['Säsong', 'Säsong (EN)', 'Från', 'Till'],
   groups: ['Grupp', 'Grupp (EN)', 'Ålder', 'Beskrivning', 'Beskrivning (EN)', 'Pris (kr)', 'Prisperiod'],
   schedule: ['Säsong', 'Dag', 'Start', 'Slut', 'Grupp', 'Tränare', 'Notering', 'Notering (EN)'],
+  exceptions: ['Datum', 'Grupp', 'Meddelande', 'Meddelande (EN)'],
   coaches: ['Namn', 'Roll', 'Roll (EN)', 'Grupper', 'Telefon', 'E-post', 'Bild'],
   notices: ['Meddelande', 'Meddelande (EN)', 'Visa från', 'Visa till', 'Typ', 'Rubrik', 'Rubrik (EN)'],
   club: ['Fält', 'Värde', 'Värde (EN)'],
@@ -470,6 +471,34 @@ export const results = [
   { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': '', 'Placering': 'Guld' },
   // Skipped: no competition.
   { 'Datum': '2026-01-10', 'Tävling': '', 'Namn': 'Sara Exempel', 'Placering': 'Guld' },
+]
+
+// Example exceptions (Undantag): today's sessions all cancelled, one group-specific cancellation
+// next week, one all-groups cancellation further ahead, plus rows the parser must skip (unreadable
+// date, missing message). Dates relative to today, so the demo never goes stale.
+export const exceptions = [
+  {
+    'Datum': isoDays(0),
+    'Grupp': '',
+    'Meddelande': 'Inställd träning idag på grund av tävlingshelg.',
+    'Meddelande (EN)': 'Training cancelled today due to a competition weekend.',
+  },
+  {
+    'Datum': isoDays(7),
+    'Grupp': 'Tävling',
+    'Meddelande': 'DM i Karlskrona – träningen för Tävling är inställd.',
+    'Meddelande (EN)': 'District championship in Karlskrona – the Competition class session is cancelled.',
+  },
+  {
+    'Datum': isoDays(21),
+    'Grupp': '',
+    'Meddelande': 'Jullov – ingen träning.',
+    'Meddelande (EN)': 'Christmas break – no training.',
+  },
+  // Skipped: the date can't be read.
+  { 'Datum': 'nästa vecka', 'Grupp': '', 'Meddelande': 'Rad med ett datum som inte går att läsa.' },
+  // Skipped: no message.
+  { 'Datum': isoDays(30), 'Grupp': 'Knattar', 'Meddelande': '' },
 ]
 
 // Example sponsors: one linked with a local logo, one with an http:// link (shown but not clickable),

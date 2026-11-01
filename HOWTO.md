@@ -199,9 +199,10 @@ Use the club's Google account, not a personal one. The board keeps the login det
    In *Evenemang*, check the *Typ* dropdown: `A2:A300` → **Dropdown** with the options `Tävling`, `Läger`, `Gala`,
    `Övrigt`, set to *Show a warning* (not *Reject the input*), so free text still works. Also check the date
    validation on *Datum*/*Slutdatum*: select `D2:E300` → **Data → Data validation → Is valid date**.
+   In *Undantag*, check the date validation on *Datum*: select `A2:A300` → **Data → Data validation → Is valid date**.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
-   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`,
+   Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Undantag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`,
    `Dokument!1:1`, `Evenemang!1:1`, `Resultat!1:1`, `Sponsorer!1:1`.
    Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
    Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since

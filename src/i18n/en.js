@@ -27,6 +27,7 @@ export default {
   common: {
     loading: 'Loading…',
     today: 'Today',
+    cancelled: 'Cancelled',
     free: 'Free',
     coach: 'Coach',
     age: 'Age',
@@ -72,6 +73,7 @@ export default {
     allGroups: 'All classes',
     filter: 'Show class',
     noSessions: 'No sessions',
+    exceptionsTitle: 'Cancelled sessions',
     empty: 'There is no schedule published right now.',
   },
   groups: {
@@ -237,6 +239,7 @@ export default {
       coaches: 'Coaches',
       seasons: 'Seasons',
       notices: 'Notices',
+      exceptions: 'Exceptions',
       club: 'Club info',
       trial: 'Try boxing',
       faq: 'FAQ',

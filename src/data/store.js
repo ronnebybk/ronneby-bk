@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
@@ -18,6 +18,8 @@ export const state = reactive({
   seasons: [],
   groups: [],
   sessions: [],
+  // Cancelled dates from the Undantag tab; empty until the tab exists in the sheet.
+  exceptions: [],
   coaches: [],
   faq: [],
   // Official documents grouped by category from the Dokument tab.
@@ -48,6 +50,7 @@ function apply(raw) {
   state.seasons = parseSeasons(raw.seasons, problems)
   state.groups = parseGroups(raw.groups, problems)
   state.sessions = parseSessions(raw.schedule, problems)
+  state.exceptions = parseExceptions(raw.exceptions ?? [], problems)
   state.coaches = parseCoaches(raw.coaches, problems)
   // A cache written before these optional tabs existed has no such fields.
   state.notices = parseNotices(raw.notices ?? [], problems)
@@ -131,10 +134,11 @@ function loadPublished(gen) {
     fetchOptional('results', cached),
     fetchOptional('events', cached),
     fetchOptional('sponsors', cached),
+    fetchOptional('exceptions', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors, exceptions]) => {
       if (gen !== generation) return
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors, exceptions }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
@@ -156,7 +160,7 @@ async function loadPreview() {
   preview.fallback = false
 
   const required = TABS.map((tab) => fetchTab(tab, exportUrl(tab)))
-  const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors']
+  const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors', 'exceptions']
     .filter((tab) => config.sheet.gids[tab])
     .map((tab) => {
       const promise = fetchTab(tab, exportUrl(tab))
@@ -425,13 +429,36 @@ function seasonOn(iso) {
   return state.seasons.find((s) => s.from <= iso && iso <= s.to) ?? null
 }
 
-// Today's sessions, plus the next session once nothing is left today. Walks real dates rather
-// than weekdays, so breaks between seasons and season changes are respected.
+// Exceptions for one date (YYYY-MM-DD), earliest first.
+export function exceptionsOn(iso) {
+  return state.exceptions.filter((e) => e.date === iso)
+}
+
+// The exception cancelling a session on a date: an empty Grupp list cancels every group.
+export function exceptionFor(iso, groups) {
+  return exceptionsOn(iso).find((e) => !e.groups.length || e.groups.some((g) => groups.includes(g))) ?? null
+}
+
+// Exceptions from today onward, for the schedule page's cancellation list.
+export const upcomingExceptions = computed(() => {
+  const today = todayIso()
+  return state.exceptions.filter((e) => e.date >= today)
+})
+
+// Today's sessions (each carrying its cancelling exception, if any), plus the next session once
+// nothing is left today. Walks real dates rather than weekdays, so breaks between seasons and
+// season changes are respected.
 export const todayInfo = computed(() => {
   const now = new Date()
   const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  const todaySeason = seasonOn(todayIso(now))
-  const today = sessionsFor(todaySeason).filter((s) => s.day === weekday(now))
+  const todayIsoNow = todayIso(now)
+  const todaySeason = seasonOn(todayIsoNow)
+  const today = sessionsFor(todaySeason)
+    .filter((s) => s.day === weekday(now))
+    .map((s) => {
+      const exception = exceptionFor(todayIsoNow, s.groups)
+      return exception ? { ...s, exception } : s
+    })
   if (today.some((s) => s.start > time)) return { today, next: null }
 
   const lastDay = state.seasons.reduce((max, s) => (s.to > max ? s.to : max), '')

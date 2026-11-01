@@ -4,10 +4,10 @@ import { useRoute } from 'vue-router'
 import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, groupStyle } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, groupStyle, groupNames, upcomingExceptions } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
-const { t, localized, formatDate } = useI18n()
+const { t, localized, formatDate, formatWeekday } = useI18n()
 const route = useRoute()
 
 const selectedName = ref(null)
@@ -90,6 +90,17 @@ const days = computed(() =>
         <p class="muted valid">
           {{ t('schedule.validFrom', { from: formatDate(season.from), to: formatDate(season.to) }) }}
         </p>
+      </div>
+
+      <div v-if="upcomingExceptions.length" class="exceptions">
+        <h2>{{ t('schedule.exceptionsTitle') }}</h2>
+        <ul>
+          <li v-for="e in upcomingExceptions" :key="e.row">
+            <strong>{{ formatWeekday(e.date, true) }}</strong>
+            <span class="muted">· {{ e.groups.length ? groupNames(e.groups) : t('schedule.allGroups') }}</span>
+            — {{ localized(e.message, e.messageEn) }}
+          </li>
+        </ul>
       </div>
 
       <div v-if="groupsInSeason.length > 1" class="filters" :aria-label="t('schedule.filter')" role="group">
@@ -182,6 +193,28 @@ const days = computed(() =>
   font-size: 0.75rem;
   font-weight: 400;
   opacity: 0.8;
+}
+
+.exceptions {
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--red);
+  border-left: 4px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface);
+}
+
+.exceptions h2 {
+  font-size: 1rem;
+  margin: 0 0 6px;
+}
+
+.exceptions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
 }
 
 .filters {

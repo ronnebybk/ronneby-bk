@@ -11,14 +11,16 @@ const { t, localized } = useI18n()
 </script>
 
 <template>
-  <div class="session" :style="groupStyle(session.groups[0])">
+  <div class="session" :class="{ cancelled: session.exception }" :style="groupStyle(session.groups[0])">
     <div class="time">
       <span v-if="showDay" class="day">{{ t('days')[session.day - 1] }}</span>
       {{ timeRange(session) }}
+      <span v-if="session.exception" class="badge">{{ t('common.cancelled') }}</span>
     </div>
     <div class="group">{{ groupNames(session.groups) }}</div>
     <div v-if="session.coach" class="meta">{{ t('common.coach') }}: {{ session.coach }}</div>
-    <div v-if="session.note" class="note">{{ localized(session.note, session.noteEn) }}</div>
+    <div v-if="session.exception" class="note">{{ localized(session.exception.message, session.exception.messageEn) }}</div>
+    <div v-else-if="session.note" class="note">{{ localized(session.note, session.noteEn) }}</div>
   </div>
 </template>
 
@@ -38,6 +40,29 @@ const { t, localized } = useI18n()
   font-weight: 500;
   font-size: 1.05rem;
   letter-spacing: 0.02em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.session.cancelled {
+  opacity: 0.75;
+}
+
+.session.cancelled .group {
+  text-decoration: line-through;
+}
+
+.badge {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--red-strong);
+  color: #fff;
+  padding: 1px 8px;
+  border-radius: 999px;
 }
 
 .day {

@@ -67,6 +67,15 @@ Markera raden → högerklicka → *Ta bort rad*.
 
 Select the row → right-click → *Delete row*.
 
+### Ställa in träning ett visst datum
+<!-- id: stalla-in-datum · flikar: Undantag · sök: inställd, inställt, ställa in, datum, jul, lov, sportlov, helg, tävlingshelg, cancelled, canceled, holiday -->
+
+Ny rad i **Undantag**: fyll i *Datum* (`ÅÅÅÅ-MM-DD`), skriv ett *Meddelande* (och gärna en engelsk text), och lämna *Grupp* tom för att ställa in alla grupper – eller skriv gruppnamnet (flera grupper med kommatecken mellan). Passet syns som inställt i schemat och under "Träning idag" på startsidan. Ta bort raden när datumet har passerat.
+
+#### Cancel training on a given date
+
+New row in **Undantag**: fill in *Datum* (`YYYY-MM-DD`), write a *Meddelande* (and preferably an English text), and leave *Grupp* empty to cancel all groups – or write the group name (several groups separated by commas). The session shows as cancelled in the schedule and under "Training today" on the home page. Delete the row once the date has passed.
+
 ### Byta tränare på ett pass
 <!-- id: byta-tranare · flikar: Schema · sök: ledare, instruktör, vikarie -->
 
@@ -290,6 +299,15 @@ Select the row → right-click → *Delete row*. Within about 5 minutes the spon
 
 - Fill in **Visa till** for temporary messages (e.g. cancelled training). The notice then disappears
   by itself, and the same text can be used again later.
+
+### Undantag
+<!-- id: undantag · flikar: Undantag -->
+
+- **Undantag:** en rad per inställt datum. *Datum* och *Meddelande* måste vara ifyllda, annars visas inte raden. Tom *Grupp* gäller alla grupper; flera grupper skrivs med kommatecken mellan, precis som i Schema.
+
+#### Exceptions
+
+- **Undantag:** one row per cancelled date. *Datum* and *Meddelande* must be filled in, otherwise the row is not shown. An empty *Grupp* applies to all groups; several groups are written separated by commas, just like in Schema.
 
 ### Anslag eller nyhet?
 <!-- id: anslag-eller-nyhet · flikar: Anslag -->

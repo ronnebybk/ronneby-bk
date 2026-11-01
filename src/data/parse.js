@@ -196,6 +196,34 @@ export function parseSessions(rows, problems = []) {
     .sort((a, b) => a.day - b.day || a.start.localeCompare(b.start))
 }
 
+// The Undantag tab: one row per cancelled date (holiday, competition weekend, …). Datum and
+// Meddelande are required; an empty Grupp cancels every group, otherwise the comma-separated
+// list names the groups it cancels (same matching as Schema's Grupp).
+export function parseExceptions(rows, problems = []) {
+  return rows
+    .map(normalizeRow)
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
+      const dateText = field(row, 'Datum')
+      const date = parseDate(dateText)
+      const message = field(row, 'Meddelande')
+      if (!dateText) problems.push({ tab: 'Undantag', row: rowNum, reason: 'missing', column: 'Datum' })
+      else if (!date) problems.push({ tab: 'Undantag', row: rowNum, reason: 'unreadable', column: 'Datum', value: dateText })
+      if (!message) problems.push({ tab: 'Undantag', row: rowNum, reason: 'missing', column: 'Meddelande' })
+      return {
+        // Sheet row number for admin warnings.
+        row: rowNum,
+        date,
+        dateText,
+        groups: field(row, 'Grupp').split(',').map(clean).filter(Boolean),
+        message,
+        messageEn: field(row, 'Meddelande (EN)'),
+      }
+    })
+    .filter((exception) => exception.date && exception.message)
+    .sort((a, b) => a.date.localeCompare(b.date))
+}
+
 // An empty Typ means a notice, so rows from before the column existed keep working.
 const NOTICE_TYPES = { '': 'notice', anslag: 'notice', nyhet: 'news' }
 
