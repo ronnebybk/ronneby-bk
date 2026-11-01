@@ -24,6 +24,11 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 **ronnebybk.github.io/ronneby-bk/#/admin**. Tips: lägg till sidan på hemskärmen i mobilen.
 Fungerar inte redigeringen i sidan? Tryck på **Öppna i Google Sheets**.
 
+**Varningar:** över kalkylarket finns en varningsruta som listar rader webbplatsen hoppar över
+eller värden den inte använder, med flik och radnummer (t.ex. *Schema rad 7: …*). Klicka på
+fliknamnet i en varning så växlar kalkylarket till den fliken. Ett korrekt ifyllt kalkylark ger inga
+varningar.
+
 **Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Evenemang · Resultat · Sponsorer.
 
 | Vill du… | Gör så här |

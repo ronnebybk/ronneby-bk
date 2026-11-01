@@ -31,6 +31,10 @@ function field(row, name) {
   return row[name.toLowerCase()] ?? ''
 }
 
+// Sheet row number (header = row 1); demo data falls back to index + 2.
+// normalizeRow stringifies every cell, so _row comes back as a string — coerce it.
+const rowOf = (row, i) => Number(row._row ?? i + 2)
+
 function parseDay(value) {
   const text = clean(value).toLowerCase()
   if (/^[1-7]$/.test(text)) return Number(text)
@@ -63,15 +67,24 @@ function toIso(year, month, day) {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
-export function parseSeasons(rows) {
+export function parseSeasons(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => ({
-      name: field(row, 'Säsong'),
-      nameEn: field(row, 'Säsong (EN)'),
-      from: parseDate(field(row, 'Från')),
-      to: parseDate(field(row, 'Till')),
-    }))
+    .map((row, i) => {
+      const name = field(row, 'Säsong')
+      const fromText = field(row, 'Från')
+      const toText = field(row, 'Till')
+      const from = parseDate(fromText)
+      const to = parseDate(toText)
+      const rowNum = rowOf(row, i)
+      if (!name) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'missing', column: 'Säsong' })
+      if (!fromText) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'missing', column: 'Från' })
+      else if (!from) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'unreadable', column: 'Från', value: fromText })
+      if (!toText) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'missing', column: 'Till' })
+      else if (!to) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'unreadable', column: 'Till', value: toText })
+      if (from && to && from > to) problems.push({ tab: 'Säsonger', row: rowNum, reason: 'from-after-to' })
+      return { name, nameEn: field(row, 'Säsong (EN)'), from, to }
+    })
     .filter((season) => season.name && season.from && season.to)
     .sort((a, b) => a.from.localeCompare(b.from))
 }
@@ -86,21 +99,45 @@ function parsePrice(text) {
 
 // Rows with the same group name are one group with several ways to pay (e.g. per term and per
 // year). Each detail comes from the first row that has it, like in Klubbinfo; each row adds its price.
-export function parseGroups(rows) {
+export function parseGroups(rows, problems = []) {
   const byName = new Map()
   const rowsByName = new Map()
   rows.map(normalizeRow).forEach((row, i) => {
+    const rowNum = rowOf(row, i)
     const name = field(row, 'Grupp')
-    if (!name) return
+    const priceText = field(row, 'Pris (kr)')
+    const periodText = field(row, 'Prisperiod')
+    // D4: a row with no group name but other cells filled is skipped and worth a warning.
+    if (!name) {
+      if (priceText || periodText || Object.values(GROUP_FIELDS).some((col) => field(row, col))) {
+        problems.push({ tab: 'Grupper', row: rowNum, reason: 'missing', column: 'Grupp' })
+      }
+      return
+    }
     if (!rowsByName.has(name)) rowsByName.set(name, [])
-    rowsByName.get(name).push(Number(row._row ?? i + 2))
+    rowsByName.get(name).push(rowNum)
     if (!byName.has(name)) byName.set(name, { name, nameEn: '', ages: '', description: '', descriptionEn: '', prices: [] })
     const group = byName.get(name)
     for (const [key, column] of Object.entries(GROUP_FIELDS)) group[key] ||= field(row, column)
 
-    const price = parsePrice(field(row, 'Pris (kr)'))
+    const price = parsePrice(priceText)
+    const period = periodText.toLowerCase()
+    if (price !== null && period && !PERIODS.includes(period)) {
+      problems.push({ tab: 'Grupper', row: rowNum, reason: 'unknown-period', column: 'Prisperiod', value: periodText })
+    }
+    if (!priceText && period) {
+      problems.push({ tab: 'Grupper', row: rowNum, reason: 'price-no-amount', column: 'Prisperiod', value: periodText })
+    }
+    // D7: after removing kr and :- the cell still has a non-digit between digits → extra digits.
+    const extraDigits = priceText && /\d[^\d]*[^\d\s.,][^\d]*\d/.test(priceText.replace(/kr|:-/gi, ''))
+    if (extraDigits) {
+      problems.push({ tab: 'Grupper', row: rowNum, reason: 'price-extra-digits', column: 'Pris (kr)', value: priceText })
+    }
+    // A price cell with no digits at all (e.g. "gratis") drops the price — warn so it's not silent.
+    if (priceText && price === null) {
+      problems.push({ tab: 'Grupper', row: rowNum, reason: 'unreadable', column: 'Pris (kr)', value: priceText })
+    }
     if (price === null) return
-    const period = field(row, 'Prisperiod').toLowerCase()
     const option = { price, period: PERIODS.includes(period) ? period : 'termin' }
     // A pasted copy of the same row shouldn't list the same price twice, and free is free whatever the period.
     if (!group.prices.some((p) => p.price === price && (price === 0 || p.period === option.period))) {
@@ -116,23 +153,45 @@ export function parseGroups(rows) {
   return [...byName.values()]
 }
 
-export function parseSessions(rows) {
+export function parseSessions(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row, i) => ({
-      // Sheet row number for admin warnings; demo data falls back to index + 2 (header = row 1).
-      // normalizeRow stringifies every cell, so _row comes back as a string — coerce it.
-      row: Number(row._row ?? i + 2),
-      season: field(row, 'Säsong'),
-      day: parseDay(field(row, 'Dag')),
-      start: parseTime(field(row, 'Start')),
-      end: parseTime(field(row, 'Slut')),
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
+      const season = field(row, 'Säsong')
+      const dayText = field(row, 'Dag')
+      const startText = field(row, 'Start')
+      const endText = field(row, 'Slut')
+      const groupsText = field(row, 'Grupp')
       // Several groups can share a session, comma-separated like Grupper in the Tränare tab.
-      groups: field(row, 'Grupp').split(',').map(clean).filter(Boolean),
-      coach: field(row, 'Tränare'),
-      note: field(row, 'Notering'),
-      noteEn: field(row, 'Notering (EN)'),
-    }))
+      const groups = groupsText.split(',').map(clean).filter(Boolean)
+      const day = parseDay(dayText)
+      const start = parseTime(startText)
+      const end = parseTime(endText)
+      if (!season) problems.push({ tab: 'Schema', row: rowNum, reason: 'missing', column: 'Säsong' })
+      if (!dayText) problems.push({ tab: 'Schema', row: rowNum, reason: 'missing', column: 'Dag' })
+      else if (!day) problems.push({ tab: 'Schema', row: rowNum, reason: 'unreadable', column: 'Dag', value: dayText })
+      if (!startText) problems.push({ tab: 'Schema', row: rowNum, reason: 'missing', column: 'Start' })
+      else if (!start) problems.push({ tab: 'Schema', row: rowNum, reason: 'unreadable', column: 'Start', value: startText })
+      if (!groups.length) problems.push({ tab: 'Schema', row: rowNum, reason: 'missing', column: 'Grupp' })
+      // D3: an unreadable Slut drops only the end time, the row still shows. On a row the site
+      // skips anyway, the row-level warnings already say the row is hidden.
+      if (season && day && start && groups.length && endText && !end) {
+        problems.push({ tab: 'Schema', row: rowNum, reason: 'unreadable', column: 'Slut', value: endText })
+      }
+      return {
+        // Sheet row number for admin warnings.
+        row: rowNum,
+        season,
+        day,
+        start,
+        end,
+        groups,
+        coach: field(row, 'Tränare'),
+        note: field(row, 'Notering'),
+        noteEn: field(row, 'Notering (EN)'),
+      }
+    })
     .filter((session) => session.season && session.day && session.start && session.groups.length)
     .sort((a, b) => a.day - b.day || a.start.localeCompare(b.start))
 }
@@ -141,20 +200,30 @@ export function parseSessions(rows) {
 const NOTICE_TYPES = { '': 'notice', anslag: 'notice', nyhet: 'news' }
 
 // The Anslag tab holds both banner notices and news; each item says which it is.
-export function parseNotices(rows) {
+export function parseNotices(rows, problems = []) {
   const notices = []
-  for (const row of rows.map(normalizeRow)) {
+  for (const [i, row] of rows.map(normalizeRow).entries()) {
+    const rowNum = rowOf(row, i)
     // An unknown type is skipped rather than guessed, so a typo never becomes a red banner.
-    const type = NOTICE_TYPES[field(row, 'Typ').toLowerCase()]
-    if (!type) continue
+    const typeText = field(row, 'Typ')
+    const type = NOTICE_TYPES[typeText.toLowerCase()]
+    if (!type) {
+      problems.push({ tab: 'Anslag', row: rowNum, reason: 'unknown-type', column: 'Typ', value: typeText })
+      continue
+    }
     const message = field(row, 'Meddelande')
     const title = type === 'news' ? field(row, 'Rubrik') : ''
-    if (!message && !title) continue
+    if (!message && !title) {
+      problems.push({ tab: 'Anslag', row: rowNum, reason: 'missing', column: type === 'news' ? 'Rubrik' : 'Meddelande' })
+      continue
+    }
     const fromText = field(row, 'Visa från')
     const toText = field(row, 'Visa till')
     const from = parseDate(fromText)
     const to = parseDate(toText)
     // A date cell that is filled in but can't be read makes the row unsafe to show.
+    if (fromText && !from) problems.push({ tab: 'Anslag', row: rowNum, reason: 'unreadable', column: 'Visa från', value: fromText })
+    if (toText && !to) problems.push({ tab: 'Anslag', row: rowNum, reason: 'unreadable', column: 'Visa till', value: toText })
     if ((fromText && !from) || (toText && !to)) continue
     notices.push({
       type,
@@ -255,16 +324,34 @@ const CLUB_CHECKS = {
   beholdFeedId: (value) => (/^[\w-]+$/.test(value) ? value : ''),
 }
 
-export function parseClub(rows) {
+export function parseClub(rows, problems = []) {
   const club = {}
-  for (const row of rows.map(normalizeRow)) {
-    const key = CLUB_FIELDS[field(row, 'Fält').toLowerCase()]
+  const usedRow = {} // key → row number of the row whose value was used
+  for (const [i, row] of rows.map(normalizeRow).entries()) {
+    const rowNum = rowOf(row, i)
+    const fieldText = field(row, 'Fält')
+    const key = CLUB_FIELDS[fieldText.toLowerCase()]
+    if (!key) {
+      if (fieldText) problems.push({ tab: 'Klubbinfo', row: rowNum, reason: 'unknown-field', column: 'Fält', value: fieldText })
+      else if (field(row, 'Värde') || field(row, 'Värde (EN)')) problems.push({ tab: 'Klubbinfo', row: rowNum, reason: 'missing', column: 'Fält' })
+      continue
+    }
     // The first filled-in row for a setting wins, so a stray duplicate further down changes nothing.
-    if (!key || club[key]) continue
+    if (club[key]) {
+      // D5: a later duplicate of a field whose earlier value was actually used.
+      if (usedRow[key] && field(row, 'Värde')) problems.push({ tab: 'Klubbinfo', row: rowNum, reason: 'club-duplicate', column: fieldText, value: usedRow[key] })
+      continue
+    }
     const check = CLUB_CHECKS[key]
-    const value = check ? check(field(row, 'Värde')) : field(row, 'Värde')
-    if (!value) continue
+    const rawValue = field(row, 'Värde')
+    const value = check ? check(rawValue) : rawValue
+    // An empty Värde stays quiet; a filled-in one that fails its check warns.
+    if (!value) {
+      if (rawValue) problems.push({ tab: 'Klubbinfo', row: rowNum, reason: 'club-invalid', column: fieldText, value: rawValue })
+      continue
+    }
     club[key] = value
+    usedRow[key] = rowNum
     if (CLUB_TRANSLATED.includes(key)) club[`${key}En`] = field(row, 'Värde (EN)')
   }
   return club
@@ -272,15 +359,20 @@ export function parseClub(rows) {
 
 // The Prova på tab: free-form sections, one row each, kept in sheet order. A row counts when it
 // has Swedish text; a heading or a body on its own is fine, a row with only English is skipped.
-export function parseTrial(rows) {
+export function parseTrial(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => ({
-      title: field(row, 'Rubrik'),
-      titleEn: field(row, 'Rubrik (EN)'),
-      text: field(row, 'Text'),
-      textEn: field(row, 'Text (EN)'),
-    }))
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
+      const title = field(row, 'Rubrik')
+      const text = field(row, 'Text')
+      if (!title && !text) {
+        // A row with only English content is skipped, so it warns with both reasons (D2).
+        problems.push({ tab: 'Prova på', row: rowNum, reason: 'missing', column: 'Rubrik' })
+        problems.push({ tab: 'Prova på', row: rowNum, reason: 'missing', column: 'Text' })
+      }
+      return { title, titleEn: field(row, 'Rubrik (EN)'), text, textEn: field(row, 'Text (EN)') }
+    })
     .filter((section) => section.title || section.text)
 }
 
@@ -312,15 +404,18 @@ export function textBlocks(value) {
 
 // The Frågor tab: one row per question, kept in sheet order. A row needs a Swedish question and
 // answer to be shown; the English cells are optional and fall back per cell.
-export function parseFaq(rows) {
+export function parseFaq(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => ({
-      question: field(row, 'Fråga'),
-      questionEn: field(row, 'Fråga (EN)'),
-      answer: field(row, 'Svar'),
-      answerEn: field(row, 'Svar (EN)'),
-    }))
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
+      const question = field(row, 'Fråga')
+      const answer = field(row, 'Svar')
+      // D2: an English-only row gets both reasons.
+      if (!question) problems.push({ tab: 'Frågor', row: rowNum, reason: 'missing', column: 'Fråga' })
+      if (!answer) problems.push({ tab: 'Frågor', row: rowNum, reason: 'missing', column: 'Svar' })
+      return { question, questionEn: field(row, 'Fråga (EN)'), answer, answerEn: field(row, 'Svar (EN)') }
+    })
     .filter((item) => item.question && item.answer)
 }
 
@@ -358,15 +453,29 @@ export function imageUrl(value, folder) {
   return /^[^\s/\\:]+\.\w+$/.test(text) ? `./${folder}/${text}` : ''
 }
 
+// Classifies a Länk cell: an http:// address is a web link the site won't use, anything else that
+// fails the parser's own accept pattern is not a link at all.
+const linkProblem = (link, pattern) => (/^http:\/\//i.test(link) ? 'not-https' : pattern.test(link) ? null : 'not-link')
+
 // The Sponsorer tab: one sponsor per row, shown in row order. Rows without a name are skipped.
-export function parseSponsors(rows) {
+export function parseSponsors(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => {
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
       const logoValue = field(row, 'Logga')
       const link = field(row, 'Länk')
+      const name = field(row, 'Namn')
+      if (!name) problems.push({ tab: 'Sponsorer', row: rowNum, reason: 'missing', column: 'Namn' })
+      // D3: a link that isn't https is dropped, the sponsor still shows. Rows without a name are
+      // hidden anyway, so don't warn about their link. An http:// link gets its own reason —
+      // it is a web address, just not one the site accepts.
+      if (name && link) {
+        const problem = linkProblem(link, /^https:\/\//)
+        if (problem) problems.push({ tab: 'Sponsorer', row: rowNum, reason: problem, column: 'Länk', value: link })
+      }
       return {
-        name: field(row, 'Namn'),
+        name,
         logo: imageUrl(logoValue, 'sponsors'),
         logoValue,
         url: /^https:\/\//.test(link) ? link : '',
@@ -377,14 +486,17 @@ export function parseSponsors(rows) {
     .filter((sponsor) => sponsor.name)
 }
 
-export function parseCoaches(rows) {
+export function parseCoaches(rows, problems = []) {
   return rows
     .map(normalizeRow)
     .map((row, i) => {
+      const rowNum = rowOf(row, i)
       const bild = field(row, 'Bild')
+      const name = field(row, 'Namn')
+      if (!name) problems.push({ tab: 'Tränare', row: rowNum, reason: 'missing', column: 'Namn' })
       return {
-        row: Number(row._row ?? i + 2),
-        name: field(row, 'Namn'),
+        row: rowNum,
+        name,
         role: field(row, 'Roll'),
         roleEn: field(row, 'Roll (EN)'),
         groups: field(row, 'Grupper').split(',').map(clean).filter(Boolean),
@@ -404,13 +516,23 @@ export function parseCoaches(rows) {
 // Categories match ignoring case and extra spaces; the heading uses the first row's spelling (D9).
 // Each category carries its normalized `key` so the view can use it as a stable, unique :key.
 
-export function parseDocuments(rows) {
+export function parseDocuments(rows, problems = []) {
   const categories = []
   const byKey = new Map()
-  for (const row of rows.map(normalizeRow)) {
+  for (const [i, row] of rows.map(normalizeRow).entries()) {
+    const rowNum = rowOf(row, i)
     const title = field(row, 'Titel')
     const url = field(row, 'Länk')
+    if (!title) problems.push({ tab: 'Dokument', row: rowNum, reason: 'missing', column: 'Titel' })
+    if (!url) problems.push({ tab: 'Dokument', row: rowNum, reason: 'missing', column: 'Länk' })
+    else if (/^http:\/\//i.test(url)) problems.push({ tab: 'Dokument', row: rowNum, reason: 'not-https-row', column: 'Länk', value: url })
+    else if (!/^https:\/\//i.test(url)) problems.push({ tab: 'Dokument', row: rowNum, reason: 'not-link-row', column: 'Länk', value: url })
     if (!title || !/^https:\/\//i.test(url)) continue
+    // D3: an unreadable Datum drops only the date, the row still shows.
+    const dateText = field(row, 'Datum')
+    if (dateText && !parseDate(dateText)) {
+      problems.push({ tab: 'Dokument', row: rowNum, reason: 'unreadable', column: 'Datum', value: dateText })
+    }
     const categoryRaw = field(row, 'Kategori')
     // An explicit "Övrigt" and an empty category are the same section, so both end up under one heading.
     let key = categoryRaw.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -431,7 +553,7 @@ export function parseDocuments(rows) {
       titleEn: field(row, 'Titel (EN)'),
       description: field(row, 'Beskrivning'),
       descriptionEn: field(row, 'Beskrivning (EN)'),
-      date: parseDate(field(row, 'Datum')),
+      date: parseDate(dateText),
       url,
     })
   }
@@ -466,24 +588,39 @@ function resultName(name, juniorSenior) {
   return juniorSenior.toLowerCase() === 'senior' ? full : full.split(' ')[0]
 }
 
-export function parseResults(rows) {
+export function parseResults(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => {
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
+      const dateText = field(row, 'Datum')
+      const date = parseDate(dateText)
       const placement = field(row, 'Placering')
       const link = field(row, 'Länk')
+      const competition = field(row, 'Tävling')
+      const name = field(row, 'Namn')
+      if (!dateText) problems.push({ tab: 'Resultat', row: rowNum, reason: 'missing', column: 'Datum' })
+      else if (!date) problems.push({ tab: 'Resultat', row: rowNum, reason: 'unreadable', column: 'Datum', value: dateText })
+      if (!competition) problems.push({ tab: 'Resultat', row: rowNum, reason: 'missing', column: 'Tävling' })
+      if (!name) problems.push({ tab: 'Resultat', row: rowNum, reason: 'missing', column: 'Namn' })
+      if (!placement) problems.push({ tab: 'Resultat', row: rowNum, reason: 'missing', column: 'Placering' })
+      // A link cell that isn't a web address is dropped, but the row still shows. Rows that are
+      // hidden anyway (missing date/competition/name/placement) get no link warning.
+      const shown = date && competition && name && placement
+      if (shown && link && !/^https?:\/\/\S+$/.test(link)) {
+        problems.push({ tab: 'Resultat', row: rowNum, reason: 'not-link', column: 'Länk', value: link })
+      }
       return {
-        date: parseDate(field(row, 'Datum')),
-        competition: field(row, 'Tävling'),
+        date,
+        competition,
         competitionEn: field(row, 'Tävling (EN)'),
         place: field(row, 'Ort'),
-        name: resultName(field(row, 'Namn'), field(row, 'Junior/Senior')),
+        name: resultName(name, field(row, 'Junior/Senior')),
         class: field(row, 'Klass'),
         classEn: field(row, 'Klass (EN)'),
         medal: medalOf(placement),
         placement,
         placementEn: field(row, 'Placering (EN)'),
-        // A link cell that isn't a web address is dropped, but the row still shows.
         link: /^https?:\/\/\S+$/.test(link) ? link : '',
       }
     })
@@ -503,22 +640,32 @@ const EVENT_TYPES = {
   gala: 'gala',
 }
 
-export function parseEvents(rows) {
+export function parseEvents(rows, problems = []) {
   return rows
     .map(normalizeRow)
-    .map((row) => {
+    .map((row, i) => {
+      const rowNum = rowOf(row, i)
       const title = field(row, 'Rubrik')
-      if (!title) return null
+      if (!title) {
+        problems.push({ tab: 'Evenemang', row: rowNum, reason: 'missing', column: 'Rubrik' })
+        return null
+      }
       const dateText = field(row, 'Datum')
       const endText = field(row, 'Slutdatum')
       const date = parseDate(dateText)
       const end = parseDate(endText)
-      const problems = []
-      if (!dateText) problems.push('undated')
-      else if (!date) problems.push('date-unreadable')
-      if (endText && !end) problems.push('end-unreadable')
-      else if (date && end && end < date) problems.push('end-before')
+      const eventProblems = []
+      if (!dateText) eventProblems.push('undated')
+      else if (!date) eventProblems.push('date-unreadable')
+      if (endText && !end) eventProblems.push('end-unreadable')
+      else if (date && end && end < date) eventProblems.push('end-before')
       const link = field(row, 'Länk')
+      // D3: a link that isn't https is dropped, the event still shows. An http:// link gets its
+      // own reason — it is a web address, just not one the site accepts.
+      if (link) {
+        const problem = linkProblem(link, /^https:\/\/\S+$/)
+        if (problem) problems.push({ tab: 'Evenemang', row: rowNum, reason: problem, column: 'Länk', value: link })
+      }
       // One image per line in Bild; each line keeps its raw text so the admin page can warn about it.
       const images = field(row, 'Bild')
         .split(/\r?\n/)
@@ -529,6 +676,8 @@ export function parseEvents(rows) {
         .filter((img) => img.imageValue)
       return {
         type: EVENT_TYPES[clean(field(row, 'Typ')).toLowerCase()] ?? 'other',
+        // Sheet row for admin warnings (D8: event warnings name the row).
+        row: rowNum,
         title,
         titleEn: field(row, 'Rubrik (EN)'),
         date,
@@ -543,7 +692,7 @@ export function parseEvents(rows) {
         images,
         // A link cell that isn't a web address gives no button.
         link: /^https:\/\/\S+$/.test(link) ? link : '',
-        problems,
+        problems: eventProblems,
       }
     })
     .filter(Boolean)

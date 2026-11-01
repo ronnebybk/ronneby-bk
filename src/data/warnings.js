@@ -93,6 +93,46 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
   ]
 }
 
+// --- Skipped-row warnings (#40) -------------------------------------------------
+
+// Sheet tab order for sorting row warnings (D10): new warnings first, in this order, then by row.
+const TAB_ORDER = ['Schema', 'Säsonger', 'Grupper', 'Tränare', 'Anslag', 'Klubbinfo', 'Prova på', 'Frågor', 'Dokument', 'Evenemang', 'Resultat', 'Sponsorer']
+
+// Swedish tab name → sheet key (config.gids key), for the admin page's jump-to-tab (D9).
+export const TAB_SHEET_KEY = {
+  Schema: 'schedule',
+  Säsonger: 'seasons',
+  Grupper: 'groups',
+  Tränare: 'coaches',
+  Anslag: 'notices',
+  Klubbinfo: 'club',
+  'Prova på': 'trial',
+  Frågor: 'faq',
+  Dokument: 'documents',
+  Evenemang: 'events',
+  Resultat: 'results',
+  Sponsorer: 'sponsors',
+}
+
+// D1: group problems by tab + reason + column + value → one warning with all rows, sorted unique.
+// D10: order by sheet tab order, then first row.
+export function rowWarnings(problems) {
+  const groups = new Map()
+  for (const p of problems) {
+    const key = `${p.tab}|${p.reason}|${p.column ?? ''}|${String(p.value ?? '')}`
+    if (!groups.has(key)) groups.set(key, { tab: p.tab, reason: p.reason, column: p.column, value: p.value, rows: new Set() })
+    groups.get(key).rows.add(p.row)
+  }
+  return [...groups.values()]
+    .map((g) => ({ kind: 'row', tab: g.tab, reason: g.reason, column: g.column, value: g.value, rows: [...g.rows].sort((a, b) => a - b) }))
+    .sort((a, b) => {
+      const ta = TAB_ORDER.indexOf(a.tab)
+      const tb = TAB_ORDER.indexOf(b.tab)
+      if (ta !== tb) return (ta === -1 ? 99 : ta) - (tb === -1 ? 99 : tb)
+      return a.rows[0] - b.rows[0]
+    })
+}
+
 // --- Season status -----------------------------------------------------------
 
 const DAY_MS = 24 * 60 * 60 * 1000

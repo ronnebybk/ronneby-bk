@@ -6,7 +6,7 @@ import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
-import { nameWarnings, seasonWarnings } from './warnings.js'
+import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -32,6 +32,8 @@ export const state = reactive({
   trial: [],
   // Sponsors from the Sponsorer tab; empty hides the home page section and the footer link.
   sponsors: [],
+  // Rows the parsers skipped or values they dropped, for the admin page's warnings box (#40).
+  rowProblems: [],
   // 'loading' | 'demo' | 'live' | 'cache' | 'error'
   status: 'loading',
 })
@@ -41,19 +43,21 @@ export const hasData = computed(() => state.seasons.length > 0 || state.groups.l
 const isConfigured = Boolean(config.sheet.publishedId)
 
 function apply(raw) {
-  state.seasons = parseSeasons(raw.seasons)
-  state.groups = parseGroups(raw.groups)
-  state.sessions = parseSessions(raw.schedule)
-  state.coaches = parseCoaches(raw.coaches)
+  const problems = []
+  state.seasons = parseSeasons(raw.seasons, problems)
+  state.groups = parseGroups(raw.groups, problems)
+  state.sessions = parseSessions(raw.schedule, problems)
+  state.coaches = parseCoaches(raw.coaches, problems)
   // A cache written before these optional tabs existed has no such fields.
-  state.notices = parseNotices(raw.notices ?? [])
-  state.club = parseClub(raw.club ?? [])
-  state.trial = parseTrial(raw.trial ?? [])
-  state.faq = parseFaq(raw.faq ?? [])
-  state.documents = parseDocuments(raw.documents ?? [])
-  state.results = parseResults(raw.results ?? [])
-  state.events = parseEvents(raw.events ?? [])
-  state.sponsors = parseSponsors(raw.sponsors ?? [])
+  state.notices = parseNotices(raw.notices ?? [], problems)
+  state.club = parseClub(raw.club ?? [], problems)
+  state.trial = parseTrial(raw.trial ?? [], problems)
+  state.faq = parseFaq(raw.faq ?? [], problems)
+  state.documents = parseDocuments(raw.documents ?? [], problems)
+  state.results = parseResults(raw.results ?? [], problems)
+  state.events = parseEvents(raw.events ?? [], problems)
+  state.sponsors = parseSponsors(raw.sponsors ?? [], problems)
+  state.rowProblems = problems
 }
 
 // Accepts the bare ID or a whole pasted "Publish to web" link.
@@ -176,11 +180,12 @@ export const eventSplit = computed(() => splitEvents(eventCards.value))
 export const nextEvent = computed(() => eventSplit.value.upcoming.find((card) => card.date) ?? null)
 
 // Admin warnings (AC10): event rows with date problems, and results whose Tävling matches no event.
+// D8: each event warning carries the event's sheet row.
 export const eventWarnings = computed(() => {
   const warnings = []
   for (const event of state.events) {
     for (const problem of event.problems) {
-      warnings.push({ kind: 'event', problem, title: event.title, titleEn: event.titleEn })
+      warnings.push({ kind: 'event', problem, title: event.title, titleEn: event.titleEn, row: event.row })
     }
   }
   const matched = new Set(state.events.map((event) => event.title))
@@ -194,7 +199,9 @@ export const eventWarnings = computed(() => {
 })
 
 // Name mismatches between tabs and season status problems, for the admin page's warnings box.
+// D10: skipped-row warnings come first, then #15's name/season warnings.
 export const dataWarnings = computed(() => [
+  ...rowWarnings(state.rowProblems),
   ...nameWarnings({ seasons: state.seasons, groups: state.groups, sessions: state.sessions, coaches: state.coaches }, todayIso()),
   ...seasonWarnings(state.seasons, todayIso()),
 ])

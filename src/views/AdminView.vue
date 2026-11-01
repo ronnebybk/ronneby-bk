@@ -72,7 +72,7 @@ function forget() {
           </button>
         </div>
         <p class="help">ℹ️ {{ t('admin.help') }}</p>
-        <AdminWarnings />
+        <AdminWarnings @open-tab="activeTab = $event" />
       </div>
 
       <!-- :key forces a reload when switching tab, so the sheet jumps to it. -->

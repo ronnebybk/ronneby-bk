@@ -5,8 +5,10 @@ Planned improvements are tracked in [GitHub issues](https://github.com/ronnebybk
 
 ## Data entry
 
-- **Bad rows are silently skipped.** If a *Schema* row can't be understood, it's left out instead of
-  breaking the page, and nobody is told. Common causes:
+- **Bad rows are skipped, but the admin page warns about them.** If a row can't be understood, it's
+  left out instead of breaking the page. The admin page (`/#/admin`) lists each skipped row by tab
+  and row number, so an editor can fix it — but nobody is notified automatically, and visitors
+  never see the warning. Common causes:
   - Season name doesn't match *Säsonger* exactly.
   - Unknown day.
   - Time written like `17,30`.
