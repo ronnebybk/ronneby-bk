@@ -267,7 +267,7 @@ export default {
       unknownSeason: '{where}: okänd säsong "{name}"',
       unknownCoach: '{where}: okänd tränare "{name}"',
       didYouMean: ' – menade du "{name}"?',
-      groupCase: 'Grupper: {list} skrivs olika men blir olika grupper',
+      groupCase: '{list} skrivs olika men blir olika grupper',
       noSeason: 'Säsonger: ingen säsong gäller idag och ingen ny är inlagd',
       seasonEnding: 'Säsonger: "{name}" slutar {date} och ingen nästa säsong finns',
     },

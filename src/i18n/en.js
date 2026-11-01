@@ -266,7 +266,7 @@ export default {
       unknownSeason: '{where}: unknown season "{name}"',
       unknownCoach: '{where}: unknown coach "{name}"',
       didYouMean: ' – did you mean "{name}"?',
-      groupCase: 'Grupper: {list} are spelled differently and become separate groups',
+      groupCase: '{list} are spelled differently and become separate groups',
       noSeason: 'Säsonger: no season covers today and no new one has been added',
       seasonEnding: 'Säsonger: "{name}" ends {date} and there is no next season',
     },
