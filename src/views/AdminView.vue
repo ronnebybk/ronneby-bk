@@ -51,6 +51,7 @@ const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'tr
 // "To admin" from the preview passes the tab as ?tab=; anything unknown starts on the default.
 const fromQuery = String(route.query.tab ?? '')
 const activeTab = ref(tabs.includes(fromQuery) ? fromQuery : 'schedule')
+if (route.query.tab) router.replace({ name: 'admin' })
 
 function sheetUrl(minimal) {
   const gid = config.sheet.gids[activeTab.value]
