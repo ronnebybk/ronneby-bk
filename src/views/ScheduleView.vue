@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, groupStyle, groupNames, upcomingExceptions } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, todayIso, exceptionFor, groupStyle, groupNames, upcomingExceptions } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate, formatWeekday } = useI18n()
@@ -51,16 +51,30 @@ const filtered = computed(() =>
   groupFilter.value ? sessions.value.filter((s) => s.groups.includes(groupFilter.value)) : sessions.value,
 )
 
-const today = weekday()
 const isCurrent = computed(() => season.value === currentSeason.value)
 
-const days = computed(() =>
-  [1, 2, 3, 4, 5, 6, 7].map((day) => ({
+// In the current season each session is tagged with the exception on its next occurrence within
+// the coming 7 days, so a cancelled day is visible in the week itself. Other seasons stay raw.
+const days = computed(() => {
+  const baseDate = new Date()
+  // Weekday of the base date, not the setup-time `today`: if the page stays open past midnight,
+  // the offset below must still match the date it is added to.
+  const base = weekday(baseDate)
+  return [1, 2, 3, 4, 5, 6, 7].map((day) => ({
     day,
-    sessions: filtered.value.filter((s) => s.day === day),
-    isToday: isCurrent.value && day === today,
-  })),
-)
+    sessions: filtered.value.filter((s) => s.day === day).map((s) => {
+      if (!isCurrent.value) return s
+      const date = new Date(baseDate)
+      date.setDate(date.getDate() + ((day - base + 7) % 7))
+      const iso = todayIso(date)
+      // A date outside the season can't be cancelled — it's the next season's or a break's date.
+      if (iso < season.value.from || iso > season.value.to) return s
+      const exception = exceptionFor(iso, s.groups)
+      return exception ? { ...s, exception } : s
+    }),
+    isToday: isCurrent.value && day === base,
+  }))
+})
 </script>
 
 <template>
@@ -96,9 +110,8 @@ const days = computed(() =>
         <h2>{{ t('schedule.exceptionsTitle') }}</h2>
         <ul>
           <li v-for="e in upcomingExceptions" :key="e.row">
-            <strong>{{ formatWeekday(e.date, true) }}</strong>
-            <span class="muted">· {{ e.groups.length ? groupNames(e.groups) : t('schedule.allGroups') }}</span>
-            — {{ localized(e.message, e.messageEn) }}
+            <strong>{{ formatWeekday(e.date, true) }}</strong> · <span class="muted">{{ e.groups.length ? groupNames(e.groups) : t('schedule.allGroups') }}</span>
+            <div>{{ localized(e.message, e.messageEn) }}</div>
           </li>
         </ul>
       </div>
@@ -127,7 +140,7 @@ const days = computed(() =>
             <span v-if="d.isToday" class="today-badge">{{ t('common.today') }}</span>
           </h2>
           <div class="list">
-            <SessionItem v-for="(session, i) in d.sessions" :key="i" :session="session" />
+            <SessionItem v-for="(session, i) in d.sessions" :key="i" :session="session" compact />
             <p v-if="!d.sessions.length" class="none">{{ t('schedule.noSessions') }}</p>
           </div>
         </section>
@@ -214,7 +227,7 @@ const days = computed(() =>
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 4px;
+  gap: 8px;
 }
 
 .filters {

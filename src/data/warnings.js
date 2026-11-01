@@ -29,7 +29,7 @@ function warningsFrom(map, kind, tab, knownNames) {
 
 // AC1–AC5. `today` is an ISO date string; only sessions in a season that covers today or ends
 // later are name-checked (D3), so old rows full of retired names stay quiet.
-export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
+export function nameWarnings({ seasons, groups, sessions, coaches, exceptions = [] }, today) {
   const groupNames = groups.map((g) => g.name)
   const coachNames = coaches.map((c) => c.name)
   const seasonByName = new Map(seasons.map((s) => [s.name, s]))
@@ -38,6 +38,7 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
   const schemaSeasons = new Map()
   const schemaCoaches = new Map()
   const coachGroups = new Map()
+  const exceptionGroups = new Map()
 
   for (const session of sessions) {
     const season = seasonByName.get(session.season)
@@ -63,6 +64,15 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
     }
   }
 
+  // Undantag's Grupp list may name groups that don't exist either — such a row cancels nothing.
+  // Past rows stay quiet (D3): a renamed or retired group shouldn't warn forever.
+  for (const exception of exceptions) {
+    if (exception.date < today) continue
+    for (const group of exception.groups) {
+      if (!groupNames.includes(group)) addRow(exceptionGroups, group, exception.row)
+    }
+  }
+
   // AC5: group names spelled differently only in capitals/spaces become separate groups.
   const byKey = new Map()
   for (const group of groups) {
@@ -83,12 +93,13 @@ export function nameWarnings({ seasons, groups, sessions, coaches }, today) {
     })
   }
 
-  // Order: Schema, then Tränare, then Grupper.
+  // Order: Schema, then Tränare, then Undantag, then Grupper.
   return [
     ...warningsFrom(schemaGroups, 'unknown-group', 'Schema', groupNames),
     ...warningsFrom(schemaSeasons, 'unknown-season', 'Schema', seasons.map((s) => s.name)),
     ...warningsFrom(schemaCoaches, 'unknown-coach', 'Schema', coachNames),
     ...warningsFrom(coachGroups, 'unknown-group', 'Tränare', groupNames),
+    ...warningsFrom(exceptionGroups, 'unknown-group', 'Undantag', groupNames),
     ...groupCase,
   ]
 }

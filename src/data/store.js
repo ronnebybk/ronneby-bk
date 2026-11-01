@@ -331,7 +331,7 @@ export const eventWarnings = computed(() => {
 // D10: skipped-row warnings come first, then #15's name/season warnings.
 export const dataWarnings = computed(() => [
   ...rowWarnings(state.rowProblems),
-  ...nameWarnings({ seasons: state.seasons, groups: state.groups, sessions: state.sessions, coaches: state.coaches }, todayIso()),
+  ...nameWarnings({ seasons: state.seasons, groups: state.groups, sessions: state.sessions, coaches: state.coaches, exceptions: state.exceptions }, todayIso()),
   ...seasonWarnings(state.seasons, todayIso()),
 ])
 
@@ -445,9 +445,10 @@ export const upcomingExceptions = computed(() => {
   return state.exceptions.filter((e) => e.date >= today)
 })
 
-// Today's sessions (each carrying its cancelling exception, if any), plus the next session once
-// nothing is left today. Walks real dates rather than weekdays, so breaks between seasons and
-// season changes are respected.
+// Today's sessions (each carrying its cancelling exception, if any), plus the next real session
+// once nothing real is left today — cancelled sessions are shown on their own card, never as
+// "next". Walks real dates rather than weekdays, so breaks between seasons and season changes are
+// respected.
 export const todayInfo = computed(() => {
   const now = new Date()
   const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
@@ -459,7 +460,7 @@ export const todayInfo = computed(() => {
       const exception = exceptionFor(todayIsoNow, s.groups)
       return exception ? { ...s, exception } : s
     })
-  if (today.some((s) => s.start > time)) return { today, next: null }
+  if (today.some((s) => !s.exception && s.start > time)) return { today, next: null }
 
   const lastDay = state.seasons.reduce((max, s) => (s.to > max ? s.to : max), '')
   for (let offset = 1; ; offset++) {
@@ -467,7 +468,8 @@ export const todayInfo = computed(() => {
     const iso = todayIso(date)
     if (iso > lastDay) break
     const session = sessionsFor(seasonOn(iso)).find((s) => s.day === weekday(date))
-    if (session) return { today, next: { session, date: iso, offset } }
+    // A cancelled session is not "the next one" — keep walking to the first real session.
+    if (session && !exceptionFor(iso, session.groups)) return { today, next: { session, date: iso, offset } }
   }
   return { today, next: null }
 })

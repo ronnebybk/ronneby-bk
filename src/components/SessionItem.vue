@@ -5,6 +5,9 @@ import { useI18n } from '../i18n/index.js'
 defineProps({
   session: { type: Object, required: true },
   showDay: { type: Boolean, default: false },
+  // Weekly schedule only: the struck time and group plus the badge mark the cancellation; the
+  // red box above carries the date and reason, so the message stays hidden here.
+  compact: { type: Boolean, default: false },
 })
 
 const { t, localized } = useI18n()
@@ -14,12 +17,12 @@ const { t, localized } = useI18n()
   <div class="session" :class="{ cancelled: session.exception }" :style="groupStyle(session.groups[0])">
     <div class="time">
       <span v-if="showDay" class="day">{{ t('days')[session.day - 1] }}</span>
-      {{ timeRange(session) }}
+      <span class="range">{{ timeRange(session) }}</span>
       <span v-if="session.exception" class="badge">{{ t('common.cancelled') }}</span>
     </div>
     <div class="group">{{ groupNames(session.groups) }}</div>
     <div v-if="session.coach" class="meta">{{ t('common.coach') }}: {{ session.coach }}</div>
-    <div v-if="session.exception" class="note">{{ localized(session.exception.message, session.exception.messageEn) }}</div>
+    <div v-if="session.exception && !compact" class="note">{{ localized(session.exception.message, session.exception.messageEn) }}</div>
     <div v-else-if="session.note" class="note">{{ localized(session.note, session.noteEn) }}</div>
   </div>
 </template>
@@ -50,7 +53,8 @@ const { t, localized } = useI18n()
   opacity: 0.75;
 }
 
-.session.cancelled .group {
+.session.cancelled .group,
+.session.cancelled .range {
   text-decoration: line-through;
 }
 
