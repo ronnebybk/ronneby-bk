@@ -158,7 +158,9 @@ defineExpose({ open })
 </template>
 
 <style scoped>
-/* D10: always the same size; only .help-scroll inside scrolls (M1: background locked while open). */
+/* D10: always the same size; only .help-scroll inside scrolls (M1: background locked while open).
+   The flex layout must sit under [open]: a plain `display: flex` would override the UA rule
+   `dialog:not([open]) { display: none }` and show the closed dialog inline on the page (M2). */
 .help-dialog {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -167,6 +169,9 @@ defineExpose({ open })
   height: 85vh;
   background: var(--paper);
   color: var(--text);
+}
+
+.help-dialog[open] {
   display: flex;
   flex-direction: column;
 }
