@@ -1,13 +1,13 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 
-import { state, eventWarnings } from '../data/store.js'
+import { state, eventWarnings, dataWarnings } from '../data/store.js'
 
 import { checkImages } from '../data/images.js'
 
 import { useI18n } from '../i18n/index.js'
 
-const { t, localized } = useI18n()
+const { t, localized, formatDate } = useI18n()
 
 const failing = ref([])
 
@@ -41,7 +41,33 @@ const warnings = computed(() =>
   ),
 )
 
-const any = computed(() => failing.value.length + warnings.value.length)
+// Sheet tab names stay Swedish in English too — editors see Swedish tab names in the sheet.
+const where = (tab, rows) =>
+  t(rows.length === 1 ? 'admin.warnings.rowOne' : 'admin.warnings.rowMany', { tab, rows: rows.join(', ') })
+
+const dataTexts = computed(() =>
+  dataWarnings.value.map((w) => {
+    switch (w.kind) {
+      case 'unknown-group':
+      case 'unknown-season':
+      case 'unknown-coach': {
+        const key = { 'unknown-group': 'unknownGroup', 'unknown-season': 'unknownSeason', 'unknown-coach': 'unknownCoach' }[w.kind]
+        const text = t(`admin.warnings.${key}`, { where: where(w.tab, w.rows), name: w.name })
+        return w.suggestion ? text + t('admin.warnings.didYouMean', { name: w.suggestion }) : text
+      }
+      case 'group-case': {
+        const list = w.spellings.map((s) => `"${s.name}" (${where('Grupper', s.rows)})`).join(', ')
+        return t('admin.warnings.groupCase', { list })
+      }
+      case 'no-season':
+        return t('admin.warnings.noSeason')
+      case 'season-ending':
+        return t('admin.warnings.seasonEnding', { name: localized(w.name, w.nameEn), date: formatDate(w.to) })
+    }
+  }),
+)
+
+const any = computed(() => failing.value.length + warnings.value.length + dataTexts.value.length)
 </script>
 
 <template>
@@ -50,6 +76,7 @@ const any = computed(() => failing.value.length + warnings.value.length)
     <template v-if="any">
       <p class="title">{{ t('admin.warnings.title') }}</p>
       <ul>
+        <li v-for="(text, i) in dataTexts" :key="`d-${i}`">{{ text }}</li>
         <li v-for="(warning, i) in warnings" :key="`w-${i}`">{{ warning }}</li>
         <li v-for="(item, i) in failing" :key="`i-${i}`">
           <strong>{{ item.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${item.kind}`) }}) — {{ t(`admin.imageWarnings.${item.reason}`) }}

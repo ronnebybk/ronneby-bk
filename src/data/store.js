@@ -6,6 +6,7 @@ import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
+import { nameWarnings, seasonWarnings } from './warnings.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -191,6 +192,12 @@ export const eventWarnings = computed(() => {
   }
   return warnings
 })
+
+// Name mismatches between tabs and season status problems, for the admin page's warnings box.
+export const dataWarnings = computed(() => [
+  ...nameWarnings({ seasons: state.seasons, groups: state.groups, sessions: state.sessions, coaches: state.coaches }, todayIso()),
+  ...seasonWarnings(state.seasons, todayIso()),
+])
 
 // Medal counts for the current year, for the summary at the top of the results page.
 // The year rides along so the view and the count can't disagree about "current".
