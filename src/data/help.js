@@ -44,48 +44,64 @@ function plainText(md) {
     .replace(/^\s*\d+\.\s+/gm, ' ')
 }
 
-// docs/editor-help.md → [{ id, title, group, tabs, synonyms, pinned, text, searchText }], file order.
+// docs/editor-help.md → [{ id, title, group, tabs, synonyms, pinned, text, enTitle, textEn,
+//   searchText, searchTextEn }], file order. A `#### <English title>` section inside an entry is
+// its English variant (D11); without one, English falls back to the Swedish text.
 export function parseHelp(md) {
   const entries = []
   let group = ''
   let current = null
+  let en = false
   for (const line of md.split('\n')) {
     const h2 = line.match(/^##\s+(.*)$/)
     const h3 = line.match(/^###\s+(.*)$/)
+    const h4 = line.match(/^####\s+(.*)$/)
     if (h2) {
       group = h2[1].trim()
       current = null
       continue
     }
     if (h3) {
-      current = { id: null, title: h3[1].trim(), group, tabs: [], synonyms: [], pinned: false, text: '' }
+      current = { id: null, title: h3[1].trim(), group, tabs: [], synonyms: [], pinned: false, text: '', enTitle: '', textEn: '' }
       entries.push(current)
+      en = false
+      continue
+    }
+    if (h4 && current) {
+      current.enTitle = h4[1].trim()
+      en = true
       continue
     }
     if (!current) continue
     const meta = line.match(/^\s*<!--\s*(.*?)\s*-->/)
-    if (meta && !current.id && entries[entries.length - 1] === current && current.text === '') {
+    if (meta && !en && !current.id && entries[entries.length - 1] === current && current.text === '') {
       Object.assign(current, parseMeta(meta[1]))
       if (!current.id) current.id = slugOf(current.title)
       continue
     }
-    current.text += line + '\n'
+    if (en) current.textEn += line + '\n'
+    else current.text += line + '\n'
   }
   for (const e of entries) {
     if (!e.id) e.id = slugOf(e.title)
     e.text = e.text.trim()
+    e.textEn = e.textEn.trim()
     e.searchText = normalize(`${e.title} ${plainText(e.text)} ${e.synonyms.join(' ')}`)
+    e.searchTextEn = normalize(`${e.enTitle || e.title} ${plainText(e.textEn || e.text)} ${e.synonyms.join(' ')}`)
   }
   return entries
 }
 
 // D6/AC4–AC7: every query word must appear in the entry's normalized search text, any order.
 // `tab` filters to entries for that sheet tab (or `alla`); null/'' shows all.
-export function searchHelp(entries, query, tab) {
+// `lang` picks the search text: 'en' searches the English variant (D11), otherwise Swedish.
+export function searchHelp(entries, query, tab, lang) {
   let result = entries
   if (tab) result = result.filter((e) => e.tabs.includes(tab) || e.tabs.includes('alla'))
   const words = normalize(query ?? '').split(' ').filter(Boolean)
-  if (words.length > 0) result = result.filter((e) => words.every((w) => e.searchText.includes(w)))
+  if (words.length > 0) {
+    result = result.filter((e) => words.every((w) => (lang === 'en' ? e.searchTextEn : e.searchText).includes(w)))
+  }
   return result
 }
 

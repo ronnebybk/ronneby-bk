@@ -263,7 +263,6 @@ export default {
       noMatches: 'No matches. Try another word.',
       loadError: 'Could not load the help file. Check your connection and try again.',
       retry: 'Try again',
-      swedishNote: 'The help texts are written in Swedish.',
     },
     warnings: {
       title: 'Warnings',

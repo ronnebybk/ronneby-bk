@@ -17,7 +17,22 @@ const activeTab = ref('')
 const tabs = computed(() => [...new Set(entries.value.flatMap((e) => e.tabs))].filter((tab) => tab !== 'alla'))
 // AC3: the two key rules stay at the top whatever the search or filter is.
 const pinned = computed(() => entries.value.filter((e) => e.pinned))
-const results = computed(() => searchHelp(entries.value, query.value, activeTab.value || null).filter((e) => !e.pinned))
+const results = computed(() => searchHelp(entries.value, query.value, activeTab.value || null, locale.value).filter((e) => !e.pinned))
+
+// D11: titles and bodies follow the site language; entries without a `####` section fall back
+// to Swedish. Rendered HTML is cached per entry+locale.
+const htmlCache = new Map()
+function titleFor(e) {
+  return locale.value === 'en' && e.enTitle ? e.enTitle : e.title
+}
+function htmlFor(e) {
+  const key = `${e.id}:${locale.value}`
+  if (!htmlCache.has(key)) {
+    const md = locale.value === 'en' && e.textEn ? e.textEn : e.text
+    htmlCache.set(key, renderMarkdown(md))
+  }
+  return htmlCache.get(key)
+}
 
 // D7: the help text is fetched the first time the dialog opens, via a lazy ?raw import,
 // so it lands in its own chunk — never in the visitor bundle (AC11).
@@ -27,7 +42,7 @@ async function ensureLoaded() {
   loadError.value = false
   try {
     const mod = await import('../../docs/editor-help.md?raw')
-    entries.value = parseHelp(mod.default).map((e) => ({ ...e, html: renderMarkdown(e.text) }))
+    entries.value = parseHelp(mod.default)
   } catch {
     loadError.value = true
   } finally {
@@ -111,7 +126,6 @@ defineExpose({ open })
     </template>
 
     <template v-else>
-      <p v-if="t('admin.helpDialog.swedishNote')" class="swedish-note">{{ t('admin.helpDialog.swedishNote') }}</p>
       <input
         ref="searchInput"
         v-model="query"
@@ -141,16 +155,16 @@ defineExpose({ open })
 
       <div class="help-pinned">
         <details v-for="e in pinned" :key="e.id" :data-entry="e.id" class="entry pinned">
-          <summary>{{ e.title }}</summary>
-          <div class="entry-body" v-html="e.html" @click="onContentClick"></div>
+          <summary>{{ titleFor(e) }}</summary>
+          <div class="entry-body" v-html="htmlFor(e)" @click="onContentClick"></div>
         </details>
       </div>
 
       <div class="help-scroll">
         <p v-if="results.length === 0" class="help-empty">{{ t('admin.helpDialog.noMatches') }}</p>
         <details v-for="e in results" :key="e.id" :data-entry="e.id" class="entry">
-          <summary>{{ e.title }}</summary>
-          <div class="entry-body" v-html="e.html" @click="onContentClick"></div>
+          <summary>{{ titleFor(e) }}</summary>
+          <div class="entry-body" v-html="htmlFor(e)" @click="onContentClick"></div>
         </details>
       </div>
     </template>
@@ -197,12 +211,6 @@ defineExpose({ open })
   line-height: 1;
   cursor: pointer;
   color: var(--muted);
-}
-
-.swedish-note {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0 0 10px;
 }
 
 .help-search {

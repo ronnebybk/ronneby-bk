@@ -264,7 +264,6 @@ export default {
       noMatches: 'Inga träffar. Prova ett annat sökord.',
       loadError: 'Kunde inte läsa hjälpfilen. Kontrollera uppkopplingen och försök igen.',
       retry: 'Försök igen',
-      swedishNote: '',
     },
     warnings: {
       title: 'Varningar',
