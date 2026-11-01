@@ -185,6 +185,10 @@ function forget() {
   filter: brightness(0.96);
 }
 
+.help-btn:active {
+  filter: brightness(0.88);
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
