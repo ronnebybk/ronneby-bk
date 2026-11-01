@@ -23,7 +23,7 @@ export default {
       groups: '1580659590',
       schedule: '1346523284',
       coaches: '1513447874',
-      exceptions: '', // Undantag; empty hides the cancellation list until the tab exists
+      exceptions: '1444989883', // Undantag
     },
   },
 }
