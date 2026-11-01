@@ -167,11 +167,13 @@ export function renderMarkdown(md) {
       blocks.push('<ol>' + items.join('') + '</ol>')
       continue
     }
+    // Always take the first line: the stop regex also matches lines no block above handles
+    // (e.g. a table row without a trailing pipe, or a heading), which would otherwise loop forever.
     const para = []
-    while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,6}\s|\s*\||\s*[-•]\s|\s*\d+[.)]\s)/.test(lines[i])) {
+    do {
       para.push(lines[i].trim())
       i++
-    }
+    } while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,6}\s|\s*\||\s*[-•]\s|\s*\d+[.)]\s)/.test(lines[i]))
     blocks.push('<p>' + renderInline(para.join(' ')) + '</p>')
   }
   return blocks.join('\n')

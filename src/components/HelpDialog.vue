@@ -62,7 +62,11 @@ function lockScroll(lock) {
 onBeforeUnmount(() => lockScroll(false))
 
 // open(entryId?) — called from the Hjälp button (no id) and from warning links (D4, with id).
+// The id is kept so a successful Retry after a load error can still jump to the entry.
+const pendingEntryId = ref('')
+
 async function open(entryId) {
+  pendingEntryId.value = entryId || ''
   await ensureLoaded()
   if (loadError.value) {
     dialog.value.showModal()
@@ -75,7 +79,15 @@ async function open(entryId) {
   lockScroll(true)
   await nextTick()
   searchInput.value?.focus()
-  if (entryId) scrollToEntry(entryId)
+  if (pendingEntryId.value) scrollToEntry(pendingEntryId.value)
+}
+
+async function retry() {
+  await ensureLoaded()
+  if (loadError.value) return
+  await nextTick()
+  searchInput.value?.focus()
+  if (pendingEntryId.value) scrollToEntry(pendingEntryId.value)
 }
 
 function close() {
@@ -120,7 +132,7 @@ defineExpose({ open })
 
     <template v-if="loadError">
       <p class="help-error">{{ t('admin.helpDialog.loadError') }}</p>
-      <button type="button" class="btn btn-primary" :disabled="loading" @click="ensureLoaded()">
+      <button type="button" class="btn btn-primary" :disabled="loading" @click="retry()">
         {{ t('admin.helpDialog.retry') }}
       </button>
     </template>

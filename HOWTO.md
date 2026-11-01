@@ -1,6 +1,6 @@
 # How to
 
-1. [Editors: help with the sheet (in Swedish)](docs/editor-help.md)
+1. [Editors: help with the sheet](docs/editor-help.md)
 2. [Maintainers: common tasks](#2-maintainers-common-tasks)
 3. [Troubleshooting](#3-troubleshooting)
 4. [Initial setup (already done; for reference or for rebuilding)](#4-initial-setup)
@@ -20,7 +20,7 @@ needs a code change or a deploy. See also [SECURITY.md](SECURITY.md) and [LIMITA
 
 ## 1. För redigerare
 
-Alla redigeringsanvisningar (på svenska) finns i [docs/editor-help.md](docs/editor-help.md). Samma
+Alla redigeringsanvisningar finns i [docs/editor-help.md](docs/editor-help.md). Samma
 texter visas också i hjälpdialogen på admin-sidan (knappen **Hjälp**).
 
 ---
@@ -86,7 +86,7 @@ help). The steps below are the developer fallback when a file must live in the r
 Without a photo, the card shows the coach's initials.
 
 One-time setup: create the club's image folder on Drive and share the **folder** itself as *Anyone with the
-link → Viewer*. New uploads then inherit the sharing, so editors can skip step 2 in the Swedish guide.
+link → Viewer*. New uploads then inherit the sharing, so editors can skip step 2 in the editor guide.
 
 ### Instagram feed and Facebook Page
 

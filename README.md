@@ -12,7 +12,8 @@ Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, co
 
 | Document | Contents |
 | --- | --- |
-| **[HOWTO.md](HOWTO.md)** | Editor instructions (Swedish), maintainer tasks, troubleshooting, initial setup |
+| **[docs/editor-help.md](docs/editor-help.md)** | Editor instructions (Swedish and English), also shown in the admin help dialog |
+| **[HOWTO.md](HOWTO.md)** | Maintainer tasks, troubleshooting, initial setup |
 | **[SECURITY.md](SECURITY.md)** | What's public and what's secret, sheet rules, incidents, GDPR overview |
 | **[LIMITATIONS.md](LIMITATIONS.md)** | Known shortcomings and trade-offs |
 | [Issues](https://github.com/ronnebybk/ronneby-bk/issues) | Backlog |
