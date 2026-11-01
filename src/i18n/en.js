@@ -253,6 +253,7 @@ export default {
     forgetConfirm: 'Remove admin access from this device?',
     noAccessTitle: 'No access',
     noAccessText: 'You need the admin link to edit. Ask the board or the web admin for it.',
+    preview: 'Preview',
     warnings: {
       title: 'Warnings',
       unmatchedResult: "Result: '{competition}' matches no event",
@@ -302,5 +303,18 @@ export default {
   notFound: {
     title: 'Page not found',
     back: 'Back to home',
+  },
+  preview: {
+    label: 'PREVIEW',
+    titlePrefix: 'Preview – ',
+    text: 'Preview: showing the sheet as it looks right now. Visitors see the changes within about 5 minutes.',
+    loadedAt: 'Last loaded {time}',
+    update: 'Refresh',
+    loading: 'Loading…',
+    toAdmin: 'To admin',
+    end: 'End preview',
+    error: "Couldn't read the sheet right now. Showing data from {time} – it may be out of date.",
+    errorFirst: "Couldn't read the sheet right now. This is NOT the preview – showing published data that may be several minutes old.",
+    failedTabs: "Couldn't read: {tabs}. That data may be out of date.",
   },
 }

@@ -254,6 +254,7 @@ export default {
     forgetConfirm: 'Vill du ta bort admin-åtkomsten från den här enheten?',
     noAccessTitle: 'Ingen åtkomst',
     noAccessText: 'Du behöver admin-länken för att redigera. Be styrelsen eller webbansvarig om den.',
+    preview: 'Förhandsgranska',
     warnings: {
       title: 'Varningar',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",
@@ -303,5 +304,18 @@ export default {
   notFound: {
     title: 'Sidan finns inte',
     back: 'Till startsidan',
+  },
+  preview: {
+    label: 'FÖRHANDSVISNING',
+    titlePrefix: 'Förhandsvisning – ',
+    text: 'Förhandsvisning: visar arket som det ser ut nu. Besökare ser ändringarna inom ca 5 minuter.',
+    loadedAt: 'Senast laddad {time}',
+    update: 'Uppdatera',
+    loading: 'Laddar…',
+    toAdmin: 'Till admin',
+    end: 'Avsluta',
+    error: 'Kunde inte läsa arket just nu. Visar data från {time} – den kan vara inaktuell.',
+    errorFirst: 'Kunde inte läsa arket just nu. Detta är INTE förhandsvisningen – visar publicerade data som kan vara flera minuter gamla.',
+    failedTabs: 'Kunde inte läsa: {tabs}. Den datan kan vara inaktuell.',
   },
 }

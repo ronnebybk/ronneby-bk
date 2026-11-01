@@ -6,7 +6,8 @@ import '@fontsource/inter/600.css'
 import './style.css'
 import App from './App.vue'
 import router from './router.js'
-import { loadData } from './data/store.js'
+import { loadData, refreshPreview } from './data/store.js'
+import { preview } from './data/preview.js'
 
 // An index.html cached from before a deploy asks for chunks that no longer exist. Reload once to get
 // the new one; the flag stops a loop when the network itself is down. sessionStorage throws when site
@@ -38,6 +39,12 @@ router.isReady().then(() => {
 }, () => {})
 
 loadData()
+
+// AC5: when the editor returns to this tab, reload the preview so sheet edits made in another
+// tab show up without a manual refresh. AC6 discards any stale load that finishes later.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && preview.on) refreshPreview()
+})
 // Wait for the first route, so a poster page never flashes the site header and footer. Mount anyway
 // if that route fails or hangs on a slow connection: a page with the site header beats a blank one,
 // and the route still renders when it arrives.

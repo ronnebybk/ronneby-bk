@@ -45,6 +45,10 @@
   --font-display: 'Oswald', 'Arial Narrow', sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
+  /* Preview marking (D7): amber, distinct from the club's red/black; black on amber passes AA. */
+  --preview: #f5a623;
+  --preview-ink: #1a1a1a;
+
   color-scheme: light;
 }
 
@@ -61,6 +65,8 @@
     --silver: #d0d5da;
     --bronze: #cd8b58;
     --logo-tile: #fff; /* logos are mostly made for white */
+    --preview: #f5a623;
+    --preview-ink: #1a1a1a;
     color-scheme: dark;
   }
 }
@@ -318,4 +324,17 @@ button {
     min-height: 0;
     background: #fff;
   }
+
+  .preview-frame {
+    display: none;
+  }
+}
+
+/* D7: amber frame around the whole viewport while in preview, hidden in print. */
+.preview-frame {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 4px var(--preview);
+  z-index: 100;
 }

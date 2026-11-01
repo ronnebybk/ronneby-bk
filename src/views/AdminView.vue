@@ -5,25 +5,43 @@ import AdminWarnings from '../components/AdminWarnings.vue'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import { load, save, remove } from '../data/storage.js'
-
-// The sheet's edit ID is never in the code (the repo is public). Editors get a link like
-// …/#/admin?k=<sheet-id>; the ID is stored on their device and removed from the address bar.
-const STORAGE_KEY = 'rbt-admin-key'
-const VALID_KEY = /^[A-Za-z0-9_-]{20,}$/
+import { ADMIN_KEY_STORAGE, VALID_KEY, hasValidKey } from '../data/preview.js'
+import { startPreview, endPreview } from '../data/store.js'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-const key = ref(load(STORAGE_KEY) ?? '')
+const key = ref(load(ADMIN_KEY_STORAGE) ?? '')
 const fromLink = String(route.query.k ?? '')
 if (VALID_KEY.test(fromLink)) {
   key.value = fromLink
-  save(STORAGE_KEY, fromLink)
+  save(ADMIN_KEY_STORAGE, fromLink)
   router.replace({ name: 'admin' })
 }
 
 const hasAccess = computed(() => VALID_KEY.test(key.value))
+
+// Tab → site route, so Preview opens the page matching the tab the editor is looking at.
+const tabRoutes = {
+  schedule: '/schema',
+  seasons: '/schema',
+  groups: '/grupper',
+  coaches: '/tranare',
+  notices: '/',
+  club: '/kontakt',
+  trial: '/prova-pa',
+  faq: '/fragor',
+  documents: '/dokument',
+  events: '/evenemang',
+  results: '/evenemang?typ=tavlingar',
+  sponsors: '/sponsorer',
+}
+
+function preview() {
+  startPreview()
+  router.push(tabRoutes[activeTab.value] ?? '/')
+}
 
 // A tab without a gid is not in the sheet yet, so it is left out of the list.
 const tabs = ['schedule', 'groups', 'coaches', 'seasons', 'notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors'].filter(
@@ -42,7 +60,8 @@ const fullUrl = computed(() => sheetUrl(false))
 
 function forget() {
   if (!window.confirm(t('admin.forgetConfirm'))) return
-  remove(STORAGE_KEY)
+  endPreview()
+  remove(ADMIN_KEY_STORAGE)
   key.value = ''
 }
 </script>
@@ -57,7 +76,10 @@ function forget() {
 
     <template v-else>
       <div class="container toolbar">
-        <h1>{{ t('admin.title') }}</h1>
+        <div class="toolbar-top">
+          <h1>{{ t('admin.title') }}</h1>
+          <button v-if="config.sheet.publishedId" type="button" class="preview-btn" @click="preview">{{ t('admin.preview') }}</button>
+        </div>
         <div class="tabs" role="tablist">
           <button
             v-for="tab in tabs"
@@ -95,9 +117,34 @@ function forget() {
   padding-bottom: 12px;
 }
 
+.toolbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
 .toolbar h1 {
   font-size: 1.6rem;
-  margin-bottom: 12px;
+}
+
+/* Same colours as the preview frame, so the button signals "this opens the preview". */
+.preview-btn {
+  background: var(--preview);
+  color: var(--preview-ink);
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.preview-btn:hover {
+  filter: brightness(0.93);
 }
 
 .tabs {

@@ -91,6 +91,23 @@ varningar.
 - Lägg in nästa säsong **innan** den nuvarande tar slut.
 - Blev något fel? Säg till webbansvarig. Alla tidigare versioner finns sparade (*Arkiv → Versionshistorik*).
 
+### Förhandsgranska ändringar
+
+Ändringar i arket syns på hemsidan först efter att Google publicerar om arket (inom ca 5 minuter).
+Vill du se resultatet direkt trycker du på **Förhandsgranska** på admin-sidan. Då öppnas hemsidan
+i samma flik och visar arket som det ser ut **just nu** – utan att vänta på publiceringen.
+
+- En gul **FÖRHANDSVISNING**-banderoll visas högst upp på varje sida, tillsammans med en ram runt
+  hela sidan och "Förhandsvisning – " i webbläsarens fliknamn. Så är det tydligt att du inte ser den
+  riktiga sidan.
+- Banderollen har knapparna **Uppdatera** (hämtar arket igen), **Till admin** (tillbaka till
+  admin-sidan) och **Avsluta** (stänger av förhandsvisningen och visar den publicerade sidan).
+- Växlar du till en annan flik (t.ex. för att redigera arket) och kommer tillbaka laddas
+  förhandsvisningen om automatiskt.
+- Förhandsvisningen gäller bara i den här fliken. Stänger du fliken, eller öppnar sidan i en ny flik,
+  ser du den publicerade versionen som vanligt. Besökare påverkas inte alls.
+- Saknas admin-åtkomst på enheten går det inte att starta förhandsvisningen.
+
 ### Skriv ut en affisch
 
 Hemsidan kan göra två affischer i A4 av det som står i kalkylarket, till anslagstavlan: **Schema** (liggande)

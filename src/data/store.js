@@ -7,6 +7,7 @@ import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
+import { preview, isPreviewOn, setPreviewFlag, adminKey } from './preview.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -67,11 +68,16 @@ function csvUrl(tab) {
   return `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?gid=${config.sheet.gids[tab]}&single=true&output=csv`
 }
 
-async function fetchTab(tab) {
+// The edit-ID variant reads the sheet's current, unpublished content (same plain CSV format).
+function exportUrl(tab) {
+  return `https://docs.google.com/spreadsheets/d/${adminKey()}/export?format=csv&gid=${config.sheet.gids[tab]}`
+}
+
+async function fetchTab(tab, url) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
   try {
-    const response = await fetch(csvUrl(tab), { cache: 'no-store', signal: controller.signal })
+    const response = await fetch(url ?? csvUrl(tab), { cache: 'no-store', signal: controller.signal })
     if (!response.ok) throw new Error(`${tab}: HTTP ${response.status}`)
     const text = await response.text()
     // A sheet that isn't published returns an HTML login page instead of CSV.
@@ -92,10 +98,10 @@ async function fetchTab(tab) {
 
 // These tabs are optional: if one is missing, unpublished or broken, the rest of the site must
 // still load. Fall back to the cached copy so "cancelled tonight" survives a Google hiccup.
-async function fetchOptional(tab, cached) {
+async function fetchOptional(tab, cached, url) {
   if (!config.sheet.gids[tab]) return []
   try {
-    return await fetchTab(tab)
+    return await fetchTab(tab, url)
   } catch (error) {
     console.error(`Could not load ${tab}`, error)
     return cached?.[tab] ?? []
@@ -103,6 +109,121 @@ async function fetchOptional(tab, cached) {
 }
 
 let loading = null
+// Bumped on every preview start/refresh/end; a load that finishes after a newer one started is dropped.
+let generation = 0
+
+// Preview load: reads every tab from the unpublished export URL. Never writes to the visitor cache.
+async function loadPreview() {
+  const gen = ++generation
+  preview.loading = true
+  const cached = loadJson(CACHE_KEY)
+  preview.error = false
+  preview.failedTabs = []
+  preview.fallback = false
+
+  const required = TABS.map((tab) => fetchTab(tab, exportUrl(tab)))
+  const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors']
+    .filter((tab) => config.sheet.gids[tab])
+    .map((tab) => ({ tab, promise: fetchTab(tab, exportUrl(tab)) }))
+
+  try {
+    const requiredResults = await Promise.all(required)
+    if (gen !== generation) return
+
+    const optionalResults = await Promise.all(
+      optional.map(async ({ tab, promise }) => {
+        try {
+          return { tab, rows: await promise }
+        } catch (error) {
+          console.error(`Preview: could not load ${tab}`, error)
+          if (gen !== generation) return null
+          preview.failedTabs.push(tab)
+          // Fall back to the last preview's rows for this tab, else the published cache.
+          return { tab, rows: cached?.[tab] ?? [] }
+        }
+      }),
+    )
+    if (gen !== generation) return
+
+    const [seasons, groups, schedule, coaches] = requiredResults
+    const raw = { seasons, groups, schedule, coaches }
+    for (const r of optionalResults) {
+      if (r) raw[r.tab] = r.rows
+    }
+    apply(raw)
+    state.status = 'preview'
+    preview.loadedAt = new Date()
+  } catch (error) {
+    if (gen !== generation) return
+    console.error('Preview load failed', error)
+    preview.error = true
+    if (!preview.loadedAt) {
+      // No preview has loaded yet: fall back to the published path so the page isn't empty.
+      preview.fallback = true
+      const pubCached = loadJson(CACHE_KEY)
+      if (pubCached) apply(pubCached)
+      loading = Promise.all([
+        ...TABS.map((tab) => fetchTab(tab)),
+        fetchOptional('notices', pubCached),
+        fetchOptional('club', pubCached),
+        fetchOptional('trial', pubCached),
+        fetchOptional('faq', pubCached),
+        fetchOptional('documents', pubCached),
+        fetchOptional('results', pubCached),
+        fetchOptional('events', pubCached),
+        fetchOptional('sponsors', pubCached),
+      ])
+        .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors]) => {
+          if (gen !== generation) return
+          const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors }
+          apply(raw)
+          saveJson(CACHE_KEY, raw)
+          state.status = 'live'
+        })
+        .catch((err) => {
+          if (gen !== generation) return
+          console.error('Could not load sheet data', err)
+          state.status = pubCached ? 'cache' : 'error'
+        })
+      loading.catch(() => {})
+    }
+  } finally {
+    // A superseded load leaves the flag to the newer one.
+    if (gen === generation) preview.loading = false
+  }
+}
+
+export function startPreview() {
+  if (!isPreviewOn()) {
+    setPreviewFlag(true)
+    preview.on = true
+  }
+  preview.loadedAt = null
+  preview.error = false
+  preview.failedTabs = []
+  preview.fallback = false
+  loading = null
+  loadPreview()
+}
+
+export function refreshPreview() {
+  if (!preview.on) return
+  loading = null
+  loadPreview()
+}
+
+export function endPreview() {
+  generation++
+  setPreviewFlag(false)
+  preview.on = false
+  preview.loadedAt = null
+  preview.loading = false
+  preview.error = false
+  preview.failedTabs = []
+  preview.fallback = false
+  loading = null
+  loadData()
+}
 
 // Shows the cached copy immediately (if any), then replaces it with fresh data from the sheet.
 export function loadData() {
@@ -114,12 +235,19 @@ export function loadData() {
     return (loading = Promise.resolve())
   }
 
+  // Preview mode: load from the unpublished export URL instead of the published one.
+  if (isPreviewOn()) {
+    preview.on = true
+    loading = loadPreview()
+    return loading
+  }
+
   // Status stays 'loading' while the cached copy is shown; 'cache' means the refresh failed.
   const cached = loadJson(CACHE_KEY)
   if (cached) apply(cached)
 
   loading = Promise.all([
-    ...TABS.map(fetchTab),
+    ...TABS.map((tab) => fetchTab(tab)),
     fetchOptional('notices', cached),
     fetchOptional('club', cached),
     fetchOptional('trial', cached),
