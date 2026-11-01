@@ -255,6 +255,17 @@ export default {
     noAccessTitle: 'Ingen åtkomst',
     noAccessText: 'Du behöver admin-länken för att redigera. Be styrelsen eller webbansvarig om den.',
     preview: 'Förhandsgranska',
+    helpDialog: {
+      button: 'Hjälp',
+      title: 'Hjälp för redigerare',
+      search: 'Sök i hjälpen…',
+      close: 'Stäng',
+      all: 'Alla',
+      noMatches: 'Inga träffar. Prova ett annat sökord.',
+      loadError: 'Kunde inte läsa hjälpfilen. Kontrollera uppkopplingen och försök igen.',
+      retry: 'Försök igen',
+      swedishNote: '',
+    },
     warnings: {
       title: 'Varningar',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AdminWarnings from '../components/AdminWarnings.vue'
+import HelpDialog from '../components/HelpDialog.vue'
 import { useI18n } from '../i18n/index.js'
 import config from '../config.js'
 import { load, save, remove } from '../data/storage.js'
@@ -21,6 +22,11 @@ if (VALID_KEY.test(fromLink)) {
 }
 
 const hasAccess = computed(() => VALID_KEY.test(key.value))
+
+const helpDialog = ref(null)
+function openHelp(entryId) {
+  helpDialog.value?.open(entryId)
+}
 
 // Tab → site route, so Preview opens the page matching the tab the editor is looking at.
 const tabRoutes = {
@@ -82,7 +88,10 @@ function forget() {
       <div class="container toolbar">
         <div class="toolbar-top">
           <h1>{{ t('admin.title') }}</h1>
-          <button v-if="config.sheet.publishedId" type="button" class="preview-btn" @click="preview">{{ t('admin.preview') }}</button>
+          <div class="toolbar-actions">
+            <button v-if="config.sheet.publishedId" type="button" class="preview-btn" @click="preview">{{ t('admin.preview') }}</button>
+            <button type="button" class="help-btn" @click="openHelp()">{{ t('admin.helpDialog.button') }}</button>
+          </div>
         </div>
         <div class="tabs" role="tablist">
           <button
@@ -98,8 +107,10 @@ function forget() {
           </button>
         </div>
         <p class="help">ℹ️ {{ t('admin.help') }}</p>
-        <AdminWarnings @open-tab="activeTab = $event" />
+        <AdminWarnings @open-tab="activeTab = $event" @open-help="openHelp" />
       </div>
+
+      <HelpDialog ref="helpDialog" />
 
       <!-- :key forces a reload when switching tab, so the sheet jumps to it. -->
       <iframe :key="embedUrl" :src="embedUrl" :title="t('admin.title')" class="sheet"></iframe>
@@ -149,6 +160,29 @@ function forget() {
 
 .preview-btn:hover {
   filter: brightness(0.93);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.help-btn {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.help-btn:hover {
+  filter: brightness(0.96);
 }
 
 .tabs {

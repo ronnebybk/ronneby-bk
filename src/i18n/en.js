@@ -254,6 +254,17 @@ export default {
     noAccessTitle: 'No access',
     noAccessText: 'You need the admin link to edit. Ask the board or the web admin for it.',
     preview: 'Preview',
+    helpDialog: {
+      button: 'Help',
+      title: 'Editor help',
+      search: 'Search the help…',
+      close: 'Close',
+      all: 'All',
+      noMatches: 'No matches. Try another word.',
+      loadError: 'Could not load the help file. Check your connection and try again.',
+      retry: 'Try again',
+      swedishNote: 'The help texts are written in Swedish.',
+    },
     warnings: {
       title: 'Warnings',
       unmatchedResult: "Result: '{competition}' matches no event",
