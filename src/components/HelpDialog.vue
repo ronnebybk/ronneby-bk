@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from '../i18n/index.js'
 import { parseHelp, renderMarkdown, searchHelp, slugOf } from '../data/help.js'
 
@@ -35,16 +35,29 @@ async function ensureLoaded() {
   }
 }
 
+// showModal() blocks interaction but not scrolling: wheel over the dialog still scrolls the
+// document behind it (M1), so the root element is locked while the dialog is open — the same
+// pattern as EventsView.
+function lockScroll(lock) {
+  const value = lock ? 'hidden' : ''
+  document.documentElement.style.overflow = value
+  document.body.style.overflow = value
+}
+
+onBeforeUnmount(() => lockScroll(false))
+
 // open(entryId?) — called from the Hjälp button (no id) and from warning links (D4, with id).
 async function open(entryId) {
   await ensureLoaded()
   if (loadError.value) {
     dialog.value.showModal()
+    lockScroll(true)
     return
   }
   query.value = ''
   activeTab.value = ''
   dialog.value.showModal()
+  lockScroll(true)
   await nextTick()
   searchInput.value?.focus()
   if (entryId) scrollToEntry(entryId)
@@ -84,7 +97,7 @@ defineExpose({ open })
 </script>
 
 <template>
-  <dialog ref="dialog" class="help-dialog" @click="onDialogClick">
+  <dialog ref="dialog" class="help-dialog" @click="onDialogClick" @close="lockScroll(false)">
     <div class="help-head">
       <h2>{{ t('admin.helpDialog.title') }}</h2>
       <button type="button" class="close" :aria-label="t('admin.helpDialog.close')" @click="close">×</button>
@@ -133,25 +146,29 @@ defineExpose({ open })
         </details>
       </div>
 
-      <p v-if="results.length === 0" class="help-empty">{{ t('admin.helpDialog.noMatches') }}</p>
-      <details v-for="e in results" :key="e.id" :data-entry="e.id" class="entry">
-        <summary>{{ e.title }}</summary>
-        <div class="entry-body" v-html="e.html" @click="onContentClick"></div>
-      </details>
+      <div class="help-scroll">
+        <p v-if="results.length === 0" class="help-empty">{{ t('admin.helpDialog.noMatches') }}</p>
+        <details v-for="e in results" :key="e.id" :data-entry="e.id" class="entry">
+          <summary>{{ e.title }}</summary>
+          <div class="entry-body" v-html="e.html" @click="onContentClick"></div>
+        </details>
+      </div>
     </template>
   </dialog>
 </template>
 
 <style scoped>
+/* D10: always the same size; only .help-scroll inside scrolls (M1: background locked while open). */
 .help-dialog {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 20px;
   width: min(94vw, 720px);
-  max-height: 85vh;
-  overflow: auto;
+  height: 85vh;
   background: var(--paper);
   color: var(--text);
+  display: flex;
+  flex-direction: column;
 }
 
 .help-head {
@@ -159,11 +176,8 @@ defineExpose({ open })
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  position: sticky;
-  top: -20px;
-  background: var(--paper);
-  padding: 20px 0 12px;
-  margin: -20px 0 0;
+  flex: none;
+  margin-bottom: 12px;
 }
 
 .help-head h2 {
@@ -197,11 +211,24 @@ defineExpose({ open })
   font-size: 1rem;
 }
 
+.help-search,
+.help-chips,
+.help-pinned {
+  flex: none;
+}
+
 .help-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin: 12px 0;
+}
+
+.help-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: 12px;
 }
 
 .help-chips button {
