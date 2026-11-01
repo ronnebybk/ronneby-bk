@@ -84,7 +84,7 @@ mode) and were walked through with NVDA in Swedish and English (issue #38). Rema
   > 3. At least two admins (*Settings → Page access*), so it doesn't depend on one person.
   > 4. Optionally, link the group to the Page (*group Settings → Linked Pages*).
   > 5. Post public news there: results, cancellations, events. Member chat can stay in the group.
-  > 6. Put the Page's address in the *Facebook* row of the *Klubbinfo* tab (see HOWTO.md, section 1).
+  > 6. Put the Page's address in the *Facebook* row of the *Klubbinfo* tab (see docs/editor-help.md).
   >    The group can still be linked from the Page or mentioned in a news item.
   >
   > Tracked in issue #7.

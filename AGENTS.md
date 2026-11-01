@@ -113,7 +113,7 @@ acceptance criteria. Use `gh issue list -R ronnebybk/ronneby-bk`.
   `git diff --cached --ignore-all-space --stat`; if a file shows no real change, unstage it.
 - **`public/coaches/`:** image files only, lowercase names (GitHub Pages is case-sensitive), and only for
   coaches who have consented. Fallback only — editors normally paste a Google Drive share link in the
-  sheet's *Bild* column (see HOWTO.md, "Bilder").
+  sheet's *Bild* column (see docs/editor-help.md, "Bilder").
 
 ## Pushing and deploying
 
