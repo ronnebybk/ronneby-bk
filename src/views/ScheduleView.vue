@@ -57,14 +57,13 @@ const isCurrent = computed(() => season.value === currentSeason.value)
 
 // The calendar button follows the group filter (D1/D2): a group's file holds only that
 // group's sessions, "All groups" holds every session in the shown season.
-const calendarVisible = computed(() => hasEvents(season.value, sessions.value, todayIso()))
+const calendarVisible = computed(() => hasEvents(season.value, filtered.value, todayIso()))
 
 function downloadCalendar() {
   const group = groupFilter.value
-  const inGroupFile = group ? sessions.value.filter((s) => s.groups.includes(group)) : sessions.value
   const text = buildCalendar({
     season: season.value,
-    sessions: inGroupFile,
+    sessions: filtered.value,
     isCancelled: (iso, session) => Boolean(exceptionFor(iso, session.groups)),
     today: todayIso(),
     now: new Date(),
@@ -89,7 +88,9 @@ function downloadCalendar() {
   document.body.appendChild(a)
   a.click()
   a.remove()
-  URL.revokeObjectURL(url)
+  // Revoke after a generous delay: iOS opens the blob in a share sheet / new tab after the
+  // click handler returns, and a 0 ms timer can fire before that read starts.
+  setTimeout(() => URL.revokeObjectURL(url), 40_000)
 }
 
 // In the current season each session is tagged with the exception on its next occurrence within
@@ -186,14 +187,16 @@ const days = computed(() => {
       </div>
 
       <div class="page-actions">
-        <p class="print-link">
-          <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
-        </p>
-        <div v-if="calendarVisible" class="calendar-action">
-          <button type="button" class="calendar-button" @click="downloadCalendar">{{ t('schedule.addToCalendar') }}</button>
-          <p class="calendar-note">{{ t('schedule.calendarNote') }}</p>
-        </div>
+        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }" class="action-button">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          {{ t('poster.link') }}
+        </RouterLink>
+        <button v-if="calendarVisible" type="button" class="action-button" @click="downloadCalendar">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ t('schedule.addToCalendar') }}
+        </button>
       </div>
+      <p v-if="calendarVisible" class="calendar-note">{{ t('schedule.calendarNote') }}</p>
     </template>
   </div>
 </template>
@@ -204,30 +207,32 @@ const days = computed(() => {
   max-width: 1360px;
 }
 
-.print-link {
-  margin: 24px 0 0;
-}
-
 .page-actions {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px 24px;
-}
-
-.calendar-action {
   margin-top: 24px;
-  max-width: 420px;
 }
 
-.calendar-button {
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--red-strong);
-  background: var(--red-strong);
-  color: #fff;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
   cursor: pointer;
   font-weight: 600;
+  text-decoration: none;
+}
+
+.action-button:hover,
+.action-button:focus-visible {
+  border-color: var(--red);
+  color: var(--link);
 }
 
 .calendar-note {

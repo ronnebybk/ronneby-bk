@@ -49,6 +49,8 @@ function fold(line) {
     // Walk back to a character whose byte length fits the limit.
     let cut = rest.length
     while (byteLength(rest.slice(0, cut)) > limit) cut--
+    // Never cut between a surrogate pair: the halves would each encode as U+FFFD.
+    if (cut > 0 && rest.charCodeAt(cut - 1) >= 0xd800 && rest.charCodeAt(cut - 1) <= 0xdbff) cut--
     out.push((first ? '' : ' ') + rest.slice(0, cut))
     rest = rest.slice(cut)
     first = false
@@ -178,7 +180,9 @@ export function buildCalendar({ season, sessions, isCancelled, today, now, summa
       `DTSTAMP:${dtstamp}`,
       `DTSTART;TZID=${TZID}:${startStamp}`,
     ]
-    if (session.end) {
+    // Zero-padded HH:MM compares correctly as a string; an end before the start would
+    // violate RFC 5545 and can make some calendar apps reject the whole file.
+    if (session.end && session.end > session.start) {
       event.push(`DTEND;TZID=${TZID}:${toIso(first).replace(/-/g, '')}T${session.end.replace(':', '')}00`)
     }
     event.push(`RRULE:FREQ=WEEKLY;UNTIL=${stockholmToUtcStamp(last, session.start)}`)
