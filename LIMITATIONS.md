@@ -65,9 +65,15 @@ mode) and were walked through with NVDA in Swedish and English (issue #38). Rema
 
 ## Visibility
 
-- **Search engines** mainly index the start page. The schedule is loaded by JavaScript and the pages
-  use `#/` addresses, so their content is unlikely to appear in search results.
-- **No link previews yet.** Sharing the link on Facebook or Messenger shows no image or description.
+- **Search engines** get a static Swedish text, a proper title/description, `robots.txt`,
+  `sitemap.xml` and `SportsClub` structured data on the start page (issue #21). The rest of the
+  site is loaded by JavaScript and uses `#/` addresses, so schedule, groups and other pages are
+  still unlikely to appear as separate search results. Registering with Google Search Console
+  (issue #46) is what gets the site indexed in the first place.
+- **`robots.txt` only takes effect at a domain root.** On `ronnebybk.github.io/ronneby-bk/` it is
+  not reachable as `/robots.txt`, so it matters only once a custom domain is set up.
+- **Link previews** work: sharing the link shows the `og-image.png` and the description from
+  `index.html`.
 - **Facebook groups can't be embedded.** Facebook only offers a feed embed for **Pages**. The club
   currently has a group, so the site shows a "Gå med i Facebookgruppen" button instead of a feed.
   This was tested: the embed renders an empty frame for a group, even a public one.

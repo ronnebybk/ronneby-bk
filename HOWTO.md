@@ -72,6 +72,24 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
 | Logo and icons | `src/assets/logo.svg` (site), `public/*.png` (icons). Sources in `design/`: `logo.svg` (with background), `logo-transparent.svg`, `logo-2400.png` (print/sharing) |
+| Static start page text (for search engines, Swedish) | `index.html`, inside `<div id="app">` — hardcoded, **not** read from the sheet |
+| Site address (canonical link, sitemap, robots.txt, structured data) | `siteUrl` in `src/config.js` — the only place |
+
+### Search engine visibility
+
+Search engines see a static Swedish text on the start page (club name, town, venue and address,
+links to the main pages), a proper title/description, `robots.txt`, a `sitemap.xml` and
+schema.org `SportsClub` structured data — all in `index.html`, `build/seo.js` and `src/config.js`.
+The build never reads the sheet, so it also works offline.
+
+- **If the venue or address changes in the *Klubbinfo* tab, update `index.html` too** (the static
+  text and the structured data). They are hardcoded on purpose so deploys stay simple and safe.
+- If the site moves to a custom domain, change only `siteUrl` in `src/config.js` and rebuild.
+- **Google Search Console** (issue #46): verify the site at
+  [search.google.com/search-console](https://search.google.com/search-console), submit
+  `sitemap.xml`, and request indexing of the start page. Until then Google may not list the site
+  at all. Note: `robots.txt` only takes effect at a domain root, so it matters once a custom domain
+  is set up (see "Custom domain" below).
 
 ### Add a coach photo
 
