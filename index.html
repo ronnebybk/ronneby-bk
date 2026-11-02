@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <script>
       // #21: with JS on, hide the static start page text immediately (Vue replaces #app on mount);
-      // without JS the class is never added and the text below stays visible.
-      document.documentElement.classList.add('js')
+      // without JS the class is never added and the text below stays visible. Only add it where the
+      // module bundle can actually run, so old browsers keep the static text instead of a blank page.
+      if ('noModule' in HTMLScriptElement.prototype) document.documentElement.classList.add('js')
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ronneby Boxing Team – boxningsklubb i Ronneby</title>

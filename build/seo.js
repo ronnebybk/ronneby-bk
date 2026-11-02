@@ -5,7 +5,8 @@
 import config from '../src/config.js'
 
 export default function seo() {
-  const siteUrl = config.siteUrl
+  // Trailing slash optional: every emitted address assumes exactly one.
+  const siteUrl = config.siteUrl.replace(/\/*$/, '/')
   return {
     name: 'seo',
     transformIndexHtml: (html) => html.replaceAll('%SITE_URL%', siteUrl),
