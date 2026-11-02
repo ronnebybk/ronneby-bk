@@ -2,16 +2,22 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // #21: with JS on, hide the static start page text immediately (Vue replaces #app on mount);
+      // without JS the class is never added and the text below stays visible.
+      document.documentElement.classList.add('js')
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ronneby Boxing Team</title>
-    <meta name="description" content="Ronneby Boxing Team – boxningsklubb i Ronneby. Träningsschema, grupper, priser och tränare." />
+    <title>Ronneby Boxing Team – boxningsklubb i Ronneby</title>
+    <meta name="description" content="Boxningsklubb i Ronneby. Träning för barn, ungdomar och vuxna – se schema, grupper, priser och tränare, och prova på." />
+    <link rel="canonical" href="%SITE_URL%" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ronneby Boxing Team" />
-    <meta property="og:title" content="Ronneby Boxing Team" />
-    <meta property="og:description" content="Ronneby Boxing Team – boxningsklubb i Ronneby. Träningsschema, grupper, priser och tränare." />
-    <meta property="og:url" content="https://ronnebybk.github.io/ronneby-bk/" />
+    <meta property="og:title" content="Ronneby Boxing Team – boxningsklubb i Ronneby" />
+    <meta property="og:description" content="Boxningsklubb i Ronneby. Träning för barn, ungdomar och vuxna – se schema, grupper, priser och tränare, och prova på." />
+    <meta property="og:url" content="%SITE_URL%" />
     <meta property="og:locale" content="sv_SE" />
-    <meta property="og:image" content="https://ronnebybk.github.io/ronneby-bk/og-image.png" />
+    <meta property="og:image" content="%SITE_URL%og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Ronneby Boxing Teams logotyp" />
@@ -22,7 +28,32 @@
     <link rel="manifest" href="./manifest.webmanifest" />
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- #21: static Swedish text so crawlers and no-JS visitors see real content (AC1).
+           Hardcoded on purpose: the build never reads the sheet (D3). Vue replaces this on mount. -->
+      <main class="static-start">
+        <h1>Ronneby Boxing Team</h1>
+        <p>
+          Ronneby Boxing Team är en boxningsklubb i Ronneby. Vi tränar boxning för barn, ungdomar
+          och vuxna – kom och prova på.
+        </p>
+        <p>Vi tränar i vår lokal på Järnbruksvägen 6, 372 52 Ronneby.</p>
+        <nav aria-label="Huvudsidor">
+          <ul>
+            <li><a href="./#/schema">Schema</a></li>
+            <li><a href="./#/grupper">Grupper</a></li>
+            <li><a href="./#/prova-pa">Prova på</a></li>
+            <li><a href="./#/kontakt">Kontakt</a></li>
+          </ul>
+        </nav>
+      </main>
+    </div>
+    <noscript>
+      <p class="noscript-note">
+        Schemat och övrigt innehåll på sidan laddas med JavaScript. Aktivera JavaScript i din
+        webbläsare för att se hela sidan.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

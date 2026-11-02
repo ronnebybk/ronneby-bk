@@ -336,3 +336,27 @@ button {
   box-shadow: inset 0 0 0 4px var(--preview);
   z-index: 100;
 }
+
+/* #21: static start page text for crawlers and visitors without JavaScript. The inline script in
+   index.html adds .js to <html> at once, so with JS enabled the text is hidden before first paint
+   and Vue replaces #app on mount; without JS it stays visible. */
+.js .static-start {
+  display: none;
+}
+
+.static-start {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.static-start nav ul {
+  padding-left: 1.25rem;
+}
+
+.noscript-note {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+  color: var(--muted);
+}
