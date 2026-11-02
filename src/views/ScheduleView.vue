@@ -1,14 +1,16 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, todayIso, exceptionFor, groupStyle, groupNames, upcomingExceptions } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, todayIso, exceptionFor, groupStyle, groupName, groupNames, upcomingExceptions } from '../data/store.js'
+import { buildCalendar, fileName, hasEvents } from '../data/ics.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate, formatWeekday } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const selectedName = ref(null)
 const chosenGroup = ref('')
@@ -52,6 +54,44 @@ const filtered = computed(() =>
 )
 
 const isCurrent = computed(() => season.value === currentSeason.value)
+
+// The calendar button follows the group filter (D1/D2): a group's file holds only that
+// group's sessions, "All groups" holds every session in the shown season.
+const calendarVisible = computed(() => hasEvents(season.value, filtered.value, todayIso()))
+
+function downloadCalendar() {
+  const group = groupFilter.value
+  const text = buildCalendar({
+    season: season.value,
+    sessions: filtered.value,
+    isCancelled: (iso, session) => Boolean(exceptionFor(iso, session.groups)),
+    today: todayIso(),
+    now: new Date(),
+    summary: (session) => (group ? groupName(group) : groupNames(session.groups)),
+    location: localized(state.club.venue, state.club.venueEn),
+    description: (session) => {
+      const lines = []
+      if (session.coach) lines.push(`${t('common.coach')}: ${session.coach}`)
+      const note = localized(session.note, session.noteEn)
+      if (note) lines.push(note)
+      const href = router.resolve({ name: 'schedule', query: scheduleQuery(season.value, group || undefined) }).href
+      lines.push(new URL(href, window.location.href).href)
+      return lines.join('\n')
+    },
+  })
+  const blob = new Blob([text], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  // The file name always uses the Swedish name (A2), so it doesn't change with the site's language.
+  a.download = fileName(group || 'Alla grupper')
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  // Revoke after a generous delay: iOS opens the blob in a share sheet / new tab after the
+  // click handler returns, and a 0 ms timer can fire before that read starts.
+  setTimeout(() => URL.revokeObjectURL(url), 40_000)
+}
 
 // In the current season each session is tagged with the exception on its next occurrence within
 // the coming 7 days, so a cancelled day is visible in the week itself. Other seasons stay raw.
@@ -146,9 +186,17 @@ const days = computed(() => {
         </section>
       </div>
 
-      <p class="print-link">
-        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
-      </p>
+      <div class="page-actions">
+        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }" class="action-button">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          {{ t('poster.link') }}
+        </RouterLink>
+        <button v-if="calendarVisible" type="button" class="action-button" @click="downloadCalendar">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {{ t('schedule.addToCalendar') }}
+        </button>
+      </div>
+      <p v-if="calendarVisible" class="calendar-note">{{ t('schedule.calendarNote') }}</p>
     </template>
   </div>
 </template>
@@ -159,8 +207,38 @@ const days = computed(() => {
   max-width: 1360px;
 }
 
-.print-link {
-  margin: 24px 0 0;
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  margin-top: 24px;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.action-button:hover,
+.action-button:focus-visible {
+  border-color: var(--red);
+  color: var(--link);
+}
+
+.calendar-note {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .season-bar {

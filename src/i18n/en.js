@@ -75,6 +75,9 @@ export default {
     noSessions: 'No sessions',
     exceptionsTitle: 'Cancelled sessions',
     empty: 'There is no schedule published right now.',
+    addToCalendar: 'Add to calendar',
+    calendarNote:
+      'The file is a snapshot. Changes to the schedule do not reach calendars that already imported it – download it again after a change.',
   },
   groups: {
     title: 'Classes & prices',
