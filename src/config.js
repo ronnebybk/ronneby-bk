@@ -4,6 +4,10 @@
 export default {
   clubName: 'Ronneby Boxing Team',
 
+  // The one place for the site's public address (AC8 of #21): canonical link, link preview,
+  // sitemap, robots.txt and structured data all derive from this. Trailing slash required.
+  siteUrl: 'https://ronnebybk.github.io/ronneby-bk/',
+
   // Google Sheet. See HOWTO.md, section 4.
   // Leave publishedId empty to run the site on the built-in example data.
   sheet: {
