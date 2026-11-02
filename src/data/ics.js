@@ -34,18 +34,21 @@ function escapeText(value) {
     .replace(/\r?\n/g, '\\n')
 }
 
+// UTF-8 byte length without Node's Buffer, so the module also runs in the browser.
+const encoder = new TextEncoder()
+const byteLength = (text) => encoder.encode(text).length
+
 // Folds a line at 75 octets (UTF-8 bytes), so å/ä/ö don't break the limit.
 function fold(line) {
-  const bytes = Buffer.byteLength(line, 'utf8')
-  if (bytes <= 75) return line
+  if (byteLength(line) <= 75) return line
   const out = []
   let rest = line
   let first = true
-  while (Buffer.byteLength(rest, 'utf8') > (first ? 75 : 74)) {
+  while (byteLength(rest) > (first ? 75 : 74)) {
     const limit = first ? 75 : 74
     // Walk back to a character whose byte length fits the limit.
     let cut = rest.length
-    while (Buffer.byteLength(rest.slice(0, cut), 'utf8') > limit) cut--
+    while (byteLength(rest.slice(0, cut)) > limit) cut--
     out.push((first ? '' : ' ') + rest.slice(0, cut))
     rest = rest.slice(cut)
     first = false
@@ -133,6 +136,13 @@ function slug(value) {
 // change with the site's language.
 export function fileName(name) {
   return `ronnebyboxing-${slug(name)}.ics`
+}
+
+// Whether any session still has an occurrence in the range, so the page can hide the
+// button when the shown season has no dates left.
+export function hasEvents(season, sessions, today) {
+  const rangeStart = season.from > today ? season.from : today
+  return sessions.some((session) => toIso(firstOccurrence(session.day, rangeStart)) <= toIso(lastOccurrence(session.day, season.to)))
 }
 
 // Builds the calendar text.

@@ -1,14 +1,16 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { firstQuery } from '../router.js'
 import SessionItem from '../components/SessionItem.vue'
 import DataNotice from '../components/DataNotice.vue'
-import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, todayIso, exceptionFor, groupStyle, groupNames, upcomingExceptions } from '../data/store.js'
+import { state, hasData, currentSeason, visibleSeasons, useSeasonSchedule, scheduleQuery, weekday, todayIso, exceptionFor, groupStyle, groupName, groupNames, upcomingExceptions } from '../data/store.js'
+import { buildCalendar, fileName, hasEvents } from '../data/ics.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized, formatDate, formatWeekday } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const selectedName = ref(null)
 const chosenGroup = ref('')
@@ -52,6 +54,43 @@ const filtered = computed(() =>
 )
 
 const isCurrent = computed(() => season.value === currentSeason.value)
+
+// The calendar button follows the group filter (D1/D2): a group's file holds only that
+// group's sessions, "All groups" holds every session in the shown season.
+const calendarVisible = computed(() => hasEvents(season.value, sessions.value, todayIso()))
+
+function downloadCalendar() {
+  const group = groupFilter.value
+  const inGroupFile = group ? sessions.value.filter((s) => s.groups.includes(group)) : sessions.value
+  const text = buildCalendar({
+    season: season.value,
+    sessions: inGroupFile,
+    isCancelled: (iso, session) => Boolean(exceptionFor(iso, session.groups)),
+    today: todayIso(),
+    now: new Date(),
+    summary: (session) => (group ? groupName(group) : groupNames(session.groups)),
+    location: localized(state.club.venue, state.club.venueEn),
+    description: (session) => {
+      const lines = []
+      if (session.coach) lines.push(`${t('common.coach')}: ${session.coach}`)
+      const note = localized(session.note, session.noteEn)
+      if (note) lines.push(note)
+      const href = router.resolve({ name: 'schedule', query: scheduleQuery(season.value, group || undefined) }).href
+      lines.push(new URL(href, window.location.href).href)
+      return lines.join('\n')
+    },
+  })
+  const blob = new Blob([text], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  // The file name always uses the Swedish name (A2), so it doesn't change with the site's language.
+  a.download = fileName(group || 'Alla grupper')
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
 
 // In the current season each session is tagged with the exception on its next occurrence within
 // the coming 7 days, so a cancelled day is visible in the week itself. Other seasons stay raw.
@@ -146,9 +185,15 @@ const days = computed(() => {
         </section>
       </div>
 
-      <p class="print-link">
-        <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
-      </p>
+      <div class="page-actions">
+        <p class="print-link">
+          <RouterLink :to="{ name: 'posterSchedule', query: scheduleQuery(season, groupFilter) }">{{ t('poster.link') }}</RouterLink>
+        </p>
+        <div v-if="calendarVisible" class="calendar-action">
+          <button type="button" class="calendar-button" @click="downloadCalendar">{{ t('schedule.addToCalendar') }}</button>
+          <p class="calendar-note">{{ t('schedule.calendarNote') }}</p>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -161,6 +206,34 @@ const days = computed(() => {
 
 .print-link {
   margin: 24px 0 0;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 24px;
+}
+
+.calendar-action {
+  margin-top: 24px;
+  max-width: 420px;
+}
+
+.calendar-button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--red-strong);
+  background: var(--red-strong);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calendar-note {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .season-bar {

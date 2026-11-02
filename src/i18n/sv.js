@@ -75,6 +75,9 @@ export default {
     noSessions: 'Inga pass',
     exceptionsTitle: 'Inställda pass',
     empty: 'Det finns inget schema upplagt just nu.',
+    addToCalendar: 'Lägg till i kalender',
+    calendarNote:
+      'Filen är en ögonblicksbild. Ändringar i schemat når inte kalender som redan har laddat ner filen – ladda ner den igen efter en ändring.',
   },
   groups: {
     title: 'Grupper & priser',
