@@ -118,9 +118,9 @@ export const notices = [
   {
     'Typ': 'Nyhet',
     'Rubrik': 'Ny nybörjargrupp i januari',
-    'Rubrik (EN)': 'New beginner group in January',
+    'Rubrik (EN)': 'New beginner class in January',
     'Meddelande': 'Vi startar en extra nybörjargrupp på lördagar. Anmäl intresse till en tränare.',
-    'Meddelande (EN)': 'We are starting an extra beginner group on Saturdays. Tell a coach if you are interested.',
+    'Meddelande (EN)': 'We are starting an extra beginner class on Saturdays. Tell a coach if you are interested.',
     'Visa från': '2026-10-01',
   },
   {
@@ -208,13 +208,13 @@ export const trial = [
     'Rubrik': 'Vad kostar det?',
     'Rubrik (EN)': 'What does it cost?',
     'Text': 'Att prova på är gratis. Medlemskap och priser hittar du på #/grupper. Officiella dokument som regler och stadgar finns på #/dokument.',
-    'Text (EN)': 'Trying a session is free. Membership and prices are under #/grupper. Official documents like rules and statutes are under #/dokument.',
+    'Text (EN)': 'Trying a session is free. Membership and prices are on the #/grupper page. Official documents like rules and statutes are on the #/dokument page.',
   },
   {
     'Rubrik': 'Hur tar jag mig dit?',
     'Rubrik (EN)': 'How do I get there?',
     'Text': 'Lokalen och adressen hittar du under #/kontakt.',
-    'Text (EN)': 'The venue and address are under #/kontakt.',
+    'Text (EN)': 'The venue and address are on the #/kontakt page.',
   },
   {
     'Rubrik (EN)': 'English-only row',
@@ -232,7 +232,7 @@ export const faq = [
     'Svar':
       'Du kan låna handskar av klubben de första gångerna. Har du egna är det bra, men köp inget förrän du har provat.',
     'Svar (EN)':
-      'You can borrow gloves from the club for your first few sessions. Your own are nice to have, but do not buy anything before you have tried.',
+      "You can borrow gloves from the club for your first few sessions. Your own are nice to have, but don't buy any until you've tried.",
   },
   {
     'Fråga': 'Får föräldrar titta på?',
@@ -247,7 +247,7 @@ export const faq = [
     'Svar':
       'Vi har grupper från 8 år och uppåt:\n- Knattar: 8–12 år\n- Nybörjare: från 13 år\n- Tävling: från 15 år\n\nÄr du osäker på vilken grupp som passar? Hör av dig till en tränare.',
     'Svar (EN)':
-      'We have groups from age 8 and up:\n- Kids: 8–12\n- Beginners: from 13\n- Competition: from 15\n\nNot sure which group suits you? Talk to a coach.',
+      'We have classes from age 8 and up:\n- Kids: 8–12\n- Beginners: from 13\n- Competition: from 15\n\nNot sure which class suits you? Talk to a coach.',
   },
   {
     'Fråga': 'Hur anmäler jag mig?',
@@ -365,7 +365,7 @@ export const events = [
     'Plats': 'Ronnebyhallen',
     'Plats (EN)': 'Ronnebyhallen',
     'Beskrivning': 'Tre dagars läger för alla grupper. Ta med sovsäck och vattenflaska.\n- Sovsäck\n- Vattenflaska',
-    'Beskrivning (EN)': 'Three-day camp for all groups. Bring a sleeping bag and a water bottle.\n- Sleeping bag\n- Water bottle',
+    'Beskrivning (EN)': 'Three-day camp for all classes. Bring a sleeping bag and a water bottle.\n- Sleeping bag\n- Water bottle',
     'Bild': 'https://drive.google.com/file/d/1ExampleImageId0001/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0002/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0003/view?usp=sharing',
     'Länk': 'https://example.com/anmalan-vinterlager',
   },
@@ -379,7 +379,7 @@ export const events = [
     'Tid (EN)': '10:00–16:00',
     'Plats': 'Ronnebyhallen',
     'Beskrivning': 'Anmälan senast två veckor innan. Se #/kontakt för kontaktuppgifter.',
-    'Beskrivning (EN)': 'Sign up at the latest two weeks before. See #/contact for contact details.',
+    'Beskrivning (EN)': 'Sign up no later than two weeks before the event. See #/kontakt for contact details.',
     'Bild': 'https://drive.google.com/file/d/1ExampleImageId0004/view?usp=sharing',
     'Länk': 'https://example.com/anmalan-box-cup',
   },

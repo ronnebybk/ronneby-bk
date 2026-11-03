@@ -73,8 +73,8 @@ const email = computed(() => state.club.email)
 
       <h2>Facebook and Instagram</h2>
       <p>
-        Our Facebook and Instagram feeds are only loaded when you click “Show”. Meta may then set cookies and see that
-        you visited the page, according to Meta's own privacy policy.
+        Our Facebook and Instagram feeds are only loaded when you click the button to show them. Meta may then set
+        cookies and see that you visited the page, according to Meta's own privacy policy.
       </p>
 
       <h2>The schedule</h2>

@@ -77,12 +77,12 @@ export default {
     empty: 'There is no schedule published right now.',
     addToCalendar: 'Add to calendar',
     calendarNote:
-      'The file is a snapshot. Changes to the schedule do not reach calendars that already imported it – download it again after a change.',
+      "The file is a snapshot. Changes to the schedule won't update calendars that have already imported it – download it again after a change.",
   },
   groups: {
     title: 'Classes & prices',
-    intro: 'Everyone is welcome to try. Contact a coach or just drop by a session.',
-    trains: 'Trains',
+    intro: 'Everyone is welcome to try. Contact a coach or just drop in on a session.',
+    trains: 'Training times',
     perPeriod: '{price} SEK / {period}',
     noSessions: 'No sessions this season.',
     empty: 'No classes published right now.',
@@ -97,7 +97,7 @@ export default {
   },
   trial: {
     title: 'Try boxing',
-    intro: "You don't need experience or to be fit to start. Here is what you need to know before your first time.",
+    intro: "You don't need any experience or fitness to get started. Here is what you need to know before your first time.",
     sections: [
       {
         title: 'What should I bring?',
@@ -117,11 +117,11 @@ export default {
       },
       {
         title: 'What does it cost?',
-        text: 'Trying a session is free. Membership and prices are under #/grupper.',
+        text: 'Trying a session is free. Membership and prices are on the #/grupper page.',
       },
       {
         title: 'How do I get there?',
-        text: 'The venue and address are under #/kontakt.',
+        text: 'The venue and address are on the #/kontakt page.',
       },
     ],
     agesTitle: 'Which class suits me?',
@@ -297,7 +297,7 @@ export default {
         notHttps: '{where}: "{value}" must start with https:// – the value is not used',
         notHttpsSkipped: '{where}: "{value}" must start with https:// – the row is not shown',
         unknownType: '{where}: type "{value}" is unknown – the row is not shown',
-        unknownPeriod: '{where}: price period "{value}" is unknown, counted as term',
+        unknownPeriod: '{where}: price period "{value}" is unknown, treated as a term',
         priceNoAmount: '{where}: price period "{value}" has no price – the value is not used',
         priceExtraDigits: '{where}: price "{value}" has extra characters between the digits – the price will be wrong, write digits only',
         unknownField: '{where}: field "{value}" is unknown – the row is not shown',
