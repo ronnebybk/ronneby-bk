@@ -32,11 +32,11 @@ switch the sheet to that tab. A correctly filled-in sheet gives no warnings.
 ### Flikarna
 <!-- id: flikar · flikar: alla -->
 
-**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Evenemang · Resultat · Sponsorer.
+**Flikar:** Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Evenemang · Resultat · Album · Sponsorer.
 
 #### The tabs
 
-**Tabs:** the sheet's tabs: Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Evenemang · Resultat · Sponsorer (the tab names stay Swedish in the sheet itself).
+**Tabs:** the sheet's tabs: Schema · Grupper & priser · Tränare · Säsonger · Anslag · Klubbinfo · Prova på · Frågor · Dokument · Evenemang · Resultat · Album · Sponsorer (the tab names stay Swedish in the sheet itself).
 
 ## Vill du…
 
@@ -228,6 +228,19 @@ Markera raden → högerklicka → *Ta bort rad*. Inom ca 5 minuter är resultat
 #### Delete a result
 
 Select the row → right-click → *Delete row*. Within about 5 minutes the result is gone from the page (but may remain in the weekly backup for up to 90 days). Anyone who already has the page open or saved in the browser sees the change the next time the page loads.
+
+### Lägga till ett fotoalbum
+<!-- id: album · flikar: Album · sök: album, bilder, foto, galleri, drive, bildspel -->
+
+Ny rad i **Album**: valfri *Rubrik*, valfritt *Datum* (`ÅÅÅÅ-MM-DD`), valfri *Beskrivning*, och i *Bild* en delningslänk från klubbens Drive **per rad** (Alt+Enter mellan länkarna) – första giltiga bilden blir omslag. Dela varje fil i Drive som *Alla som har länken*. Albumet syns på sidan **Bilder** (`/#/bilder`) inom ca 5 minuter, i samma ordning som raderna, och går att länka till direkt (`/#/bilder/<albumets-namn>`). En rad utan någon giltig bildlänk visas inte – adminsidan varnar om vilka rader och länkar som inte fungerar. Engelska texter skrivs i kolumnerna med *(EN)*.
+
+**Obs – offentligt och samtycke:** allt i bladet visas offentligt på hemsidan. Ladda bara upp bilder på barn där en vårdnadshavare har gett sitt samtycke.
+
+#### Add a photo album
+
+New row in **Album**: optional *Rubrik*, optional *Datum* (`YYYY-MM-DD`), optional *Beskrivning*, and in *Bild* one share link from the club's Drive **per line** (Alt+Enter between the links) – the first valid image becomes the cover. Share each file in Drive as *Anyone with the link*. The album appears on the **Bilder** page (`/#/bilder`) within about 5 minutes, in row order, and can be linked to directly (`/#/bilder/<album-name>`). A row without any valid image link is not shown – the admin page warns about the rows and links that don't work. English texts go in the *(EN)* columns.
+
+**Note – public and consent:** everything in the sheet is shown publicly on the website. Only upload photos of children where a guardian has given consent.
 
 ### Lägga till en sponsor
 <!-- id: sponsor · flikar: Sponsorer · sök: partner, logga, företag -->

@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import EventCard from '../components/EventCard.vue'
 
-import EventSlideshow from '../components/EventSlideshow.vue'
+import ImageSlideshow from '../components/ImageSlideshow.vue'
 
 import TextBlocks from '../components/TextBlocks.vue'
 
@@ -241,7 +241,7 @@ function placementText(result) {
       <template v-if="openCard">
         <button type="button" class="close" :aria-label="t('events.close')" @click="closeDialog">×</button>
         <div class="dialog-scroll">
-          <EventSlideshow v-if="dialogImages.length" :images="dialogImages" :title="dialogTitle" />
+          <ImageSlideshow v-if="dialogImages.length" :images="dialogImages" :title="dialogTitle" />
 
           <h2 class="dialog-title">{{ dialogTitle }}</h2>
           <p class="meta muted">{{ dialogMeta }}</p>

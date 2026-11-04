@@ -22,6 +22,7 @@ export default {
       documents: '609606696', // Dokument
       results: '494604732', // Resultat
       events: '146285957', // Evenemang
+      albums: '1765959356', // Album
       sponsors: '1868573772', // Sponsorer
       seasons: '956987468',
       groups: '1580659590',

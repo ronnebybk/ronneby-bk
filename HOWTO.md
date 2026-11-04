@@ -68,6 +68,7 @@ Once a month, Dependabot may open one pull request that updates the GitHub Actio
 | FAQ questions and answers | The *Frågor* tab in the sheet (no code) |
 | Official documents (rules, statutes, minutes) | The *Dokument* tab in the sheet; the PDFs in the club's Drive folder (no code) |
 | Competition results | The *Resultat* tab in the sheet (no code) |
+| Photo albums on the *Bilder* page (`/#/bilder`) | The *Album* tab in the sheet (no code; set `gids.albums` in `src/config.js`) |
 | Interface texts | `src/i18n/sv.js` and `src/i18n/en.js` (keep both in sync) |
 | Privacy policy text | `src/views/PrivacyView.vue` |
 | Colours, fonts | `src/style.css` (variables at the top) |
@@ -137,7 +138,7 @@ Do this if the link has leaked, or someone who had it should no longer edit.
 
 | What | How it's backed up | Restore |
 | --- | --- | --- |
-| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Evenemang*, *Resultat* and *Sponsorer* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
+| Sheet content | **Automatic, weekly:** the *Back up Google Sheet* workflow saves the four required tabs plus *Anslag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Evenemang*, *Resultat*, *Album* and *Sponsorer* when they are configured, as CSV every Monday. Each snapshot is kept for 90 days, outside Google. | See below |
 | Sheet content and structure (dropdowns, protection) | **Manual, a few times a year** and before big changes: **File → Download → Microsoft Excel (.xlsx)**, stored with the board | Upload to Drive → *Save as Google Sheets* |
 | Recent mistakes or vandalism | Google's **version history** | *File → Version history* → restore |
 | The code | Every clone is a full copy. `main` is protected against force-push and deletion. Run `git pull` on your computers regularly. | `git push` from any up-to-date clone |
@@ -179,6 +180,7 @@ create the DNS records GitHub shows. Then update the two absolute share-preview 
 | The *Prova på* page shows the built-in text | The *Prova på* tab has no row with a Swedish *Rubrik* or *Text* (an English-only row is skipped), or `gids.trial` in `src/config.js` is empty. |
 | A question doesn't show | *Fråga* or *Svar* is empty in that row, or `gids.faq` in `src/config.js` is empty. |
 | A result doesn't show | *Datum* can't be read (use `YYYY-MM-DD`), or *Tävling*, *Namn* or *Placering* is empty in that row, or `gids.results` in `src/config.js` is empty. If consent is missing, the row should be deleted. |
+| An album doesn't show, or there is no *Bilder* menu link | The *Album* row has no valid image link in *Bild* (see the admin page's warnings), or `gids.albums` in `src/config.js` is empty. |
 | Banner "Kunde inte hämta senaste schemat…" | Google couldn't be reached. The visitor sees their last saved copy. Check that the sheet is still published (*File → Share → Publish to web*). |
 | Banner "Exempeldata visas…" | `publishedId` in `src/config.js` is empty. |
 | Admin page blank | Browser blocks the embedded sheet (common on iPhone/Safari). Use **Öppna i Google Sheets**. |
@@ -218,10 +220,11 @@ Use the club's Google account, not a personal one. The board keeps the login det
    `Övrigt`, set to *Show a warning* (not *Reject the input*), so free text still works. Also check the date
    validation on *Datum*/*Slutdatum*: select `D2:E300` → **Data → Data validation → Is valid date**.
    In *Undantag*, check the date validation on *Datum*: select `A2:A300` → **Data → Data validation → Is valid date**.
+   In *Album*, check the date validation on *Datum*: select `C2:C300` → **Data → Data validation → Is valid date**.
 4. In each validation rule, set **If the data is invalid → Reject the input**.
 5. Protect the header rows: **Data → Protect sheets and ranges** → `Schema!1:1` → **Only you**.
    Repeat for `Grupper!1:1`, `Tränare!1:1`, `Säsonger!1:1`, `Anslag!1:1`, `Undantag!1:1`, `Klubbinfo!1:1`, `Prova på!1:1`, `Frågor!1:1`,
-   `Dokument!1:1`, `Evenemang!1:1`, `Resultat!1:1`, `Sponsorer!1:1`.
+   `Dokument!1:1`, `Evenemang!1:1`, `Resultat!1:1`, `Album!1:1`, `Sponsorer!1:1`.
    Also protect `Klubbinfo!A:A`, so editors can change the values but not rename or delete a setting.
    Use **Restrict who can edit → Only you**, not *Show a warning*. Test it in a private window, since
    the owner's account is never blocked.
