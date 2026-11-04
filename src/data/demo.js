@@ -457,9 +457,9 @@ export const exceptions = [
   },
 ]
 
-// Example sponsors: one linked with a local logo, one without a link (name as text), one with a
-// long description (gets the "Visa mer" pop-up), one with a "kommer" logo cell, one with a missing
-// logo file.
+// Example sponsors: one linked with a local logo, one without a link (not clickable), one with no
+// logo (name as text) and a long description (gets the "Visa mer" pop-up), one with a "kommer"
+// logo cell, one with a missing logo file.
 export const sponsors = [
   {
     'Namn': 'Ronneby Bygg AB',
