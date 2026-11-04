@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents, parseAlbums } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
@@ -28,6 +28,8 @@ export const state = reactive({
   results: [],
   // Events from the Evenemang tab; empty until the tab exists in the sheet.
   events: [],
+  // Photo albums from the Album tab; empty hides the Bilder page's nav link.
+  albums: [],
   notices: [],
   // Contact details, venue and social links from the Klubbinfo tab; a missing setting is absent.
   club: {},
@@ -60,6 +62,7 @@ function apply(raw) {
   state.documents = parseDocuments(raw.documents ?? [], problems)
   state.results = parseResults(raw.results ?? [], problems)
   state.events = parseEvents(raw.events ?? [], problems)
+  state.albums = parseAlbums(raw.albums ?? [], problems)
   state.sponsors = parseSponsors(raw.sponsors ?? [], problems)
   state.rowProblems = problems
 }
@@ -133,12 +136,13 @@ function loadPublished(gen) {
     fetchOptional('documents', cached),
     fetchOptional('results', cached),
     fetchOptional('events', cached),
+    fetchOptional('albums', cached),
     fetchOptional('sponsors', cached),
     fetchOptional('exceptions', cached),
   ])
-    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors, exceptions]) => {
+    .then(([seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, albums, sponsors, exceptions]) => {
       if (gen !== generation) return
-      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, sponsors, exceptions }
+      const raw = { seasons, groups, schedule, coaches, notices, club, trial, faq, documents, results, events, albums, sponsors, exceptions }
       apply(raw)
       saveJson(CACHE_KEY, raw)
       state.status = 'live'
@@ -160,7 +164,7 @@ async function loadPreview() {
   preview.fallback = false
 
   const required = TABS.map((tab) => fetchTab(tab, exportUrl(tab)))
-  const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'sponsors', 'exceptions']
+  const optional = ['notices', 'club', 'trial', 'faq', 'documents', 'results', 'events', 'albums', 'sponsors', 'exceptions']
     .filter((tab) => config.sheet.gids[tab])
     .map((tab) => {
       const promise = fetchTab(tab, exportUrl(tab))

@@ -15,11 +15,13 @@ const emit = defineEmits(['open-tab', 'open-help'])
 
 const failing = ref([])
 
-// Coaches, sponsors and every event image share one list, each labelled with its kind.
+// Coaches, sponsors, every event image and album covers (D7: only the cover, not every line)
+// share one list, each labelled with its kind.
 const items = () => [
   ...state.coaches.map((c) => ({ ...c, kind: 'coach' })),
   ...state.sponsors.map((s) => ({ ...s, kind: 'sponsor', image: s.logo, imageValue: s.logoValue })),
   ...state.events.flatMap((e) => e.images.map((img) => ({ name: e.title, kind: 'event', image: img.image, imageValue: img.imageValue }))),
+  ...state.albums.map((a) => ({ name: a.title || `Album ${a.n}`, kind: 'album', image: a.images[0], imageValue: a.coverValue })),
 ]
 
 // Re-check when the data changes (cached copy → live copy), keyed by name and raw value so a
@@ -57,7 +59,7 @@ const warnings = computed(() =>
 
 // #40: a skipped row or dropped value. unreadable on these tab+column pairs drops only the value
 // (D3) — Resultat also has a Datum column, but there the whole row is hidden.
-const ROW_DROPPED_COLUMNS = new Set(['Schema|Slut', 'Dokument|Datum', 'Grupper|Pris (kr)'])
+const ROW_DROPPED_COLUMNS = new Set(['Schema|Slut', 'Dokument|Datum', 'Grupper|Pris (kr)', 'Album|Datum'])
 
 // parse.js emits kebab-case reasons; the keys under admin.warnings.row are camelCase.
 const ROW_KEYS = {
@@ -75,6 +77,8 @@ const ROW_KEYS = {
   'club-invalid': 'clubInvalid',
   'club-duplicate': 'clubDuplicate',
   'from-after-to': 'fromAfterTo',
+  'not-image': 'notImage',
+  'no-image': 'noImage',
 }
 
 function rowText(w) {
@@ -97,6 +101,7 @@ const TAB_MAIN_ENTRY = {
   Evenemang: 'evenemang',
   Resultat: 'lagga-till-resultat',
   Sponsorer: 'sponsor',
+  Album: 'album',
 }
 
 const ROW_HELP = {

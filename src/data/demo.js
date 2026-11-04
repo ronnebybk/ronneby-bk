@@ -14,6 +14,7 @@ export const columns = {
   documents: ['Kategori', 'Kategori (EN)', 'Titel', 'Titel (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Datum', 'Länk'],
   results: ['Datum', 'Tävling', 'Tävling (EN)', 'Ort', 'Namn', 'Junior/Senior', 'Klass', 'Klass (EN)', 'Placering', 'Placering (EN)', 'Länk'],
   events: ['Typ', 'Rubrik', 'Rubrik (EN)', 'Datum', 'Slutdatum', 'Tid', 'Tid (EN)', 'Plats', 'Plats (EN)', 'Beskrivning', 'Beskrivning (EN)', 'Bild', 'Länk'],
+  albums: ['Rubrik', 'Rubrik (EN)', 'Datum', 'Beskrivning', 'Beskrivning (EN)', 'Bild'],
   sponsors: ['Namn', 'Logga', 'Länk', 'Beskrivning', 'Beskrivning (EN)'],
 }
 
@@ -444,6 +445,52 @@ export const events = [
   { 'Typ': 'Tävling', 'Rubrik': 'Påskcupen', 'Datum': isoDate(thisYear - 1, 4, 10), 'Plats': 'Växjö', 'Bild': '', 'Länk': '' },
   // Skipped: no Rubrik.
   { 'Typ': 'Läger', 'Datum': isoDays(20), 'Plats': 'Okänt läger' },
+]
+
+// Photo albums for the Bilder page (#47): titled+dated+described, untitled+dated, untitled+undated,
+// one with an invalid Bild line, one with only invalid lines (skipped), one with an unreadable
+// date, and one with an English title only.
+export const albums = [
+  {
+    'Rubrik': 'Sommarlägret 2026',
+    'Rubrik (EN)': 'Summer camp 2026',
+    'Datum': isoDate(thisYear, 8, 10),
+    'Beskrivning': 'Tre dagar i Ronnebyhallen.\n- Sovsäck\n- Vattenflaska',
+    'Beskrivning (EN)': 'Three days at Ronnebyhallen.\n- Sleeping bag\n- Water bottle',
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage01/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleAlbumImage02/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleAlbumImage03/view?usp=sharing',
+  },
+  // Untitled but dated: the card shows the date, the slug is album-2.
+  {
+    'Datum': isoDate(thisYear, 4, 12),
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage04/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleAlbumImage05/view?usp=sharing',
+  },
+  // Untitled and undated: cover and count only, slug album-3.
+  {
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage06/view?usp=sharing',
+  },
+  // One invalid line among valid ones: the line is skipped, the album shows, admin warns.
+  {
+    'Rubrik': 'DM i Ronneby',
+    'Datum': isoDate(thisYear, 9, 19),
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage07/view?usp=sharing\nfoto kommer\nhttps://drive.google.com/file/d/1ExampleAlbumImage08/view?usp=sharing',
+  },
+  // Only invalid lines: skipped entirely, admin warns no-image.
+  {
+    'Rubrik': 'Träning i klubblokalen',
+    'Bild': 'inte en länk\nhttps://drive.google.com/drive/folders/1FolderExample0002',
+  },
+  // Unreadable Datum: the album shows without a date, admin warns.
+  {
+    'Rubrik': 'Vårträffen',
+    'Datum': 'mitten av mars',
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage09/view?usp=sharing',
+  },
+  // English title only: the slug falls back to album-N, the English title shows in English.
+  {
+    'Rubrik (EN)': 'Autumn competition',
+    'Datum': isoDate(thisYear, 10, 3),
+    'Bild': 'https://drive.google.com/file/d/1ExampleAlbumImage10/view?usp=sharing',
+  },
 ]
 
 export const results = [

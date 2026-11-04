@@ -725,3 +725,65 @@ export function parseEvents(rows, problems = []) {
     })
     .filter(Boolean)
 }
+
+// The Album tab (Bilder page): one row per album, Drive share links one per line in Bild.
+// A row with no valid image is skipped; each invalid line warns, and an unreadable Datum drops
+// only the date (AC4). Slugs (D4): from the title, else album-N, duplicates get -2, -3 in row order.
+
+export function slugify(title) {
+  return clean(title)
+    .toLowerCase()
+    .replace(/[åä]/g, 'a')
+    .replace(/ö/g, 'o')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+// Changes the size of a Drive thumbnail URL (imageUrl builds sz=w800); any other URL has no
+// size knob and is returned unchanged.
+export function resizeImage(url, width) {
+  if (!url.includes('drive.google.com/thumbnail')) return url
+  return url.replace(/sz=w\d+/, `sz=w${width}`)
+}
+
+export function parseAlbums(rows, problems = []) {
+  const albums = []
+  const usedSlugs = new Set()
+  for (const [i, row] of rows.map(normalizeRow).entries()) {
+    const rowNum = rowOf(row, i)
+    const title = field(row, 'Rubrik')
+    const dateText = field(row, 'Datum')
+    const date = parseDate(dateText)
+    // An unreadable Datum drops only the date, the album still shows.
+    if (dateText && !date) problems.push({ tab: 'Album', row: rowNum, reason: 'unreadable', column: 'Datum', value: dateText })
+    const lines = field(row, 'Bild').split(/\r?\n/).map(clean).filter(Boolean)
+    const parsedLines = lines.map((value) => ({ image: imageUrl(value, 'albums'), value }))
+    for (const line of parsedLines) {
+      if (!line.image) problems.push({ tab: 'Album', row: rowNum, reason: 'not-image', column: 'Bild', value: line.value })
+    }
+    const valid = parsedLines.filter((line) => line.image)
+    if (!lines.length) problems.push({ tab: 'Album', row: rowNum, reason: 'missing', column: 'Bild' })
+    else if (!valid.length) problems.push({ tab: 'Album', row: rowNum, reason: 'no-image', column: 'Bild' })
+    if (!valid.length) continue
+    // D5: n is the position among the shown albums, after skipped rows.
+    const n = albums.length + 1
+    const base = slugify(title) || `album-${n}`
+    let slug = base
+    for (let k = 2; usedSlugs.has(slug); k++) slug = `${base}-${k}`
+    usedSlugs.add(slug)
+    albums.push({
+      row: rowNum,
+      n,
+      slug,
+      title,
+      titleEn: field(row, 'Rubrik (EN)'),
+      date,
+      description: field(row, 'Beskrivning'),
+      descriptionEn: field(row, 'Beskrivning (EN)'),
+      images: valid.map((line) => line.image),
+      // The cover line as typed, so the admin page's image check can point at it.
+      coverValue: valid[0].value,
+    })
+  }
+  return albums
+}

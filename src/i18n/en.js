@@ -252,6 +252,7 @@ export default {
       documents: 'Documents',
       results: 'Results',
       events: 'Events',
+      albums: 'Albums',
       sponsors: 'Sponsors',
     },
     help:
@@ -307,6 +308,8 @@ export default {
         clubInvalid: '{where}: {column} "{value}" is not valid – the value is not used',
         clubDuplicate: '{where}: {column} was already set in row {value} – the value is not used',
         fromAfterTo: '{where}: Från is after Till – check the dates',
+        notImage: '{where}: "{value}" is not an image – that line is skipped',
+        noImage: '{where}: no valid images in Bild – the album is not shown',
       },
     },
     imageWarnings: {
@@ -317,6 +320,7 @@ export default {
         coach: 'coach',
         sponsor: 'sponsor',
         event: 'event',
+        album: 'album',
       },
     },
   },

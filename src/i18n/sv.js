@@ -253,6 +253,7 @@ export default {
       documents: 'Dokument',
       results: 'Resultat',
       events: 'Evenemang',
+      albums: 'Album',
       sponsors: 'Sponsorer',
     },
     help:
@@ -308,6 +309,8 @@ export default {
         clubInvalid: '{where}: {column} "{value}" är inte giltigt – värdet används inte',
         clubDuplicate: '{where}: {column} sattes redan på rad {value} – värdet används inte',
         fromAfterTo: '{where}: Från ligger efter Till – kontrollera datumen',
+        notImage: '{where}: "{value}" är ingen bild – den raden hoppas över',
+        noImage: '{where}: inga giltiga bilder i Bild – albumet visas inte',
       },
     },
     imageWarnings: {
@@ -318,6 +321,7 @@ export default {
         coach: 'tränare',
         sponsor: 'sponsor',
         event: 'evenemang',
+        album: 'album',
       },
     },
   },
