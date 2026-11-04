@@ -741,7 +741,7 @@ export function parseEvents(rows, problems = []) {
 // A row with no valid image is skipped; each invalid line warns, and an unreadable Datum drops
 // only the date (AC4). Slugs (D4): from the title, else album-N, duplicates get -2, -3 in row order.
 
-export function slugify(title) {
+function slugify(title) {
   return clean(title)
     .toLowerCase()
     .replace(/[åä]/g, 'a')

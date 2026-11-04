@@ -386,7 +386,7 @@ export function scheduleQuery(season, group) {
   return query
 }
 
-export function findGroup(name) {
+function findGroup(name) {
   return state.groups.find((g) => g.name === name)
 }
 
@@ -419,7 +419,7 @@ function seasonOn(iso) {
 }
 
 // Exceptions for one date (YYYY-MM-DD), earliest first.
-export function exceptionsOn(iso) {
+function exceptionsOn(iso) {
   return state.exceptions.filter((e) => e.date === iso)
 }
 
@@ -464,7 +464,7 @@ export const todayInfo = computed(() => {
 })
 
 // A stable colour per group, in sheet order.
-export function groupColorIndex(name) {
+function groupColorIndex(name) {
   const index = state.groups.findIndex((g) => g.name === name)
   return index === -1 ? 0 : index % 6
 }
