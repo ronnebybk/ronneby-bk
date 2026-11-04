@@ -62,6 +62,7 @@ Editors  → hidden /#/admin page    → the same Google Sheet, embedded in an i
 ```sh
 npm install
 npm run dev                       # http://localhost:5173 (reads the live sheet)
+npm test                          # unit tests for src/data/ (Vitest, one run)
 npm run build && npm run preview  # production build, http://localhost:4173
 ```
 
