@@ -21,6 +21,7 @@ Website for Ronneby Boxing Team: schedule, notices, news, classes and prices, co
 ```sh
 npm install
 npm run dev
+npm test
 ```
 
 | Path | What |

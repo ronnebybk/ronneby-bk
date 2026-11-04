@@ -4,7 +4,7 @@ import config from '../config.js'
 import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
-import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents } from './parse.js'
+import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents, pickCurrentSeason } from './parse.js'
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
@@ -347,16 +347,7 @@ export const medalCount = computed(() => {
 })
 
 // The season covering today; otherwise the next one to start; otherwise the most recent.
-export const currentSeason = computed(() => {
-  const today = todayIso()
-  const { seasons } = state
-  return (
-    seasons.find((s) => s.from <= today && today <= s.to) ??
-    seasons.find((s) => s.from > today) ??
-    seasons[seasons.length - 1] ??
-    null
-  )
-})
+export const currentSeason = computed(() => pickCurrentSeason(state.seasons, todayIso()))
 
 // Seasons that are current or still to come, for the schedule page's season picker.
 export const visibleSeasons = computed(() => {
