@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
+import { useModalDialog } from '../composables/useModalDialog.js'
 
 import EventCard from '../components/EventCard.vue'
 
@@ -100,29 +101,15 @@ watch(
 // the card button for free. The content is v-if'd, so no slideshow image is requested before the
 // dialog opens (AC6).
 const dialog = ref(null)
+const { open: openDialog, close: closeDialog, release, onBackdropClick } = useModalDialog(dialog)
 const openCard = computed(() => eventCards.value.find((c) => c.id === openId.value) ?? null)
-
-// showModal() blocks interaction but not scrolling: Chrome still scrolls the document under the
-// backdrop, so the root element is locked while the dialog is open.
-function lockScroll(lock) {
-  const value = lock ? 'hidden' : ''
-  document.documentElement.style.overflow = value
-  document.body.style.overflow = value
-}
 
 watch(openCard, async (card) => {
   await nextTick()
   if (!dialog.value) return
-  if (card && !dialog.value.open) {
-    dialog.value.showModal()
-    lockScroll(true)
-  } else if (!card && dialog.value.open) {
-    dialog.value.close()
-    lockScroll(false)
-  }
+  if (card && !dialog.value.open) openDialog()
+  else if (!card && dialog.value.open) closeDialog()
 }, { immediate: true })
-
-onBeforeUnmount(() => lockScroll(false))
 
 // Left/Right move focus between the cards, Home/End jump to the first/last of the same list.
 // The handler sits on each <ul> (upcoming plus one per past year), so wrapping stays within one
@@ -142,21 +129,12 @@ function onCardsKeydown(event) {
   buttons[next]?.focus()
 }
 
-function closeDialog() {
-  dialog.value?.close()
-}
-
 // The dialog's close event also fires on Esc and backdrop; route the state through onToggle so
 // the URL loses the visa id exactly once. The scroll lock is released here because on the Esc
-// path the browser has already closed the dialog, so the watch below sees dialog.open === false.
+// path the browser has already closed the dialog, so the watch above sees dialog.open === false.
 function onDialogClose() {
-  lockScroll(false)
+  release()
   if (openCard.value) onToggle(openCard.value, false)
-}
-
-// Clicking the dimmed backdrop means the click target is the <dialog> itself.
-function onDialogClick(event) {
-  if (event.target === dialog.value) closeDialog()
 }
 
 // Everything the pop-up shows for the open card.
@@ -237,7 +215,7 @@ function placementText(result) {
       </section>
     </template>
 
-    <dialog ref="dialog" class="event-dialog" @click="onDialogClick" @close="onDialogClose">
+    <dialog ref="dialog" class="event-dialog" @click="onBackdropClick" @close="onDialogClose">
       <template v-if="openCard">
         <button type="button" class="close" :aria-label="t('events.close')" @click="closeDialog">×</button>
         <div class="dialog-scroll">

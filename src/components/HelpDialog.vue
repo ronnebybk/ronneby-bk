@@ -1,11 +1,13 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useI18n } from '../i18n/index.js'
 import { parseHelp, renderMarkdown, searchHelp, slugOf } from '../data/help.js'
+import { useModalDialog } from '../composables/useModalDialog.js'
 
 const { t, locale } = useI18n()
 
 const dialog = ref(null)
+const { open: openDialog, release } = useModalDialog(dialog)
 const searchInput = ref(null)
 const entries = ref([])
 const loadError = ref(false)
@@ -50,17 +52,6 @@ async function ensureLoaded() {
   }
 }
 
-// showModal() blocks interaction but not scrolling: wheel over the dialog still scrolls the
-// document behind it (M1), so the root element is locked while the dialog is open — the same
-// pattern as EventsView.
-function lockScroll(lock) {
-  const value = lock ? 'hidden' : ''
-  document.documentElement.style.overflow = value
-  document.body.style.overflow = value
-}
-
-onBeforeUnmount(() => lockScroll(false))
-
 // open(entryId?) — called from the Hjälp button (no id) and from warning links (D4, with id).
 // The id is kept so a successful Retry after a load error can still jump to the entry.
 const pendingEntryId = ref('')
@@ -69,14 +60,12 @@ async function open(entryId) {
   pendingEntryId.value = entryId || ''
   await ensureLoaded()
   if (loadError.value) {
-    dialog.value.showModal()
-    lockScroll(true)
+    openDialog()
     return
   }
   query.value = ''
   activeTab.value = ''
-  dialog.value.showModal()
-  lockScroll(true)
+  openDialog()
   await nextTick()
   searchInput.value?.focus()
   if (pendingEntryId.value) scrollToEntry(pendingEntryId.value)
@@ -124,7 +113,7 @@ defineExpose({ open })
 </script>
 
 <template>
-  <dialog ref="dialog" class="help-dialog" @click="onDialogClick" @close="lockScroll(false)">
+  <dialog ref="dialog" class="help-dialog" @click="onDialogClick" @close="release">
     <div class="help-head">
       <h2>{{ t('admin.helpDialog.title') }}</h2>
       <button type="button" class="close" :aria-label="t('admin.helpDialog.close')" @click="close">×</button>

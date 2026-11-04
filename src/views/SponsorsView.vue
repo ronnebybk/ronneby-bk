@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { state } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
+import { useModalDialog } from '../composables/useModalDialog.js'
 import NewTabNote from '../components/NewTabNote.vue'
 import SponsorLogo from '../components/SponsorLogo.vue'
 
@@ -47,19 +48,11 @@ onBeforeUnmount(() => observer.disconnect())
 // One pop-up for the page; the browser's <dialog> gives Esc, backdrop and focus return for free (G1).
 const dialog = ref(null)
 const selected = ref(null)
+const { open: openDialog, close, release, onBackdropClick } = useModalDialog(dialog)
 
 function open(sponsor) {
   selected.value = sponsor
-  dialog.value.showModal()
-}
-
-function close() {
-  dialog.value.close()
-}
-
-// Clicking the dimmed backdrop means the click target is the <dialog> itself.
-function onDialogClick(event) {
-  if (event.target === dialog.value) close()
+  openDialog()
 }
 </script>
 
@@ -99,7 +92,7 @@ function onDialogClick(event) {
       <a :href="`mailto:${state.club.email}`">{{ state.club.email }}</a>
     </p>
 
-    <dialog ref="dialog" class="sponsor-dialog" @click="onDialogClick">
+    <dialog ref="dialog" class="sponsor-dialog" @click="onBackdropClick" @close="release">
       <template v-if="selected">
         <button type="button" class="close" :aria-label="t('sponsors.close')" @click="close">×</button>
         <span v-if="selected.logo && !failedLogos.has(selected.logo)" class="sponsor-tile">

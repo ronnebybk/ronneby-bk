@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 
 import { useI18n } from '../i18n/index.js'
+import { useModalDialog } from '../composables/useModalDialog.js'
 
 // Controlled full-screen lightbox shared by the events slideshow and the albums page: the
 // parent owns the index and listens to update:index / close. Only the current image is
@@ -17,16 +18,9 @@ const emit = defineEmits(['update:index', 'close'])
 const { t } = useI18n()
 
 const dialog = ref(null)
+const { open, close, release, onBackdropClick } = useModalDialog(dialog)
 
 const multiple = computed(() => props.images.length > 1)
-
-function open() {
-  dialog.value?.showModal()
-}
-
-function close() {
-  dialog.value?.close()
-}
 
 defineExpose({ open, close, isOpen: () => dialog.value?.open ?? false })
 
@@ -60,8 +54,10 @@ function onPointerUp(event) {
 }
 
 // Clicking the dimmed letterbox area means the click target is the <dialog> itself.
-function onClick(event) {
-  if (event.target === dialog.value) close()
+// release() runs before emit('close') so the parent's scroll-to-thumbnail happens unlocked.
+function onClose() {
+  release()
+  emit('close')
 }
 </script>
 
@@ -70,9 +66,9 @@ function onClick(event) {
     ref="dialog"
     class="lightbox"
     :aria-label="t('gallery.slideshow')"
-    @click="onClick"
+    @click="onBackdropClick"
     @keydown="onKeydown"
-    @close="emit('close')"
+    @close="onClose"
   >
     <img
       v-if="images[index]"
