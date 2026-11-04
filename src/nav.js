@@ -7,6 +7,7 @@ export const navLinks = [
   { to: '/prova-pa', key: 'nav.trial' },
   { to: '/fragor', key: 'nav.faq' },
   { to: '/evenemang', key: 'nav.events' },
+  { to: '/bilder', key: 'nav.albums' },
   { to: '/kontakt', key: 'nav.contact' },
 ]
 

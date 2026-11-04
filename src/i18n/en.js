@@ -6,6 +6,7 @@ export default {
     coaches: 'Coaches',
     faq: 'FAQ',
     events: 'Events',
+    albums: 'Photos',
     contact: 'Contact',
     trial: 'Try boxing',
     documents: 'Documents',
@@ -175,6 +176,14 @@ export default {
     enlarge: 'Enlarge image {n} of {total}',
     imageOf: 'Image {n} of {total}',
     close: 'Close',
+  },
+  albums: {
+    title: 'Photos',
+    empty: 'No albums published yet.',
+    count: '{n} photos',
+    countOne: '1 photo',
+    back: 'Back to photos',
+    untitled: 'Album {n}',
   },
   contact: {
     title: 'Contact',

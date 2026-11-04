@@ -6,6 +6,7 @@ export default {
     coaches: 'Tränare',
     faq: 'Frågor',
     events: 'Evenemang',
+    albums: 'Bilder',
     contact: 'Kontakt',
     trial: 'Prova på',
     documents: 'Dokument',
@@ -176,6 +177,14 @@ export default {
     enlarge: 'Förstora bild {n} av {total}',
     imageOf: 'Bild {n} av {total}',
     close: 'Stäng',
+  },
+  albums: {
+    title: 'Bilder',
+    empty: 'Inga album upplagda ännu.',
+    count: '{n} bilder',
+    countOne: '1 bild',
+    back: 'Tillbaka till bilder',
+    untitled: 'Album {n}',
   },
   contact: {
     title: 'Kontakt',

@@ -21,10 +21,14 @@ function onEscape() {
 
 watch(() => route.fullPath, () => (open.value = false))
 
-// The FAQ item appears only when its tab has rows; Evenemang shows when there are events or results.
+// The FAQ item appears only when its tab has rows; Evenemang shows when there are events or
+// results; Bilder only when the Album tab has at least one valid album (AC12).
 const links = computed(() =>
   navLinks.filter(
-    (link) => (link.to !== '/fragor' || state.faq.length) && (link.to !== '/evenemang' || state.events.length || state.results.length),
+    (link) =>
+      (link.to !== '/fragor' || state.faq.length) &&
+      (link.to !== '/evenemang' || state.events.length || state.results.length) &&
+      (link.to !== '/bilder' || state.albums.length),
   ),
 )
 </script>
