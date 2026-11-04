@@ -366,7 +366,8 @@ export const events = [
     'Plats (EN)': 'Ronnebyhallen',
     'Beskrivning': 'Tre dagars läger för alla grupper. Ta med sovsäck och vattenflaska.\n- Sovsäck\n- Vattenflaska',
     'Beskrivning (EN)': 'Three-day camp for all classes. Bring a sleeping bag and a water bottle.\n- Sleeping bag\n- Water bottle',
-    'Bild': 'https://drive.google.com/file/d/1ExampleImageId0001/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0002/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0003/view?usp=sharing',
+    // 11 images, so the slideshow shows the "n / total" counter instead of dots (D6).
+    'Bild': 'https://drive.google.com/file/d/1ExampleImageId0001/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0002/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0003/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0004/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0005/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0006/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0007/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0008/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0009/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0010/view?usp=sharing\nhttps://drive.google.com/file/d/1ExampleImageId0011/view?usp=sharing',
     'Länk': 'https://example.com/anmalan-vinterlager',
   },
   // Upcoming competition next month, one image, sign-up link, English variants.

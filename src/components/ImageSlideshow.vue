@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 
+import ImageLightbox from './ImageLightbox.vue'
+
 import { useI18n } from '../i18n/index.js'
 
 const props = defineProps({
@@ -18,6 +20,8 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 const behavior = () => (reducedMotion.matches ? 'auto' : 'smooth')
 
 const multiple = computed(() => props.images.length > 1)
+// More than 10 images: a counter replaces the dots (D6).
+const showCounter = computed(() => props.images.length > 10)
 
 // Wraps around: past the last image goes back to the first, before the first to the last.
 function goTo(i) {
@@ -51,27 +55,18 @@ function onKeydown(event) {
   }
 }
 
-// Full-screen view of one image (the lightbox). A native <dialog> gives Esc, backdrop and
-// focus return to the slide button for free; it nests inside the event dialog's top layer.
+// Full-screen view of one image; the shared ImageLightbox also serves the albums page.
 const lightbox = ref(null)
 const lightboxIndex = ref(0)
+const lightboxImages = computed(() => props.images.map((img) => img.image))
 
 function openLightbox(i) {
   lightboxIndex.value = i
-  lightbox.value?.showModal()
+  lightbox.value?.open()
 }
 
-function closeLightbox() {
-  lightbox.value?.close()
-}
-
-function stepLightbox(dir) {
-  const n = props.images.length
-  lightboxIndex.value = ((lightboxIndex.value + dir) % n + n) % n
-}
-
-function onLightboxClick(event) {
-  if (event.target === lightbox.value) closeLightbox()
+function onLightboxIndex(i) {
+  lightboxIndex.value = i
 }
 
 // The browser returns focus to the slide button that opened the lightbox on close; if the
@@ -82,16 +77,6 @@ async function onLightboxClose() {
   await nextTick()
   scroller.value?.querySelectorAll('.slide-zoom')[index.value]?.focus({ preventScroll: true })
 }
-
-function onLightboxKeydown(event) {
-  if (event.key === 'ArrowLeft') {
-    event.preventDefault()
-    stepLightbox(-1)
-  } else if (event.key === 'ArrowRight') {
-    event.preventDefault()
-    stepLightbox(1)
-  }
-}
 </script>
 
 <template>
@@ -100,8 +85,8 @@ function onLightboxKeydown(event) {
       ref="scroller"
       class="track"
       role="region"
-      :aria-roledescription="t('events.slideshow')"
-      :aria-label="t('events.slideshow')"
+      :aria-roledescription="t('gallery.slideshow')"
+      :aria-label="t('gallery.slideshow')"
       :tabindex="multiple ? 0 : -1"
       @scroll.passive="onScroll"
       @keydown="onKeydown"
@@ -110,12 +95,12 @@ function onLightboxKeydown(event) {
         <button
           type="button"
           class="slide-zoom"
-          :aria-label="t('events.enlarge', { n: i + 1, total: images.length })"
+          :aria-label="t('gallery.enlarge', { n: i + 1, total: images.length })"
           @click="openLightbox(i)"
         >
           <img
             :src="img.image"
-            :alt="`${title}, ${t('events.imageOf', { n: i + 1, total: images.length })}`"
+            :alt="`${title}, ${t('gallery.imageOf', { n: i + 1, total: images.length })}`"
             :loading="i === 0 ? 'eager' : 'lazy'"
           />
         </button>
@@ -123,42 +108,32 @@ function onLightboxKeydown(event) {
     </ul>
 
     <template v-if="multiple">
-      <button type="button" class="arrow prev" :aria-label="t('events.previous')" @click="goTo(index - 1)">‹</button>
-      <button type="button" class="arrow next" :aria-label="t('events.next')" @click="goTo(index + 1)">›</button>
+      <button type="button" class="arrow prev" :aria-label="t('gallery.previous')" @click="goTo(index - 1)">‹</button>
+      <button type="button" class="arrow next" :aria-label="t('gallery.next')" @click="goTo(index + 1)">›</button>
       <div class="dots">
+        <p v-if="showCounter" class="slide-counter">{{ index + 1 }} / {{ images.length }}</p>
         <button
           v-for="(img, i) in images"
+          v-else
           :key="i"
           type="button"
           class="dot"
           :class="{ current: i === index }"
-          :aria-label="t('events.goToSlide', { n: i + 1, total: images.length })"
+          :aria-label="t('gallery.goToSlide', { n: i + 1, total: images.length })"
           :aria-current="i === index"
           @click="goTo(i)"
         ></button>
       </div>
     </template>
 
-    <dialog
+    <ImageLightbox
       ref="lightbox"
-      class="lightbox"
-      :aria-label="t('events.slideshow')"
-      @click="onLightboxClick"
-      @keydown="onLightboxKeydown"
+      :images="lightboxImages"
+      :title="title"
+      :index="lightboxIndex"
+      @update:index="onLightboxIndex"
       @close="onLightboxClose"
-    >
-      <img
-        v-if="images[lightboxIndex]"
-        :src="images[lightboxIndex].image"
-        :alt="`${title}, ${t('events.imageOf', { n: lightboxIndex + 1, total: images.length })}`"
-      />
-      <button type="button" class="lightbox-close" :aria-label="t('events.close')" @click="closeLightbox">×</button>
-      <template v-if="multiple">
-        <button type="button" class="arrow prev" :aria-label="t('events.previous')" @click="stepLightbox(-1)">‹</button>
-        <button type="button" class="arrow next" :aria-label="t('events.next')" @click="stepLightbox(1)">›</button>
-        <p class="counter" aria-hidden="true">{{ lightboxIndex + 1 }} / {{ images.length }}</p>
-      </template>
-    </dialog>
+    />
   </div>
 </template>
 
@@ -233,8 +208,18 @@ function onLightboxKeydown(event) {
 .dots {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 8px;
   margin: 10px 0 4px;
+}
+
+.slide-counter {
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .dot {
@@ -256,74 +241,5 @@ function onLightboxKeydown(event) {
   .track {
     scroll-behavior: auto;
   }
-}
-
-/* Full-screen lightbox for one image, shown over the event dialog. */
-.lightbox {
-  width: 100vw;
-  height: 100dvh;
-  max-width: 100vw;
-  max-height: 100dvh;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: rgba(0, 0, 0, 0.92);
-}
-
-.lightbox:not([open]) {
-  display: none;
-}
-
-/* Flex centers the image, so clicks on the letterbox area hit the dialog backdrop. */
-.lightbox[open] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.lightbox::backdrop {
-  background: rgba(0, 0, 0, 0.92);
-}
-
-.lightbox img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-
-.lightbox .arrow {
-  position: fixed;
-  z-index: 1;
-}
-
-.lightbox-close {
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  z-index: 1;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.counter {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-weight: 600;
 }
 </style>

@@ -159,12 +159,6 @@ export default {
     photos: 'Photos & info',
     results: 'Results',
     viewMap: 'Open in Google Maps',
-    imageOf: 'Image {n} of {total}',
-    slideshow: 'Slideshow',
-    previous: 'Previous image',
-    next: 'Next image',
-    goToSlide: 'Show image {n} of {total}',
-    enlarge: 'Enlarge image {n} of {total}',
     close: 'Close',
     types: {
       competition: 'Competition',
@@ -172,6 +166,15 @@ export default {
       gala: 'Gala',
       other: 'Other',
     },
+  },
+  gallery: {
+    slideshow: 'Slideshow',
+    previous: 'Previous image',
+    next: 'Next image',
+    goToSlide: 'Show image {n} of {total}',
+    enlarge: 'Enlarge image {n} of {total}',
+    imageOf: 'Image {n} of {total}',
+    close: 'Close',
   },
   contact: {
     title: 'Contact',

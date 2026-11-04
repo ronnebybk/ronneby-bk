@@ -160,12 +160,6 @@ export default {
     photos: 'Bilder & info',
     results: 'Resultat',
     viewMap: 'Öppna i Google Maps',
-    imageOf: 'Bild {n} av {total}',
-    slideshow: 'Bildspel',
-    previous: 'Föregående bild',
-    next: 'Nästa bild',
-    goToSlide: 'Visa bild {n} av {total}',
-    enlarge: 'Förstora bild {n} av {total}',
     close: 'Stäng',
     types: {
       competition: 'Tävling',
@@ -173,6 +167,15 @@ export default {
       gala: 'Gala',
       other: 'Övrigt',
     },
+  },
+  gallery: {
+    slideshow: 'Bildspel',
+    previous: 'Föregående bild',
+    next: 'Nästa bild',
+    goToSlide: 'Visa bild {n} av {total}',
+    enlarge: 'Förstora bild {n} av {total}',
+    imageOf: 'Bild {n} av {total}',
+    close: 'Stäng',
   },
   contact: {
     title: 'Kontakt',
