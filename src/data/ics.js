@@ -1,5 +1,6 @@
 // Builds a group's weekly sessions as an .ics calendar file, entirely in the browser.
 // Pure functions with no Vue or store imports, so the format rules can be checked in Node.
+import { pad, toIso, weekday as weekdayOf } from './dates.js'
 
 const TZID = 'Europe/Stockholm'
 
@@ -59,22 +60,10 @@ function fold(line) {
   return out.join('\r\n')
 }
 
-const pad = (n) => String(n).padStart(2, '0')
-
 // YYYY-MM-DD → Date at midnight local (the site's dates are local calendar dates).
 function parseIso(iso) {
   const [y, m, d] = iso.split('-').map(Number)
   return new Date(y, m - 1, d)
-}
-
-// Date → YYYY-MM-DD
-function toIso(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
-}
-
-// Monday = 1 … Sunday = 7
-function weekdayOf(date) {
-  return ((date.getDay() + 6) % 7) + 1
 }
 
 // Europe/Stockholm is UTC+1 (CET) in winter and UTC+2 (CEST) in summer. The EU rule:

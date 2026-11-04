@@ -1,5 +1,6 @@
 // Example data in exactly the same shape as the Google Sheet tabs (column header → value).
 // Used until the sheet is connected. sheet-template/ has the same columns.
+import { pad, toIso } from './dates.js'
 
 export const columns = {
   seasons: ['Säsong', 'Säsong (EN)', 'Från', 'Till'],
@@ -315,11 +316,10 @@ export const documents = [
 // non-medal placement, a Junior row and an empty Junior/Senior cell with full names typed (only the
 // first name may show), and a row without a link.
 // Dates relative to today, so the example events never go stale.
-const pad = (n) => String(n).padStart(2, '0')
 const isoDays = (offset) => {
   const d = new Date()
   d.setDate(d.getDate() + offset)
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  return toIso(d)
 }
 const isoDate = (year, month, day) => `${year}-${pad(month)}-${pad(day)}`
 const thisYear = new Date().getFullYear()

@@ -8,6 +8,7 @@ import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches
 import { buildEvents, splitEvents } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
+import { toIso, weekday } from './dates.js'
 
 const CACHE_KEY = 'rbt-data-v1'
 // A stalled request must not keep the whole site — or an optional tab — loading forever.
@@ -277,15 +278,8 @@ export function loadData() {
 
 // --- Dates -------------------------------------------------------------------
 
-export function todayIso(date = new Date()) {
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
-}
-
-// Monday = 1 … Sunday = 7
-export function weekday(date = new Date()) {
-  return ((date.getDay() + 6) % 7) + 1
-}
+// Re-exported so the views that import them from store.js don't change.
+export { toIso as todayIso, weekday }
 
 // --- Derived data ------------------------------------------------------------
 
