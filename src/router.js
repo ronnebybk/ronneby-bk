@@ -11,6 +11,7 @@ const routes = [
   { path: '/fragor', name: 'faq', component: () => import('./views/FaqView.vue') },
   { path: '/evenemang', name: 'events', component: () => import('./views/EventsView.vue') },
   { path: '/bilder', name: 'albums', component: () => import('./views/AlbumsView.vue') },
+  { path: '/bilder/:album', name: 'album', component: () => import('./views/AlbumView.vue') },
   // Old links (also #/resultat in sheet text) land on the events page with competitions chosen.
   { path: '/resultat', redirect: { path: '/evenemang', query: { typ: 'tavlingar' } } },
   { path: '/kontakt', name: 'contact', component: () => import('./views/ContactView.vue') },

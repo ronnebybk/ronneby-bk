@@ -28,7 +28,7 @@ function close() {
   dialog.value?.close()
 }
 
-defineExpose({ open, close })
+defineExpose({ open, close, isOpen: () => dialog.value?.open ?? false })
 
 function step(dir) {
   const n = props.images.length
