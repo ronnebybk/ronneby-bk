@@ -109,12 +109,8 @@ export const notices = [
     'Visa från': '2026-11-02',
     'Visa till': '2026-11-08',
   },
-  {
-    'Meddelande': 'Anslag med ett datum som inte går att läsa.',
-    'Visa från': 'nästa vecka',
-  },
-  // News: two dated (shown newest first), one SV-only without a date or headline, plus expired,
-  // future and unknown-type rows that must not show. Dates are far off so the cases don't go stale.
+  // News: two dated (shown newest first), one SV-only without a date or headline, plus expired
+  // and future rows that must not show. Dates are far off so the cases don't go stale.
   {
     'Typ': 'Nyhet',
     'Rubrik': 'Ny nybörjargrupp i januari',
@@ -146,14 +142,9 @@ export const notices = [
     'Rubrik': 'Nyhet som inte ska synas än',
     'Visa från': '2099-01-01',
   },
-  {
-    'Typ': 'Nyheter!',
-    'Meddelande': 'Rad med en okänd typ som hoppas över.',
-  },
 ]
 
-// Every setting once, plus rows the parser must ignore: an unknown setting, a duplicate and an
-// unsafe link. Instagram is pasted as a link to show that the handle is extracted.
+// Every setting once. Instagram is pasted as a link to show that the handle is extracted.
 export const club = [
   { 'Fält': 'Lokal', 'Värde': 'Exempelhallen' },
   { 'Fält': 'Gatuadress', 'Värde': 'Exempelgatan 1' },
@@ -173,14 +164,10 @@ export const club = [
   },
   { 'Fält': 'Facebook', 'Värde': 'https://www.facebook.com/groups/251477413001' },
   { 'Fält': 'Instagram', 'Värde': 'https://www.instagram.com/example/' },
-  { 'Fält': 'Telefon', 'Värde': '070-111 11 11' },
-  { 'Fält': 'Fax', 'Värde': 'Okänd inställning som hoppas över.' },
-  { 'Fält': 'Behold', 'Värde': 'javascript:alert(1)' },
 ]
 
 // Sections for the Prova på page, in page order. Keep the wording in step with trial.sections in
-// src/i18n/sv.js and en.js. One SV-only row (English falls back to the Swedish sheet text) and one
-// EN-only row (the parser must skip it) stay on purpose.
+// src/i18n/sv.js and en.js. The SV-only row stays on purpose (English falls back to Swedish).
 export const trial = [
   {
     'Rubrik': 'Vad ska jag ha med mig?',
@@ -216,15 +203,10 @@ export const trial = [
     'Text': 'Lokalen och adressen hittar du under #/kontakt.',
     'Text (EN)': 'The venue and address are on the #/kontakt page.',
   },
-  {
-    'Rubrik (EN)': 'English-only row',
-    'Text (EN)': 'This row has no Swedish text and must be skipped.',
-  },
 ]
 
-// The three questions from the issue with placeholder answers, plus rows that exercise the page:
-// English missing for the answer only (per-cell fallback), a link, paragraphs and a list, and two
-// incomplete rows that must be skipped.
+// The questions from the issue with placeholder answers, plus rows that exercise the page:
+// English missing for the answer only (per-cell fallback), a link, paragraphs and a list.
 export const faq = [
   {
     'Fråga': 'Behöver jag egna handskar?',
@@ -257,15 +239,10 @@ export const faq = [
     'Svar (EN)':
       'Drop by a session and give it a try. You can ask questions in our Facebook group: https://www.facebook.com/groups/251477413001',
   },
-  // Skipped: an answer without a question.
-  { 'Fråga': '', 'Fråga (EN)': '', 'Svar': 'Det här svaret har ingen fråga.', 'Svar (EN)': '' },
-  // Skipped: a question without an answer.
-  { 'Fråga': 'Rad som saknar svar', 'Fråga (EN)': 'Row without an answer', 'Svar': '', 'Svar (EN)': '' },
 ]
 
 // Example documents: 2 named categories plus one empty-category row (3 headings on the page),
-// one row with empty English title, one unreadable date, plus broken rows (no title / no link /
-// http:// link) that must be skipped.
+// one row with empty English title and one without a date.
 
 export const documents = [
   {
@@ -316,8 +293,8 @@ export const documents = [
     'Titel (EN)': 'Annual meeting minutes 2026',
     'Beskrivning': 'Protokoll från årsmötet den 20 februari 2026.',
     'Beskrivning (EN)': 'Minutes from the annual meeting on 20 February 2026.',
-    // Unreadable date on purpose: the row is shown, just without the date.
-    'Datum': 'inte ett datum',
+    // No date on purpose: the row is shown without one.
+    'Datum': '',
     'Länk': 'https://example.com/arsmote-2026.pdf',
   },
   {
@@ -331,17 +308,11 @@ export const documents = [
     'Datum': '',
     'Länk': 'https://example.com/medlemsinfo.pdf',
   },
-  // Skipped: no title.
-  { 'Kategori': 'Regler', 'Titel': '', 'Länk': 'https://example.com/saknas-titel.pdf' },
-  // Skipped: no link.
-  { 'Kategori': 'Regler', 'Titel': 'Saknar länk', 'Länk': '' },
-  // Skipped: link is not https://.
-  { 'Kategori': 'Regler', 'Titel': 'Osäker länk', 'Länk': 'http://example.com/osaker.pdf' },
 ]
 
 // Results for the Resultat page, deliberately out of order: two years, each medal in several spellings, a
 // non-medal placement, a Junior row and an empty Junior/Senior cell with full names typed (only the
-// first name may show), a valid and an invalid link, and rows the parser must skip.
+// first name may show), and a row without a link.
 // Dates relative to today, so the example events never go stale.
 const pad = (n) => String(n).padStart(2, '0')
 const isoDays = (offset) => {
@@ -417,14 +388,14 @@ export const events = [
     'Bild': 'foto kommer\nhttps://drive.google.com/drive/folders/1FolderExample0001',
     'Länk': 'https://example.com/vintergala',
   },
-  // Slutdatum before Datum: ignored, admin warning. Länk without https:// gives no button.
+  // Slutdatum before Datum: ignored, admin warning. No link: no button on the card.
   {
     'Typ': 'Tävling',
     'Rubrik': 'Felstavat slutdatum',
     'Datum': isoDays(15),
     'Slutdatum': isoDays(10),
     'Plats': 'Karlskrona',
-    'Länk': 'anmalan@example.com',
+    'Länk': '',
   },
   // Past competition with matched results: medal count on the closed card.
   {
@@ -441,15 +412,13 @@ export const events = [
   // The same Rubrik in two years: each year's results go to that year's event.
   { 'Typ': 'Tävling', 'Rubrik': 'Påskcupen', 'Datum': isoDate(thisYear, 4, 10), 'Plats': 'Växjö', 'Bild': '', 'Länk': '' },
   { 'Typ': 'Tävling', 'Rubrik': 'Påskcupen', 'Datum': isoDate(thisYear - 1, 4, 10), 'Plats': 'Växjö', 'Bild': '', 'Länk': '' },
-  // Skipped: no Rubrik.
-  { 'Typ': 'Läger', 'Datum': isoDays(20), 'Plats': 'Okänt läger' },
 ]
 
 export const results = [
   { 'Datum': '2026-09-19', 'Tävling': 'DM', 'Tävling (EN)': 'District championship', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Klass (EN)': 'Women -60 kg', 'Placering': 'Guld', 'Länk': 'https://example.com/dm-2026-resultat' },
   { 'Datum': '2025-10-04', 'Tävling': 'SM', 'Tävling (EN)': 'Swedish championship', 'Ort': 'Stockholm', 'Namn': 'Erik Exempelsson', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Klass (EN)': 'Men -75 kg', 'Placering': 'Silver', 'Länk': '' },
   { 'Datum': '2026-09-19', 'Tävling': 'DM', 'Tävling (EN)': 'District championship', 'Ort': 'Ronneby', 'Namn': 'Anna Karin Svensson', 'Junior/Senior': 'Junior', 'Klass': 'Flickor -57 kg', 'Klass (EN)': 'Girls -57 kg', 'Placering': '2', 'Länk': '' },
-  { 'Datum': '30.5.2026', 'Tävling': 'Regiontävling', 'Ort': 'Karlskrona', 'Namn': 'Anna-Karin Svensson', 'Junior/Senior': '', 'Klass': 'Flickor -57 kg', 'Placering': 'Brons', 'Länk': 'inte en länk' },
+  { 'Datum': '30.5.2026', 'Tävling': 'Regiontävling', 'Ort': 'Karlskrona', 'Namn': 'Anna-Karin Svensson', 'Junior/Senior': '', 'Klass': 'Flickor -57 kg', 'Placering': 'Brons', 'Länk': '' },
   { 'Datum': '3/15/2026', 'Tävling': 'Gala', 'Tävling (EN)': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Erik Exempel', 'Junior/Senior': 'senior', 'Klass': 'Herrar -80 kg', 'Placering': '1:a', 'Länk': '' },
   { 'Datum': '2026-03-15', 'Tävling': 'Gala', 'Ort': 'Ronneby', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Kvartsfinal', 'Placering (EN)': 'Quarterfinal', 'Länk': '' },
   { 'Datum': '2025-05-25', 'Tävling': 'Sommarpokalen', 'Ort': 'Växjö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Gold', 'Länk': '' },
@@ -463,19 +432,10 @@ export const results = [
   // No event row for Box Cup: two fallback competition cards (one per year) and admin warnings.
   { 'Datum': isoDate(thisYear, 5, 15), 'Tävling': 'Box Cup', 'Tävling (EN)': 'Box Cup', 'Ort': 'Malmö', 'Namn': 'Erik Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Herrar -75 kg', 'Placering': 'Guld', 'Länk': '' },
   { 'Datum': isoDate(thisYear - 1, 5, 15), 'Tävling': 'Box Cup', 'Ort': 'Malmö', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Klass': 'Damer -60 kg', 'Placering': 'Silver', 'Länk': '' },
-  // Skipped: no placement.
-  { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': 'Sara Exempel', 'Junior/Senior': 'Senior', 'Placering': '' },
-  // Skipped: the date can't be read.
-  { 'Datum': 'nästa vecka', 'Tävling': 'Gala', 'Namn': 'Erik Exempel', 'Placering': 'Guld' },
-  // Skipped: no name.
-  { 'Datum': '2026-01-10', 'Tävling': 'DM', 'Namn': '', 'Placering': 'Guld' },
-  // Skipped: no competition.
-  { 'Datum': '2026-01-10', 'Tävling': '', 'Namn': 'Sara Exempel', 'Placering': 'Guld' },
 ]
 
 // Example exceptions (Undantag): today's sessions all cancelled, one group-specific cancellation
-// next week, one all-groups cancellation further ahead, plus rows the parser must skip (unreadable
-// date, missing message). Dates relative to today, so the demo never goes stale.
+// next week, one all-groups cancellation further ahead. Dates relative to today, so the demo never goes stale.
 export const exceptions = [
   {
     'Datum': isoDays(0),
@@ -495,15 +455,11 @@ export const exceptions = [
     'Meddelande': 'Jullov – ingen träning.',
     'Meddelande (EN)': 'Christmas break – no training.',
   },
-  // Skipped: the date can't be read.
-  { 'Datum': 'nästa vecka', 'Grupp': '', 'Meddelande': 'Rad med ett datum som inte går att läsa.' },
-  // Skipped: no message.
-  { 'Datum': isoDays(30), 'Grupp': 'Knattar', 'Meddelande': '' },
 ]
 
-// Example sponsors: one linked with a local logo, one with an http:// link (shown but not clickable),
-// one with a long description (gets the "Visa mer" pop-up), one with no logo (name as text), one
-// with a "kommer" logo cell, one with a missing file, and one nameless row that must be skipped.
+// Example sponsors: one linked with a local logo, one without a link (name as text), one with a
+// long description (gets the "Visa mer" pop-up), one with a "kommer" logo cell, one with a missing
+// logo file.
 export const sponsors = [
   {
     'Namn': 'Ronneby Bygg AB',
@@ -515,7 +471,8 @@ export const sponsors = [
   {
     'Namn': 'Sportbutiken',
     'Logga': 'sportbutiken.svg',
-    'Länk': 'http://example.com/sportbutiken',
+    // No link on purpose: the card shows, but is not clickable.
+    'Länk': '',
     'Beskrivning': '',
     'Beskrivning (EN)': '',
   },
@@ -543,6 +500,4 @@ export const sponsors = [
     'Beskrivning': '',
     'Beskrivning (EN)': '',
   },
-  // Skipped: no name.
-  { 'Namn': '', 'Logga': 'ignoreras.svg', 'Länk': 'https://example.com', 'Beskrivning': '', 'Beskrivning (EN)': '' },
 ]
