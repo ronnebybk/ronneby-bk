@@ -279,7 +279,8 @@ export function loadData() {
 // --- Dates -------------------------------------------------------------------
 
 // Re-exported so the views that import them from store.js don't change.
-export { toIso as todayIso, weekday }
+export const todayIso = toIso
+export { weekday }
 
 // --- Derived data ------------------------------------------------------------
 
