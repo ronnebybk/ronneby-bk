@@ -126,6 +126,25 @@ const countOf = (album) =>
   background: var(--surface);
 }
 
+/* Image-level hover feedback to match the card lift (transitions are killed
+   by the global prefers-reduced-motion rule). */
+.cover,
+.behind {
+  transition: transform 0.15s ease;
+}
+
+.card-hover:hover .cover {
+  transform: scale(1.03);
+}
+
+.card-hover:hover .behind-1 {
+  transform: rotate(-2.5deg) translate(-4px, 2px) scale(1.03);
+}
+
+.card-hover:hover .behind-2 {
+  transform: rotate(2deg) translate(4px, 4px) scale(1.03);
+}
+
 .card-text {
   display: flex;
   flex-direction: column;
