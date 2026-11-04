@@ -139,8 +139,6 @@ export default {
     emptyLink: 'Kontakta oss',
   },
   results: {
-    title: 'Resultat',
-    empty: 'Inga resultat upplagda ännu.',
     link: 'Resultatlista',
     medals: {
       gold: 'Guld',
@@ -152,7 +150,6 @@ export default {
     title: 'Evenemang',
     empty: 'Inga evenemang upplagda ännu.',
     upcoming: 'Kommande',
-    past: 'Tidigare',
     all: 'Alla',
     competitions: 'Tävlingar',
     camps: 'Läger',
