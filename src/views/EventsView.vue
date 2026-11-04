@@ -181,6 +181,7 @@ function placementText(result) {
           v-for="f in FILTERS"
           :key="f.value"
           type="button"
+          class="pill-hover"
           :class="{ active: filter === f.value }"
           :aria-pressed="filter === f.value"
           @click="setFilter(f.value)"
@@ -287,6 +288,12 @@ function placementText(result) {
   background: var(--red-strong);
   border-color: var(--red-strong);
   color: #fff;
+}
+
+/* Active pill darkens on hover, matching .btn-primary:hover (D5). */
+.filters button.active:hover {
+  background: #a8141a;
+  border-color: #a8141a;
 }
 
 .summary {

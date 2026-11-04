@@ -30,7 +30,7 @@ const countOf = (album) =>
 
     <ul v-else class="cards">
       <li v-for="(album, i) in albums" :key="album.slug">
-        <RouterLink :to="`/bilder/${album.slug}`" class="card">
+        <RouterLink :to="`/bilder/${album.slug}`" class="card card-hover">
           <span class="stack">
             <img
               v-if="album.images[2]"

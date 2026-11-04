@@ -61,7 +61,7 @@ function open(sponsor) {
     <h1>{{ t('sponsors.title') }}</h1>
 
     <ul v-if="sponsors.length" ref="grid" class="grid">
-      <li v-for="(sponsor, i) in sponsors" :key="i" class="card">
+      <li v-for="(sponsor, i) in sponsors" :key="i" class="card card-hover">
         <a v-if="sponsor.url" :href="sponsor.url" target="_blank" rel="noopener noreferrer" class="card-link">
           <span v-if="sponsor.logo && !failedLogos.has(sponsor.logo)" class="sponsor-tile">
             <SponsorLogo :sponsor="sponsor" :height="64" :fallback-text="false" decorative @error="url => failedLogos.add(url)" />

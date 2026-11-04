@@ -47,7 +47,7 @@ function openCard() {
 </script>
 
 <template>
-  <article :id="`event-${card.id}`" class="event-card card" :class="{ past: !card.upcoming }">
+  <article :id="`event-${card.id}`" class="event-card card card-hover" :class="{ past: !card.upcoming }">
     <button
       type="button"
       class="card-button"
