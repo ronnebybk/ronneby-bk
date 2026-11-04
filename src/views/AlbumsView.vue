@@ -33,6 +33,24 @@ const countOf = (album) =>
         <RouterLink :to="`/bilder/${album.slug}`" class="card">
           <span class="stack">
             <img
+              v-if="album.images[2]"
+              :src="resizeImage(album.images[2], 400)"
+              alt=""
+              class="behind behind-2"
+              loading="lazy"
+              width="400"
+              height="267"
+            />
+            <img
+              v-if="album.images[1]"
+              :src="resizeImage(album.images[1], 400)"
+              alt=""
+              class="behind behind-1"
+              loading="lazy"
+              width="400"
+              height="267"
+            />
+            <img
               :src="resizeImage(album.images[0], 800)"
               :alt="nameOf(album)"
               class="cover"
@@ -71,32 +89,34 @@ const countOf = (album) =>
   color: var(--text);
 }
 
-/* Stacked-photos look: two layers peeking out behind the cover. */
+/* Stacked-photos look: up to two more photos peeking out behind the cover. */
 .stack {
   position: relative;
   display: block;
 }
 
-.stack::before,
-.stack::after {
-  content: '';
+.behind {
   position: absolute;
   inset: 0;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
   border-radius: var(--radius);
-  background: var(--surface);
   border: 1px solid var(--line);
+  background: var(--surface);
 }
 
-.stack::before {
+.behind-1 {
   transform: rotate(-2.5deg) translate(-4px, 2px);
 }
 
-.stack::after {
+.behind-2 {
   transform: rotate(2deg) translate(4px, 4px);
 }
 
 .cover {
   position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   aspect-ratio: 3 / 2;
@@ -117,8 +137,8 @@ const countOf = (album) =>
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stack::before,
-  .stack::after {
+  .behind-1,
+  .behind-2 {
     transform: none;
   }
 }
