@@ -19,13 +19,14 @@ Visitors → Vue app on GitHub Pages → fetches the published Google Sheet (CSV
 Editors  → hidden /#/admin page    → the same Google Sheet, embedded in an iframe
 ```
 
-- **Content lives in a Google Sheet**, not in the code. It has 13 tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Undantag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Evenemang*, *Resultat*, *Sponsorer*.
+- **Content lives in a Google Sheet**, not in the code. It has 14 tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Undantag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Evenemang*, *Resultat*, *Album*, *Sponsorer*.
   - *Undantag* holds cancelled dates (holidays, competition weekends): one row per date with an optional group and a message, shown on the schedule and "Träning idag".
   - *Klubbinfo* holds contact details, venue, the "how to join" text and social links, one row per setting.
   - *Prova på* holds the text for the trial page (`/#/prova-pa`).
   - *Frågor* holds the FAQ: one question and answer per row, shown in row order.
   - *Dokument* holds the club's official documents (rules, statutes, minutes): one row per document, grouped by category on the documents page.
   - *Evenemang* holds the events (competitions, camps, galas): one row per event, shown as cards on the events page (`/#/evenemang`). Results connect to an event through its *Rubrik*.
+  - *Album* holds photo albums: one row per album with Drive share links, one per line in *Bild*, shown as cards on the Bilder page (`/#/bilder`).
   - The site reads the tabs' published CSV links. The IDs are in `src/config.js` (`sheet.publishedId`, `sheet.gids`).
   - Google republishes about every 5 minutes. A cached copy in `localStorage` covers outages.
 - **Editors have no accounts.** The sheet is shared as *Anyone with the link → Editor*.
