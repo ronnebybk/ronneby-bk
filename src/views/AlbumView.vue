@@ -116,7 +116,7 @@ async function onLightboxClose() {
         <li v-for="(url, i) in gridImages" :key="url">
           <button
             type="button"
-            class="thumb"
+            class="thumb card-hover"
             :data-thumb="i"
             :aria-label="t('gallery.enlarge', { n: i + 1, total: gridImages.length })"
             @click="openLightbox(i)"
@@ -181,5 +181,12 @@ async function onLightboxClose() {
   width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
+  /* Zoom inside the clipped thumb on hover; killed by the global
+     prefers-reduced-motion rule. */
+  transition: transform 0.15s ease;
+}
+
+.thumb:hover img {
+  transform: scale(1.06);
 }
 </style>
