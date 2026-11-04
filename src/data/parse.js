@@ -89,6 +89,17 @@ export function parseSeasons(rows, problems = []) {
     .sort((a, b) => a.from.localeCompare(b.from))
 }
 
+// The season covering today; otherwise the next one to start (seasons arrive sorted by `from`);
+// otherwise the most recent; null when there are none. Pure, so tests never read the clock.
+export function pickCurrentSeason(seasons, today) {
+  return (
+    seasons.find((s) => s.from <= today && today <= s.to) ??
+    seasons.find((s) => s.from > today) ??
+    seasons[seasons.length - 1] ??
+    null
+  )
+}
+
 const GROUP_FIELDS = { nameEn: 'Grupp (EN)', ages: 'Ålder', description: 'Beskrivning', descriptionEn: 'Beskrivning (EN)' }
 
 // "1 100,00 kr" → 1100. Only a 1–2 digit ending counts as decimals, so "1,100" stays 1100.
