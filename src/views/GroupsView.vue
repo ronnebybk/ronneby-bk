@@ -1,12 +1,25 @@
 <script setup>
+import { computed } from 'vue'
 import DataNotice from '../components/DataNotice.vue'
 import { state, hasData, currentSeason, sessionsFor, groupStyle, timeRange, priceText } from '../data/store.js'
 import { useI18n } from '../i18n/index.js'
 
 const { t, localized } = useI18n()
 
+// Sessions per group name, computed once per season change instead of once per group per render.
+const sessionsByGroup = computed(() => {
+  const map = new Map()
+  for (const s of sessionsFor(currentSeason.value)) {
+    for (const name of s.groups) {
+      if (!map.has(name)) map.set(name, [])
+      map.get(name).push(s)
+    }
+  }
+  return map
+})
+
 function sessionsOf(group) {
-  return sessionsFor(currentSeason.value).filter((s) => s.groups.includes(group.name))
+  return sessionsByGroup.value.get(group.name) ?? []
 }
 </script>
 

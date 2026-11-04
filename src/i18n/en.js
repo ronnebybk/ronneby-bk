@@ -138,8 +138,6 @@ export default {
     emptyLink: 'Contact us',
   },
   results: {
-    title: 'Results',
-    empty: 'No results published yet.',
     link: 'Full results',
     medals: {
       gold: 'Gold',
@@ -151,7 +149,6 @@ export default {
     title: 'Events',
     empty: 'No events published yet.',
     upcoming: 'Upcoming',
-    past: 'Past',
     all: 'All',
     competitions: 'Competitions',
     camps: 'Camps',
