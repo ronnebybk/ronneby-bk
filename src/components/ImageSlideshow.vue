@@ -3,6 +3,7 @@ import { ref, computed, nextTick } from 'vue'
 
 import ImageLightbox from './ImageLightbox.vue'
 
+import { resizeImage } from '../data/parse.js'
 import { useI18n } from '../i18n/index.js'
 
 const props = defineProps({
@@ -56,9 +57,10 @@ function onKeydown(event) {
 }
 
 // Full-screen view of one image; the shared ImageLightbox also serves the albums page.
+// D8: the lightbox loads the larger w1600 version of the photo shown.
 const lightbox = ref(null)
 const lightboxIndex = ref(0)
-const lightboxImages = computed(() => props.images.map((img) => img.image))
+const lightboxImages = computed(() => props.images.map((img) => resizeImage(img.image, 1600)))
 
 function openLightbox(i) {
   lightboxIndex.value = i
