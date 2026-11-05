@@ -1,132 +1,56 @@
 # Instructions for AI agents
 
-Rules for any AI coding agent working in this repo. The repository is **public** and **pushing to
-`main` deploys the live website** (GitHub Actions → GitHub Pages). See README.md for the overview and
-HOWTO.md, SECURITY.md and LIMITATIONS.md for details.
+Website for **Ronneby Boxing Team** (Ronneby, Sweden), live at https://ronnebybk.github.io/ronneby-bk/.
+Repo `ronnebybk/ronneby-bk`. **Public repo; pushing to `main` deploys the live site.**
+Goal: the simplest possible setup: no server, database or accounts. Prefer small, readable changes
+over new services or dependencies. Details: README.md, HOWTO.md, SECURITY.md, LIMITATIONS.md.
 
-## The project
+## Architecture
 
-Website for **Ronneby Boxing Team**, a boxing club in Ronneby, Sweden. Live at
-https://ronnebybk.github.io/ronneby-bk/. Repo `ronnebybk/ronneby-bk`, branch `main`.
+- Vue 3 + Vite app on GitHub Pages. Content lives in a **Google Sheet** (one tab per content type),
+  fetched as published CSV on every visit; `localStorage` cache covers outages. IDs in `src/config.js`.
+  Tab columns: see `sheet-template/` and `src/data/demo.js`.
+- Editors have no accounts: the hidden `/#/admin?k=<edit-id>` page embeds the sheet. The edit ID is
+  stored in `localStorage`, stripped from the URL, and is a **secret**.
+- Parsing is forgiving (`src/data/parse.js`): bad rows are skipped. Tabs are matched by exact name
+  (season, group, coach); current season is chosen by date.
+- `publishedId: ''` runs the site on example data (`src/data/demo.js`).
 
-**Goal: the simplest possible setup.** No server, no database, no accounts for editors or visitors.
-Prefer small, readable changes over new services or dependencies.
+## Conventions
 
-### Architecture
+- Hash routing (`/#/schema`); `base: './'`.
+- Swedish default, English alternative: update both `src/i18n/sv.js` and `en.js`. Sheet English comes
+  from *(EN)* columns via `localized()`. Language toggle uses the **British** flag, not the US.
+- Plain CSS, variables in `src/style.css`, light/dark by system setting. Use `--red-strong` for buttons
+  with white text and `--red-on-ink` for red on the dark header (WCAG AA). Must work at 390 px.
+- Privacy: self-hosted fonts; Facebook/Instagram/Behold load only after a click (`src/data/consent.js`);
+  maps are links, not embeds.
+- Sparse comments that explain *why*.
+- Commands: `npm run dev`, `npm test`, `npm run build && npm run preview`. Maintainer uses Windows and Debian.
+- Backlog: GitHub issues; **#23 is the roadmap** (order and acceptance criteria).
 
-```
-Visitors → Vue app on GitHub Pages → fetches the published Google Sheet (CSV) on every visit
-Editors  → hidden /#/admin page    → the same Google Sheet, embedded in an iframe
-```
+## Don't read whole
 
-- **Content lives in a Google Sheet**, not in the code. It has 14 tabs: *Schema*, *Grupper*, *Tränare*, *Säsonger*, *Anslag*, *Undantag*, *Klubbinfo*, *Prova på*, *Frågor*, *Dokument*, *Evenemang*, *Resultat*, *Album*, *Sponsorer*.
-  - *Undantag* holds cancelled dates (holidays, competition weekends): one row per date with an optional group and a message, shown on the schedule and "Träning idag".
-  - *Klubbinfo* holds contact details, venue, the "how to join" text and social links, one row per setting.
-  - *Prova på* holds the text for the trial page (`/#/prova-pa`).
-  - *Frågor* holds the FAQ: one question and answer per row, shown in row order.
-  - *Dokument* holds the club's official documents (rules, statutes, minutes): one row per document, grouped by category on the documents page.
-  - *Evenemang* holds the events (competitions, camps, galas): one row per event, shown as cards on the events page (`/#/evenemang`). Results connect to an event through its *Rubrik*.
-  - *Album* holds photo albums: one row per album with Drive share links, one per line in *Bild*, shown as cards on the Bilder page (`/#/bilder`).
-  - The site reads the tabs' published CSV links. The IDs are in `src/config.js` (`sheet.publishedId`, `sheet.gids`).
-  - Google republishes about every 5 minutes. A cached copy in `localStorage` covers outages.
-- **Editors have no accounts.** The sheet is shared as *Anyone with the link → Editor*.
-  - The admin page gets the sheet's edit ID from `#/admin?k=<id>`, stores it in `localStorage` and removes it from the URL.
-  - That ID is a secret and must never be in the repo.
-- **Parsing is forgiving.** Rows editors type by hand that can't be parsed are skipped instead of breaking the page (`src/data/parse.js`).
-  - Matching between tabs is by exact name: season, group and coach.
-  - The current season is chosen by date.
-- **No sheet configured** (`publishedId: ''`) means the site runs on the example data in `src/data/demo.js`.
-  The sheet template (`sheet-template/`) has the same columns.
+Logo SVGs (`src/assets/logo.svg`, `design/*.svg`), `design/logo-2400.png`, `package-lock.json`,
+`sheet-template/*.xlsx`. For `HOWTO.md` and `docs/editor-help.md`, grep for the heading you need.
 
-### Stack and conventions
+## Never commit (or post in issues/PRs/comments)
 
-- **Vue 3 + Vite**, no UI framework.
-  - Routing: `vue-router` with **hash history** (`/#/schema`).
-  - Vite uses `base: './'`, so the build works at any path or domain.
-- **Languages:** Swedish is the default, English is the alternative. The header toggle uses the Swedish and **British** flags, not the US flag.
-  - Texts live in `src/i18n/sv.js` and `en.js`. Always update both.
-  - English values from the sheet come from the *(EN)* columns, via `localized()`.
-- **Styling:** plain CSS with variables in `src/style.css`. Light and dark mode follow the visitor's system setting.
-  - Brand colours come from the logo: red `#ED2D30`, black `#1E1D1C`.
-  - Use `--red-strong` for buttons with white text, and `--red-on-ink` for red text on the dark header, so contrast meets WCAG AA.
-  - The layout must work at 390 px width.
-- **Privacy:**
-  - Fonts are self-hosted (`@fontsource`).
-  - Facebook, Instagram and Behold load only after the visitor clicks (`src/data/consent.js`).
-  - Maps are a plain link, not an embed.
-  - A Facebook *group* can't be embedded, so it gets a "join" link card instead.
-- **Logo:** `src/assets/logo.svg` (transparent vector). Sources are in `design/`.
-- Keep comments sparse and explain *why*, not *what*, matching the existing code.
+- The sheet **edit ID** or admin link. Only the published `2PACX-…` ID belongs in code.
+- Credentials, `.env*`, personal data (GDPR; coach contacts go only in the sheet, with consent).
+- Original files from the club (PDF/Word/photos may carry metadata); commit only clean exports.
+- Screenshots, scratch/test files, local test edits to `src/config.js`.
 
-### Commands
+## Before committing, check
 
-```sh
-npm install
-npm run dev                       # http://localhost:5173 (reads the live sheet)
-npm test                          # unit tests for src/data/ (Vitest, one run)
-npm run build && npm run preview  # production build, http://localhost:4173
-```
+- Stage files by name and read `git diff --cached`; every staged file must belong to the task.
+- `src/config.js`: real `publishedId` and `gids` intact; read its diff line by line.
+- `package-lock.json`: commit only with an intended `package.json` change; if it changed from an OS
+  switch, `git restore` it (keep the file: deploy uses `npm ci`).
+- Line-ending-only changes: `git diff --cached --ignore-all-space --stat`; unstage them.
+- `public/coaches/`: lowercase image names, consented coaches only (fallback; normally Drive links).
 
-The maintainer develops on both Windows and Debian 13.
+## Deploying
 
-### Backlog
-
-All work is tracked in GitHub issues. **#23 is the roadmap**: it sets the order of work and the
-acceptance criteria. Use `gh issue list -R ronnebybk/ronneby-bk`.
-
-## Keeping context small
-
-- **Don't read these whole:** the logo SVGs (`src/assets/logo.svg`, `design/*.svg`, ~100 KB of path
-  data each), `design/logo-2400.png`, `package-lock.json`, `sheet-template/*.xlsx`.
-- Search `HOWTO.md` (28 KB) for the relevant heading and read only that section.
-- Check layout as text (DOM, computed CSS) where possible. If a screenshot is needed, take one
-  cropped viewport (e.g. 390×844), not every size and theme.
-
-## Before every commit
-
-1. Run `git status` and `git diff --cached`, and read what is actually staged.
-2. Stage files **by name**. Avoid `git add -A` / `git add .` unless the status output has been checked
-   and every file belongs in the commit.
-3. Every staged file must belong to the task. Unstage anything else.
-
-## Never commit
-
-| What | Why |
-| --- | --- |
-| The Google Sheet **edit ID** or admin link (`docs.google.com/spreadsheets/d/<ID>/edit`, `#/admin?k=…`) | Gives anyone edit access to all site content. Only the published `2PACX-…` ID belongs in the code. |
-| Passwords, tokens, API keys, `.env*` files, recovery codes | Public repo. Anything committed stays in Git history. |
-| Personal data: member lists, private phone numbers or emails, ID numbers | GDPR. Coach contact details only go in the sheet, with consent. |
-| `node_modules/`, `dist/` | Generated. Already in `.gitignore`. |
-| Source files received from the club (PDFs, Word files, original photos) | May contain personal metadata (e.g. the logo PDF has the author's name). Commit only exported, metadata-free versions (SVG/PNG/JPG). |
-| Screenshots, scratch scripts, temporary or test files | Not part of the site. |
-| Local test changes in `src/config.js` (e.g. `publishedId: ''` to use example data) | Would disconnect the live site from the sheet. |
-
-## `package-lock.json`
-
-- It **must stay in the repo**: the deploy runs `npm ci`, which requires it.
-- Commit changes to it **only together with an intended change in `package.json`** (adding, removing or
-  updating a dependency).
-- If it changed only because `npm install` ran on another OS (Windows ↔ Debian), discard it:
-  `git restore package-lock.json`.
-
-## Other files to check carefully
-
-- **`src/config.js`:** must keep the real `publishedId` and `gids`. Read its diff line by line.
-- **Line endings:** do not commit files whose only change is CRLF ↔ LF. Check with
-  `git diff --cached --ignore-all-space --stat`; if a file shows no real change, unstage it.
-- **`public/coaches/`:** image files only, lowercase names (GitHub Pages is case-sensitive), and only for
-  coaches who have consented. Fallback only — editors normally paste a Google Drive share link in the
-  sheet's *Bild* column (see docs/editor-help.md, "Bilder").
-
-## Pushing and deploying
-
-- **Do not push to `main` without the maintainer's explicit OK.** A push deploys immediately.
-- Work on a branch (e.g. `issue-15-admin-warnings`). Test with `npm run build && npm run preview` before
-  asking to merge. Pushing a feature branch is safe: only `main` deploys.
-- Never force-push `main` or rewrite its history.
-- After a push to `main`, check that the deploy succeeded (`gh run list`, or the Actions tab).
-
-## GitHub issues and comments
-
-The same rules apply: no edit ID, admin link, credentials or personal data in issues, comments or PR
-descriptions. They are public, and edit history keeps old versions.
+Work on a branch, test with build + preview. Push to `main` only with the maintainer's explicit OK,
+never force-push it, and afterwards check the deploy with `gh run list`.
