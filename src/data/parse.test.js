@@ -25,6 +25,25 @@ describe('parseSeasons', () => {
     expect(problems).toEqual([{ tab: 'Säsonger', row: 2, reason: 'unreadable', column: 'Från', value: 'snart' }])
   })
 
+  it('rejects dates that do not exist instead of building an impossible date', () => {
+    const problems = []
+    const seasons = parseSeasons([
+      { Säsong: 'HT 2026', 'Från': '17/8/2026', 'Till': '2026-12-20' },
+      { Säsong: 'VT 2027', 'Från': '2027-01-10', 'Till': '2027-02-30' },
+      { Säsong: 'VT 2028', 'Från': '29.2.2028', 'Till': '8/17/2028' },
+      { Säsong: 'HT 2028', 'Från': '2028-13-01', 'Till': '2028-12-20' },
+      { Säsong: 'VT 2029', 'Från': '2029-01-10', 'Till': '2029-04-31' },
+    ], problems)
+    expect(seasons.map((s) => s.name)).toEqual(['VT 2028'])
+    expect(seasons[0]).toMatchObject({ from: '2028-02-29', to: '2028-08-17' })
+    expect(problems).toEqual([
+      { tab: 'Säsonger', row: 2, reason: 'unreadable', column: 'Från', value: '17/8/2026' },
+      { tab: 'Säsonger', row: 3, reason: 'unreadable', column: 'Till', value: '2027-02-30' },
+      { tab: 'Säsonger', row: 5, reason: 'unreadable', column: 'Från', value: '2028-13-01' },
+      { tab: 'Säsonger', row: 6, reason: 'unreadable', column: 'Till', value: '2029-04-31' },
+    ])
+  })
+
   it('skips a row with no name and reports missing Från/Till', () => {
     const problems = []
     expect(parseSeasons([{}], problems)).toEqual([])

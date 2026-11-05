@@ -23,6 +23,35 @@ function assignIds(cards) {
   }
 }
 
+// The event a result belongs to (D2): same Rubrik in the result's year, else the first undated
+// event with that title. Shared by the cards and the admin warning so the two always agree.
+function eventFor(events, result) {
+  const year = result.date.slice(0, 4)
+  return (
+    events.find((e) => e.title === result.competition && e.date?.slice(0, 4) === year) ??
+    events.find((e) => e.title === result.competition && !e.date)
+  )
+}
+
+// Results that build a fallback card instead of joining an event (AC10).
+// otherYears lists the years of dated events with the same title, so the warning can say the year
+// is what's wrong rather than the name.
+export function unmatchedResults(events, results) {
+  const warnings = new Map()
+  for (const result of results) {
+    if (eventFor(events, result)) continue
+    const year = result.date.slice(0, 4)
+    const otherYears = [
+      ...new Set(events.filter((e) => e.title === result.competition && e.date).map((e) => e.date.slice(0, 4))),
+    ].sort()
+    // A name that matches nothing is one warning; a wrong year is one per year.
+    const key = otherYears.length ? `${result.competition} ${year}` : result.competition
+    if (warnings.has(key)) continue
+    warnings.set(key, { competition: result.competition, competitionEn: result.competitionEn, year, otherYears })
+  }
+  return [...warnings.values()]
+}
+
 // One card per event, with results attached (D2): a result goes to the event whose Rubrik equals
 // its Tävling in the result's year, otherwise to the first undated event with that title.
 // Results matching no event build a fallback competition card per Tävling + year, so no result
@@ -40,8 +69,7 @@ export function buildEvents(events, results, today) {
   const fallback = new Map()
   for (const result of results) {
     const year = result.date.slice(0, 4)
-    let card = cards.find((c) => c.title === result.competition && c.year === year)
-    if (!card) card = cards.find((c) => c.title === result.competition && !c.date)
+    const card = eventFor(cards, result)
     if (card) {
       card.results.push(result)
       continue

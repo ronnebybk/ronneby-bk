@@ -9,11 +9,13 @@ over new services or dependencies. Details: README.md, HOWTO.md, SECURITY.md, LI
 
 - Vue 3 + Vite app on GitHub Pages. Content lives in a **Google Sheet** (one tab per content type),
   fetched as published CSV on every visit; `localStorage` cache covers outages. IDs in `src/config.js`.
-  Tab columns: see `sheet-template/` and `src/data/demo.js`.
+  Tabs: Säsonger, Grupper, Schema, Tränare, Anslag, Undantag, Klubbinfo, Prova på, Frågor, Dokument,
+  Resultat, Evenemang, Album, Sponsorer. Tab columns: see `sheet-template/` and `src/data/demo.js`.
 - Editors have no accounts: the hidden `/#/admin?k=<edit-id>` page embeds the sheet. The edit ID is
-  stored in `localStorage`, stripped from the URL, and is a **secret**.
-- Parsing is forgiving (`src/data/parse.js`): bad rows are skipped. Tabs are matched by exact name
-  (season, group, coach); current season is chosen by date.
+  stored in `localStorage`, stripped from the URL, and is a **secret**. The sheet is shared as
+  "Anyone with the link → Editor", which is why the edit ID must stay secret.
+- Parsing is forgiving (`src/data/parse.js`): bad rows are skipped. Rows across tabs are matched by
+  exact name (season, group, coach); current season is chosen by date.
 - `publishedId: ''` runs the site on example data (`src/data/demo.js`).
 
 ## Conventions
@@ -52,5 +54,7 @@ Logo SVGs (`src/assets/logo.svg`, `design/*.svg`), `design/logo-2400.png`, `pack
 
 ## Deploying
 
-Work on a branch, test with build + preview. Push to `main` only with the maintainer's explicit OK,
-never force-push it, and afterwards check the deploy with `gh run list`.
+Work on a branch, test with build + preview. Pushing a feature branch is safe: only `main` deploys.
+Push to `main` only with the maintainer's explicit OK, never force-push it, and afterwards check the
+deploy with `gh run list`. Issue edit history keeps old versions, so deleting a leaked edit ID from a
+comment is not enough — treat it as compromised and rotate it.
