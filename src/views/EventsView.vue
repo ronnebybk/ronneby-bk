@@ -86,10 +86,11 @@ function onToggle(card, isOpen) {
 
 // A link opened in a new tab: open the card and scroll it into view once the data is there.
 watch(
-  [() => route.query.visa, eventCards],
+  [() => firstQuery(route.query, 'visa'), eventCards],
   async ([visa]) => {
-    openId.value = visa ?? null
-    if (visa) deepLink.value = true
+    // A click has already set openId; only a URL that differs is a deep link.
+    if (visa && visa !== openId.value) deepLink.value = true
+    openId.value = visa
     if (!visa || !eventCards.value.some((c) => c.id === visa)) return
     await nextTick()
     document.getElementById(`event-${visa}`)?.scrollIntoView()
@@ -274,7 +275,8 @@ function placementText(result) {
   margin-bottom: 24px;
 }
 
-.filters button {
+/* :where() keeps this below the shared .pill-hover:hover, which would lose to the scoped attribute. */
+:where(.filters) button {
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid var(--line);
@@ -291,9 +293,11 @@ function placementText(result) {
 }
 
 /* Active pill darkens on hover, matching .btn-primary:hover (D5). */
-.filters button.active:hover {
-  background: #a8141a;
-  border-color: #a8141a;
+@media (hover: hover) {
+  .filters button.active:hover {
+    background: var(--red-strong-hover);
+    border-color: var(--red-strong-hover);
+  }
 }
 
 .summary {

@@ -47,12 +47,19 @@ const where = (tab, rows) =>
 const sheetKeyOf = (tab) => TAB_SHEET_KEY[tab]
 const canJump = (tab) => Boolean(config.sheet.gids[sheetKeyOf(tab)])
 
+// A title that matches only events in other years gets its own text: the year is the mistake.
+function unmatchedText(w) {
+  const competition = localized(w.competition, w.competitionEn)
+  if (!w.otherYears.length) return t('admin.warnings.unmatchedResult', { competition })
+  return t('admin.warnings.unmatchedResultYear', { competition, year: w.year, years: w.otherYears.join(', ') })
+}
+
 // Event rows with date problems and results that match no event, in the same box (AC10).
 // D8: each event warning names its Evenemang row.
 const warnings = computed(() =>
   eventWarnings.value.map((w) =>
     w.kind === 'unmatched-result'
-      ? { tab: null, rows: null, text: t('admin.warnings.unmatchedResult', { competition: localized(w.competition, w.competitionEn) }), help: helpFor(w) }
+      ? { tab: null, rows: null, text: unmatchedText(w), help: helpFor(w) }
       : { tab: 'Evenemang', rows: [w.row], text: t(`admin.warnings.${w.problem}`, { where: where('Evenemang', [w.row]), title: localized(w.title, w.titleEn) }), help: helpFor(w) },
   ),
 )

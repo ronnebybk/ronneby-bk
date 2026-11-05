@@ -285,6 +285,7 @@ export default {
       title: 'Varningar',
       howToFix: 'Hur fixar jag det?',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",
+      unmatchedResultYear: "Resultat för '{competition}' {year} matchar inget evenemang det året (finns: {years})",
       undated: "{where}: '{title}' saknar datum",
       'date-unreadable': "{where}: datum på '{title}' går inte att läsa",
       'end-unreadable': "{where}: slutdatum på '{title}' går inte att läsa",

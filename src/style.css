@@ -2,6 +2,7 @@
   /* Brand: exact colours from the vector logo (design/logo.svg) */
   --red: #ed2d30; /* accents and borders; too light for white text */
   --red-strong: #c8181e; /* buttons: white text 5.8:1 */
+  --red-strong-hover: #a8141a;
   --red-on-ink: #ff6b64; /* red text on the dark header: ~6:1 */
   --ink: #1e1d1c; /* the logo's background */
   --ink-2: #2b2928;
@@ -68,10 +69,6 @@
     color-scheme: dark;
   }
 
-  /* The light hover shadow is nearly invisible on the dark paper. */
-  .card-hover:hover {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.5);
-  }
 }
 
 *,
@@ -207,24 +204,38 @@ button {
 }
 
 /* Shared hover patterns (D6): apply .card-hover to clickable card elements,
-   .pill-hover to filter buttons. Transitions are killed by the global
-   prefers-reduced-motion rule. */
+   .pill-hover to filter buttons. Only for real pointers, so a tapped card doesn't
+   stay raised on touch screens; the lift is dropped when the system asks for less motion. */
 .card-hover {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 2px 4px rgb(30 29 28 / 0.12), 0 8px 24px rgb(30 29 28 / 0.14);
 }
 
 .pill-hover {
   transition: background 0.15s, border-color 0.15s;
 }
 
-.pill-hover:hover {
-  background: var(--highlight);
-  border-color: var(--muted);
+@media (hover: hover) {
+  .card-hover:hover {
+    box-shadow: 0 2px 4px rgb(30 29 28 / 0.12), 0 8px 24px rgb(30 29 28 / 0.14);
+  }
+
+  .pill-hover:hover {
+    background: var(--highlight);
+    border-color: var(--muted);
+  }
+}
+
+/* After the base rule so it wins: the light hover shadow is nearly invisible on the dark paper. */
+@media (hover: hover) and (prefers-color-scheme: dark) {
+  .card-hover:hover {
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.5);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card-hover:hover {
+    transform: translateY(-3px);
+  }
 }
 
 .grid {
@@ -256,7 +267,7 @@ button {
 }
 
 .btn-primary:hover {
-  background: #a8141a;
+  background: var(--red-strong-hover);
 }
 
 .btn-outline {

@@ -284,6 +284,7 @@ export default {
       title: 'Warnings',
       howToFix: 'How do I fix this?',
       unmatchedResult: "Result: '{competition}' matches no event",
+      unmatchedResultYear: "Result for '{competition}' {year} matches no event that year (exists: {years})",
       undated: "{where}: '{title}' has no date",
       'date-unreadable': "{where}: the date of '{title}' can't be read",
       'end-unreadable': "{where}: the end date of '{title}' can't be read",

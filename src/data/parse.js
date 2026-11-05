@@ -63,7 +63,11 @@ function parseDate(value) {
   return null
 }
 
+// Null for dates that don't exist (month 17, 30 February), so the row gets the "unreadable" warning
+// instead of an impossible date that breaks every comparison.
 function toIso(year, month, day) {
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (date.getUTCMonth() !== month - 1 || date.getUTCDate() !== Number(day)) return null
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 

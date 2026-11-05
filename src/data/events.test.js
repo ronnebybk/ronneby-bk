@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { eventSlug, buildEvents, splitEvents } from './events.js'
+import { eventSlug, buildEvents, splitEvents, unmatchedResults } from './events.js'
 
 function makeEvent(overrides = {}) {
   return {
@@ -119,5 +119,35 @@ describe('splitEvents', () => {
     expect(upcoming.map((c) => c.title)).toEqual(['Soon', 'Later', 'Undated'])
     expect(pastByYear.map((g) => g.year)).toEqual(['2025'])
     expect(pastByYear[0].cards.map((c) => c.title)).toEqual(['Newer old', 'Old'])
+  })
+})
+
+describe('unmatchedResults', () => {
+  it('agrees with buildEvents: same title in another year is unmatched and names the years', () => {
+    const events = [makeEvent({ title: 'SM', date: '2026-03-01' })]
+    const results = [
+      makeResult({ competition: 'SM', date: '2026-03-01' }),
+      makeResult({ competition: 'SM', date: '2025-03-01' }),
+      makeResult({ competition: 'SM', date: '2025-03-02' }),
+    ]
+    expect(unmatchedResults(events, results)).toEqual([
+      { competition: 'SM', competitionEn: '', year: '2025', otherYears: ['2026'] },
+    ])
+    expect(buildEvents(events, results, '2026-01-01').filter((c) => c.fromResults)).toHaveLength(1)
+  })
+
+  it('counts an undated event with the title as a match', () => {
+    const events = [makeEvent({ title: 'SM', date: null })]
+    expect(unmatchedResults(events, [makeResult({ competition: 'SM', date: '2025-03-01' })])).toEqual([])
+  })
+
+  it('warns once per unknown title, whatever the year', () => {
+    const results = [
+      makeResult({ competition: 'Okänd', date: '2025-03-01' }),
+      makeResult({ competition: 'Okänd', date: '2026-03-01' }),
+    ]
+    expect(unmatchedResults([], results)).toEqual([
+      { competition: 'Okänd', competitionEn: '', year: '2025', otherYears: [] },
+    ])
   })
 })

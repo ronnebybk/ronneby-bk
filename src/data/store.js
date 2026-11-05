@@ -5,7 +5,7 @@ import * as demo from './demo.js'
 import { loadJson, saveJson } from './storage.js'
 import { localized, t } from '../i18n/index.js'
 import { parseSeasons, parseGroups, parseSessions, parseExceptions, parseCoaches, parseNotices, isNoticeActive, parseClub, parseTrial, parseFaq, parseDocuments, parseResults, parseSponsors, parseEvents, parseAlbums, pickCurrentSeason } from './parse.js'
-import { buildEvents, splitEvents } from './events.js'
+import { buildEvents, splitEvents, unmatchedResults } from './events.js'
 import { nameWarnings, seasonWarnings, rowWarnings } from './warnings.js'
 import { preview, isPreviewOn, setPreviewFlag, setPreviewTab, adminKey } from './preview.js'
 import { toIso, weekday } from './dates.js'
@@ -316,12 +316,8 @@ export const eventWarnings = computed(() => {
       warnings.push({ kind: 'event', problem, title: event.title, titleEn: event.titleEn, row: event.row })
     }
   }
-  const matched = new Set(state.events.map((event) => event.title))
-  const seen = new Set()
-  for (const result of state.results) {
-    if (matched.has(result.competition) || seen.has(result.competition)) continue
-    seen.add(result.competition)
-    warnings.push({ kind: 'unmatched-result', competition: result.competition, competitionEn: result.competitionEn })
+  for (const result of unmatchedResults(state.events, state.results)) {
+    warnings.push({ kind: 'unmatched-result', ...result })
   }
   return warnings
 })
@@ -457,9 +453,10 @@ export const todayInfo = computed(() => {
     const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset)
     const iso = todayIso(date)
     if (iso > lastDay) break
-    const session = sessionsFor(seasonOn(iso)).find((s) => s.day === weekday(date))
-    // A cancelled session is not "the next one" — keep walking to the first real session.
-    if (session && !exceptionFor(iso, session.groups)) return { today, next: { session, date: iso, offset } }
+    // A cancelled session is not "the next one": take the day's first session that isn't
+    // cancelled, so one cancelled group doesn't skip the whole day.
+    const session = sessionsFor(seasonOn(iso)).find((s) => s.day === weekday(date) && !exceptionFor(iso, s.groups))
+    if (session) return { today, next: { session, date: iso, offset } }
   }
   return { today, next: null }
 })

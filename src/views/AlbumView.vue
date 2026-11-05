@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import ImageLightbox from '../components/ImageLightbox.vue'
@@ -57,7 +57,7 @@ const bild = computed(() => {
   return n
 })
 
-watch(bild, (n) => {
+function syncLightbox(n) {
   if (n === null) {
     // The URL lost ?bild (browser back): close the dialog if it is still open. Its close event
     // then finds no bild in the URL and doesn't navigate again.
@@ -66,7 +66,12 @@ watch(bild, (n) => {
   }
   lightboxIndex.value = n - 1
   if (!lightbox.value?.isOpen()) lightbox.value?.open()
-})
+}
+
+// A shared ?bild link opens on mount (an immediate watcher would run before the lightbox ref
+// exists). flush: 'post' covers data arriving later: the v-if'd lightbox is rendered by then.
+onMounted(() => syncLightbox(bild.value))
+watch(bild, syncLightbox, { flush: 'post' })
 
 function openLightbox(i) {
   pushed.value = true
@@ -113,7 +118,7 @@ async function onLightboxClose() {
       <TextBlocks v-if="description" :text="description" />
 
       <ul class="grid">
-        <li v-for="(url, i) in gridImages" :key="url">
+        <li v-for="(url, i) in gridImages" :key="i">
           <button
             type="button"
             class="thumb card-hover"
@@ -181,12 +186,13 @@ async function onLightboxClose() {
   width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
-  /* Zoom inside the clipped thumb on hover; killed by the global
-     prefers-reduced-motion rule. */
+  /* Zoom inside the clipped thumb on hover; same guards as .card-hover:hover. */
   transition: transform 0.15s ease;
 }
 
-.thumb:hover img {
-  transform: scale(1.06);
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .thumb:hover img {
+    transform: scale(1.06);
+  }
 }
 </style>
