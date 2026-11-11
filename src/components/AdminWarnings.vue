@@ -6,6 +6,7 @@ import { TAB_SHEET_KEY } from '../data/warnings.js'
 import config from '../config.js'
 
 import { checkImages } from '../data/images.js'
+import { loadJson, saveJson } from '../data/storage.js'
 
 import { useI18n } from '../i18n/index.js'
 
@@ -173,27 +174,84 @@ const dataTexts = computed(() =>
 const allWarnings = computed(() =>
   [...dataTexts.value, ...warnings.value].map((w) => (w.tab ? { ...w, lead: where(w.tab, w.rows) } : w)),
 )
+
 const any = computed(() => failing.value.length + allWarnings.value.length)
+
+// #52: fold state — one JSON object under one rbt- key, section id → true (collapsed).
+// Stored choice wins; otherwise a section with more than 5 warnings starts collapsed.
+const FOLD_KEY = 'rbt-admin-warnings-folded'
+const AUTO_COLLAPSE_THRESHOLD = 5
+
+const storedFold = loadJson(FOLD_KEY) ?? {}
+const collapsed = ref({ ...storedFold })
+
+watch(collapsed, (val) => saveJson(FOLD_KEY, val), { deep: true })
+
+// Sections in sheet-tab order (D2), then "other", then "images".
+const sections = computed(() => {
+  const byTab = new Map()
+  for (const w of allWarnings.value) {
+    if (!w.tab) continue
+    if (!byTab.has(w.tab)) byTab.set(w.tab, [])
+    byTab.get(w.tab).push(w)
+  }
+  // Preserve TAB_SHEET_KEY order for tabs that have warnings.
+  const ordered = Object.keys(TAB_SHEET_KEY)
+    .filter((tab) => byTab.has(tab))
+    .map((tab) => ({ id: tab, label: tab, items: byTab.get(tab) }))
+  // Tabs not in TAB_SHEET_KEY (shouldn't happen, but be safe).
+  for (const [tab, items] of byTab) {
+    if (!TAB_SHEET_KEY[tab]) ordered.push({ id: tab, label: tab, items })
+  }
+  const otherItems = allWarnings.value.filter((w) => !w.tab)
+  if (otherItems.length) ordered.push({ id: 'other', label: t('admin.warnings.other'), items: otherItems })
+  if (failing.value.length) ordered.push({ id: 'images', label: t('admin.warnings.images'), items: failing.value })
+  return ordered
+})
+
+// A section starts collapsed when the user stored that choice, or (no stored choice) when it
+// has more than AUTO_COLLAPSE_THRESHOLD warnings (AC3). The images section arrives async, so
+// this is a function called per render — reactive to failing.value.
+function isCollapsed(section) {
+  if (section.id in collapsed.value) return collapsed.value[section.id]
+  return section.items.length > AUTO_COLLAPSE_THRESHOLD
+}
+
+function toggleSection(section) {
+  collapsed.value = { ...collapsed.value, [section.id]: !isCollapsed(section) }
+}
 </script>
 
 <template>
   <!-- Always rendered so the live region exists before its content arrives. -->
   <div role="status" :class="{ 'admin-warnings': any }">
     <template v-if="any">
-      <p class="title">{{ t('admin.warnings.title') }}</p>
-      <ul>
-        <li v-for="(w, i) in allWarnings" :key="`d-${i}`">
-          <template v-if="w.tab && canJump(w.tab)">
-            <button type="button" class="tab-link" @click="emit('open-tab', sheetKeyOf(w.tab))">{{ w.lead }}</button>{{ w.text.slice(w.lead.length) }}
-          </template>
-          <template v-else>{{ w.text }}</template>
-          <button v-if="w.help" type="button" class="help-link" @click="emit('open-help', w.help)">{{ t('admin.warnings.howToFix') }}</button>
-        </li>
-        <li v-for="(item, i) in failing" :key="`i-${i}`">
-          <strong>{{ item.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${item.kind}`) }}) — {{ t(`admin.imageWarnings.${item.reason}`) }}
-          <button type="button" class="help-link" @click="emit('open-help', 'bilder')">{{ t('admin.warnings.howToFix') }}</button>
-        </li>
-      </ul>
+      <p class="title">{{ t('admin.warnings.titleCount', { count: any }) }}</p>
+      <details
+        v-for="section in sections"
+        :key="section.id"
+        class="section"
+        :open="!isCollapsed(section)"
+        @toggle="toggleSection(section)"
+      >
+        <summary>
+          <span class="section-name">{{ section.label }}</span>
+          <span class="count">{{ section.items.length }}</span>
+        </summary>
+        <ul>
+          <li v-for="(w, i) in section.items" :key="`${section.id}-${i}`">
+            <template v-if="section.id !== 'images' && w.tab && canJump(w.tab)">
+              <button type="button" class="tab-link" @click="emit('open-tab', sheetKeyOf(w.tab))">{{ w.lead }}</button>{{ w.text.slice(w.lead.length) }}
+            </template>
+            <template v-else-if="section.id !== 'images'">{{ w.text }}</template>
+            <template v-else>
+              <strong>{{ w.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${w.kind}`) }}) — {{ t(`admin.imageWarnings.${w.reason}`) }}
+            </template>
+            <button v-if="w.help" type="button" class="help-link" @click="emit('open-help', w.help)">{{ t('admin.warnings.howToFix') }}</button>
+            <button v-else-if="section.id === 'images'" type="button" class="help-link" @click="emit('open-help', 'bilder')">{{ t('admin.warnings.howToFix') }}</button>
+          </li>
+        </ul>
+      </details>
     </template>
   </div>
 </template>
@@ -214,8 +272,64 @@ const any = computed(() => failing.value.length + allWarnings.value.length)
   color: var(--red-strong);
 }
 
+.section {
+  border-bottom: 1px solid var(--line);
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+.section summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.section summary::-webkit-details-marker {
+  display: none;
+}
+
+.section summary::after {
+  content: '+';
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--red-strong);
+}
+
+.section[open] summary::after {
+  content: '−';
+}
+
+.section-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  flex: none;
+  min-width: 1.6em;
+  text-align: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--red-strong);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 ul {
-  margin: 0;
+  margin: 0 0 6px;
   padding-left: 20px;
 }
 
