@@ -282,7 +282,6 @@ export default {
       retry: 'Försök igen',
     },
     warnings: {
-      title: 'Varningar',
       howToFix: 'Hur fixar jag det?',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",
       unmatchedResultYear: "Resultat för '{competition}' {year} matchar inget evenemang det året (finns: {years})",

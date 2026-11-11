@@ -217,8 +217,13 @@ function isCollapsed(section) {
   return section.items.length > AUTO_COLLAPSE_THRESHOLD
 }
 
-function toggleSection(section) {
-  collapsed.value = { ...collapsed.value, [section.id]: !isCollapsed(section) }
+// The toggle event also fires when Vue sets `open` itself, so read the real state and ignore
+// no-op events — otherwise mount-time events would flip sections back and forth forever and
+// persist the auto-collapse default as if it were a user choice.
+function onToggle(section, event) {
+  const nowCollapsed = !event.target.open
+  if (nowCollapsed === isCollapsed(section)) return
+  collapsed.value = { ...collapsed.value, [section.id]: nowCollapsed }
 }
 </script>
 
@@ -232,7 +237,7 @@ function toggleSection(section) {
         :key="section.id"
         class="section"
         :open="!isCollapsed(section)"
-        @toggle="toggleSection(section)"
+        @toggle="onToggle(section, $event)"
       >
         <summary>
           <span class="section-name">{{ section.label }}</span>

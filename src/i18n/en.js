@@ -281,7 +281,6 @@ export default {
       retry: 'Try again',
     },
     warnings: {
-      title: 'Warnings',
       howToFix: 'How do I fix this?',
       unmatchedResult: "Result: '{competition}' matches no event",
       unmatchedResultYear: "Result for '{competition}' {year} matches no event that year (exists: {years})",
