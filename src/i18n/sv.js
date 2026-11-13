@@ -282,7 +282,6 @@ export default {
       retry: 'Försök igen',
     },
     warnings: {
-      title: 'Varningar',
       howToFix: 'Hur fixar jag det?',
       unmatchedResult: "Resultat: '{competition}' matchar inget evenemang",
       unmatchedResultYear: "Resultat för '{competition}' {year} matchar inget evenemang det året (finns: {years})",
@@ -299,6 +298,10 @@ export default {
       groupCase: '{list} skrivs olika men blir olika grupper',
       noSeason: 'Säsonger: ingen säsong gäller idag och ingen ny är inlagd',
       seasonEnding: 'Säsonger: "{name}" slutar {date} och ingen nästa säsong finns',
+      // #52: foldable section names and the total count on the box title.
+      other: 'Övrigt',
+      images: 'Bilder',
+      titleCount: 'Varningar ({count})',
       // #40: rows the site skips or values it drops. `where` is "Tab rad N" / "Tab rader N, M".
       row: {
         missing: '{where}: {column} saknas – raden visas inte',
