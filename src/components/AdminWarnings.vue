@@ -205,7 +205,7 @@ const sections = computed(() => {
   }
   const otherItems = allWarnings.value.filter((w) => !w.tab)
   if (otherItems.length) ordered.push({ id: 'other', label: t('admin.warnings.other'), items: otherItems })
-  if (failing.value.length) ordered.push({ id: 'images', label: t('admin.warnings.images'), items: failing.value })
+  if (failing.value.length) ordered.push({ id: 'images', label: t('admin.warnings.images'), items: failing.value.map((f) => ({ ...f, help: 'bilder' })) })
   return ordered
 })
 
@@ -253,7 +253,6 @@ function onToggle(section, event) {
               <strong>{{ w.name }}</strong> ({{ t(`admin.imageWarnings.kinds.${w.kind}`) }}) — {{ t(`admin.imageWarnings.${w.reason}`) }}
             </template>
             <button v-if="w.help" type="button" class="help-link" @click="emit('open-help', w.help)">{{ t('admin.warnings.howToFix') }}</button>
-            <button v-else-if="section.id === 'images'" type="button" class="help-link" @click="emit('open-help', 'bilder')">{{ t('admin.warnings.howToFix') }}</button>
           </li>
         </ul>
       </details>
